@@ -7,6 +7,6 @@ describe('App component', () => {
   it('renders the main heading and subtext', () => {
     render(<App />);
     expect(screen.getByText('Learning Cards App')).toBeInTheDocument();
-    expect(screen.getByText('testing GH actions')).toBeInTheDocument();
+    expect(screen.getByText('pull request test')).toBeInTheDocument();
   });
 });
