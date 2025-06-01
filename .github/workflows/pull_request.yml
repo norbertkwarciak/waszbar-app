@@ -1,11 +1,9 @@
-name: Build and Deploy to Netlify
+name: Pull Request
 
 on:
-  push:
-    branches: [main]
-    # paths: # specify paths to trigger the workflow
-    #   - src/**:
-  # workflow_dispatch: # manually trigger the workflow
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -70,13 +68,14 @@ jobs:
       - name: Build app
         run: pnpm run build
 
-      - name: Deploy to Netlify
+      - name: Deploy to Netlify Preview
         uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: './dist'
-          production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: 'Deploy from GitHub Actions'
+          deploy-message: 'Deploy preview from PR #${{ github.event.pull_request.number }}'
+          enable-pull-request-comment: true
+          overwrites-pull-request-comment: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
