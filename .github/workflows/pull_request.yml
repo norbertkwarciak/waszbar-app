@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: test
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-env
 
       - name: Lint code
