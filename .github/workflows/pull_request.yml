@@ -8,6 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-22.04
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-env
 
       - name: Run unit tests
