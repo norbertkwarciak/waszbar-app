@@ -16,6 +16,8 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
+    environment:
+      name: 'pull_request'
     needs: test
     steps:
       - uses: actions/checkout@v4

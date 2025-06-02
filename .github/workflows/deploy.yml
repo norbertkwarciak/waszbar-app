@@ -16,6 +16,9 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
+    environment:
+      name: 'staging'
+      url: ${{ steps.deploy-to-netlify.outputs.deploy-url }}
     needs: test
     steps:
       - uses: actions/checkout@v4
