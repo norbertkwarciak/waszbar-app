@@ -27,6 +27,11 @@ jobs:
       - name: Lint code
         run: pnpm lint
 
+      - name: Generate .env file
+        run: |
+          echo "VITE_ENVIRONMENT=${{ job.environment.name }}" >> .env
+          echo "VITE_API_URL=https://learning-cards-app.netlify.app" >> .env
+
       - name: Build app
         run: pnpm run build
 
