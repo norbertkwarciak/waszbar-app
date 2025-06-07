@@ -8,6 +8,7 @@ const App = (): React.JSX.Element => {
       <h1>Learning Cards App</h1>
       <div>pull request test</div>
       <div>{import.meta.env.VITE_API_URL}</div>
+      <div>Hello from AWS!</div>
       <Outlet />
     </div>
   );
