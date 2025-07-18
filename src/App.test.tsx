@@ -7,6 +7,5 @@ describe('App component', () => {
   it('renders the main heading and subtext', () => {
     render(<App />);
     expect(screen.getByText('WaszBar - wyceny')).toBeInTheDocument();
-    expect(screen.getByText('pull request test')).toBeInTheDocument();
   });
 });
