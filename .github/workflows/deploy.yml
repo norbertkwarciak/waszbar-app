@@ -1,8 +1,7 @@
-name: Build and Deploy to Netlify
+name: Deploy to Netlify
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -16,10 +15,10 @@ jobs:
 
   deploy:
     runs-on: ubuntu-22.04
-    environment:
-      name: 'staging'
-      url: ${{ steps.deploy-to-netlify.outputs.deploy-url }}
     needs: test
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-netlify.outputs.deploy-url }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm-env
@@ -29,19 +28,20 @@ jobs:
 
       - name: Generate .env file
         run: |
-          echo "VITE_ENVIRONMENT=${{ job.environment.name }}" >> .env
-          echo "VITE_API_URL=https://learning-cards-app.netlify.app" >> .env
+          echo "VITE_ENVIRONMENT=production" >> .env
+          echo "VITE_API_URL=https://twojadomena.pl" >> .env
 
       - name: Build app
         run: pnpm run build
 
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
+        id: deploy-to-netlify
         with:
           publish-dir: './dist'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: 'Deploy from GitHub Actions'
+          deploy-message: 'Manual production deploy from GitHub Actions'
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

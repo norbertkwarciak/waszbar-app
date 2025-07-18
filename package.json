@@ -1,7 +1,7 @@
 {
-  "name": "learning-cards-app",
+  "name": "waszbar-estimate",
   "version": "1.0.0",
-  "description": "A React application for learning cards",
+  "description": "A React application for estimating the bartender services.",
   "main": "index.js",
   "type": "module",
   "scripts": {

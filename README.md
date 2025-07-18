@@ -1,3 +1,1 @@
-## Learning Cards App
-
 TBD
