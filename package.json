@@ -1,5 +1,5 @@
 {
-  "name": "waszbar-estimate",
+  "name": "waszbar-app",
   "version": "1.0.0",
   "description": "A React application for estimating the bartender services.",
   "main": "index.js",
@@ -8,13 +8,11 @@
     "build": "vite build",
     "dev": "vite",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "vitest src",
-    "test:e2e": "npx playwright install && playwright test"
+    "test": "vitest src"
   },
   "author": "NK",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "1.52.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "16.3.0",
@@ -40,6 +38,12 @@
     "vitest": "3.1.2"
   },
   "dependencies": {
+    "@mantine/core": "8.2.4",
+    "@mantine/dates": "8.2.4",
+    "@mantine/hooks": "8.2.4",
+    "@mantine/notifications": "8.2.4",
+    "@tabler/icons-react": "3.34.1",
+    "dayjs": "1.11.13",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-router-dom": "7.5.2"
