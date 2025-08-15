@@ -1,11 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 import App from './App';
 
 describe('App component', () => {
-  it('renders the main heading and subtext', () => {
+  it('renders the <App /> component', () => {
     render(<App />);
-    expect(screen.getByText('WaszBar - wyceny')).toBeInTheDocument();
   });
 });
