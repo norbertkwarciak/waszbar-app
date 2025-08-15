@@ -10,6 +10,7 @@ import {
   Modal,
   NumberInput,
   Paper,
+  SimpleGrid,
   Space,
   Stack,
   Text,
@@ -18,13 +19,17 @@ import {
   Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { IconInfoCircle, IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { IconCheck, IconX } from '@tabler/icons-react';
 import { extraServices, barOptions, menuPackages, guestRanges } from '../config/formConfig';
+import PageLayout from '../components/PageLayout';
 
 const FormPage = (): React.JSX.Element => {
   const [dateString, setDateString] = useState<string | null>(null);
+  const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
+    null,
+  );
+
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
   const [venueLocation, setVenueLocation] = useState<string>('');
@@ -33,14 +38,31 @@ const FormPage = (): React.JSX.Element => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
 
+  const checkDateAvailability = async (date: string): Promise<'available' | 'unavailable'> => {
+    setDateStatus('pending');
+    await new Promise((res) => setTimeout(res, 1500));
+
+    const unavailableDates = ['2025-09-01', '2025-08-31'];
+    return unavailableDates.includes(date) ? 'unavailable' : 'available';
+  };
+
+  const handleDateChange = async (value: string | null): Promise<void> => {
+    setDateString(value);
+    if (!value) {
+      setDateStatus(null);
+      return;
+    }
+
+    const status = await checkDateAvailability(value);
+    setDateStatus(status);
+  };
+
   const handleBarSelect = (barType: string): void => {
     setSelectedBar(barType);
-    console.log('Selected bar:', barType);
   };
 
   const handleSkip = (): void => {
     setSelectedBar('no-bar');
-    console.log('Bar skipped');
   };
 
   const getClosestGuestRange = (count: number): number | null => {
@@ -52,7 +74,6 @@ const FormPage = (): React.JSX.Element => {
 
   const handlePackageSelect = (value: string): void => {
     setSelectedPackage(value);
-    console.log('Selected menu package:', value);
   };
 
   const toggleServiceSelection = (value: string): void => {
@@ -79,248 +100,274 @@ const FormPage = (): React.JSX.Element => {
       icon: <IconCheck size={18} />,
     });
 
-    // You can later post the form here
-    // Example:
-    // axios.post('/api/form', { ...formData })
+    // TODO: API call here
   };
 
   return (
-    <Container size="md" mt="xl">
-      <Stack gap="xl">
-        <Box>
-          <Button component={Link} to="/" variant="outline" size="xs">
-            ← Powrót do strony głównej
-          </Button>
-        </Box>
-        <Title order={2}>Formularz</Title>
+    <PageLayout>
+      <Container size="md">
+        <Space h={20} />
 
-        <DateInput
-          label="Sprawdź termin"
-          placeholder="Wybierz datę"
-          value={dateString}
-          onChange={setDateString}
-          valueFormat="DD.MM.YYYY"
-          locale="pl"
-          withAsterisk
-        />
-
-        <Divider label="Wybór baru" labelPosition="center" />
-
-        <Box>
-          <Title order={3} ta="center" mb="md">
-            OFERUJEMY 3 ARANŻACJE BARU DO WYBORU
-          </Title>
-
-          <Group justify="center" wrap="wrap" gap="xl">
-            {barOptions.map((bar) => (
-              <Paper
-                key={bar.value}
-                shadow="md"
-                radius="md"
-                p="sm"
-                withBorder
-                style={{ width: 250, textAlign: 'center' }}
-              >
-                <Image
-                  src={bar.image}
-                  alt={bar.label}
-                  height={150}
-                  fit="cover"
-                  radius="md"
-                  mb="sm"
-                />
-                <Text fw={500} mb="xs">
-                  {bar.label}
-                </Text>
-                <Button
-                  fullWidth
-                  variant={selectedBar === bar.value ? 'filled' : 'light'}
-                  onClick={(): void => handleBarSelect(bar.value)}
-                >
-                  Wybierz
-                </Button>
-              </Paper>
-            ))}
-          </Group>
-
-          <Box mt="xl" ta="center">
-            <Button
-              variant={selectedBar === 'no-bar' ? 'filled' : 'outline'}
-              color="gray"
-              onClick={handleSkip}
-            >
-              NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać
+        <Stack gap="xl">
+          <Box>
+            <Button component={Link} to="/" variant="outline" size="xs">
+              ← Powrót do strony głównej
             </Button>
           </Box>
-        </Box>
 
-        <Divider label="Lokalizacja i liczba gości" labelPosition="center" />
+          <Title order={2}>Formularz</Title>
 
-        <TextInput
-          label="Kod pocztowy i miejscowość"
-          placeholder="np. 00-001 Warszawa"
-          value={venueLocation}
-          onChange={(e): void => setVenueLocation(e.currentTarget.value)}
-        />
+          {/* Date Picker */}
+          <DateInput
+            label="Sprawdź termin"
+            placeholder="Wybierz datę"
+            value={dateString}
+            onChange={handleDateChange}
+            valueFormat="YYYY-MM-DD"
+            locale="pl"
+            withAsterisk
+            disabled={dateStatus === 'pending'}
+            minDate={new Date()}
+            leftSection={<IconCalendar size={18} />}
+            style={{ maxWidth: 250 }}
+          />
 
-        <NumberInput
-          label="Planowana liczba gości"
-          placeholder="np. 120"
-          value={numberOfGuests}
-          onChange={(value) => {
-            if (typeof value === 'number' || value === '') {
-              setNumberOfGuests(value);
-            }
-          }}
-          min={0}
-        />
+          {/* Date status feedback */}
+          {dateStatus === 'pending' && (
+            <Text c="dimmed" size="sm">
+              Sprawdzanie dostępności terminu...
+            </Text>
+          )}
 
-        {matchedRange && (
-          <Text size="sm" c="dimmed">
-            Zostaniesz dopasowany do przedziału: <strong>do {matchedRange} osób</strong>
-          </Text>
-        )}
+          {dateStatus === 'unavailable' && (
+            <Text c="red" size="sm">
+              Termin zajęty, wybierz inny termin.
+            </Text>
+          )}
 
-        <Divider label="Wybór pakietu menu" labelPosition="center" />
+          {/* Main form fields – only when available */}
+          {dateStatus === 'available' && (
+            <>
+              <Divider label="Wybór baru" labelPosition="center" />
 
-        <Box>
-          <Title order={3} ta="center" mb="md">
-            Wybierz pakiet menu
-          </Title>
+              <Box>
+                <Title order={3} ta="center" mb="md">
+                  OFERUJEMY 3 ARANŻACJE BARU DO WYBORU
+                </Title>
 
-          <Group justify="center" wrap="wrap" gap="xl">
-            {menuPackages.map((pkg) => (
-              <Paper
-                key={pkg.value}
-                shadow="md"
-                radius="md"
-                p="sm"
-                withBorder
-                style={{ width: 220, textAlign: 'center' }}
-              >
-                <Image
-                  src={pkg.thumbnail}
-                  alt={pkg.label}
-                  height={120}
-                  fit="cover"
-                  radius="md"
-                  mb="xs"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => window.open(pkg.pdfUrl, '_blank')}
-                />
-                <Text fw={500} mb="xs">
-                  {pkg.label}
-                </Text>
-                <Button
-                  fullWidth
-                  variant={selectedPackage === pkg.value ? 'filled' : 'light'}
-                  onClick={() => handlePackageSelect(pkg.value)}
-                >
-                  WYBIERAM
-                </Button>
-              </Paper>
-            ))}
-          </Group>
-        </Box>
-
-        <Divider label="Usługi dodatkowe" labelPosition="center" />
-
-        <Box>
-          <Title order={3} ta="center" mb="md">
-            Usługi dodatkowe
-          </Title>
-
-          <Group justify="center" wrap="wrap" gap="xl">
-            {extraServices.map((service) => {
-              const isSelected = selectedServices.includes(service.value);
-
-              return (
-                <Paper
-                  key={service.value}
-                  shadow="md"
-                  radius="md"
-                  p="sm"
-                  withBorder
-                  style={{
-                    width: 250,
-                    height: 320,
-                    position: 'relative',
-                    borderColor: isSelected ? '#228be6' : undefined,
-                    borderWidth: isSelected ? 2 : undefined,
-                  }}
-                >
-                  <Stack gap="xs" style={{ height: '100%' }}>
-                    <Image
-                      src={service.image}
-                      alt={service.label}
-                      height={150}
-                      fit="cover"
+                <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
+                  {barOptions.map((bar) => (
+                    <Paper
+                      key={bar.value}
+                      shadow="md"
                       radius="md"
-                    />
-
-                    <Group justify="space-between" align="start" grow>
-                      <Box style={{ flex: 1 }}>
-                        <Text fw={600} size="sm">
-                          {service.label}
-                        </Text>
-                        <Text size="xs" c="dimmed">
-                          {service.price}
-                        </Text>
-                      </Box>
-
-                      <Button
-                        variant="subtle"
-                        color="gray"
-                        size="compact-sm"
-                        px={4}
-                        onClick={() => setModalService(service)}
-                      >
-                        <IconInfoCircle size={18} />
-                      </Button>
-                    </Group>
-
-                    <Button
-                      fullWidth
-                      variant={isSelected ? 'filled' : 'light'}
-                      onClick={() => toggleServiceSelection(service.value)}
-                      mt="auto"
+                      p="sm"
+                      withBorder
+                      style={{ textAlign: 'center' }}
                     >
-                      {isSelected ? 'Wybrano' : 'Wybierz'}
-                    </Button>
-                  </Stack>
-                </Paper>
-              );
-            })}
-          </Group>
-        </Box>
+                      <Image
+                        src={bar.image}
+                        alt={bar.label}
+                        height={150}
+                        fit="cover"
+                        radius="md"
+                        mb="sm"
+                      />
+                      <Text fw={500} mb="xs">
+                        {bar.label}
+                      </Text>
+                      <Button
+                        fullWidth
+                        variant={selectedBar === bar.value ? 'filled' : 'light'}
+                        onClick={(): void => handleBarSelect(bar.value)}
+                      >
+                        Wybierz
+                      </Button>
+                    </Paper>
+                  ))}
+                </SimpleGrid>
 
-        <Divider label="Dodatkowe informacje" labelPosition="center" />
+                <Box mt="xl" ta="center">
+                  <Button
+                    variant={selectedBar === 'no-bar' ? 'filled' : 'outline'}
+                    color="gray"
+                    onClick={handleSkip}
+                  >
+                    NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać
+                  </Button>
+                </Box>
+              </Box>
 
-        <Textarea
-          label="Uwagi, dodatkowe informacje"
-          placeholder="Napisz tutaj, jeśli masz dodatkowe informacje lub pytania..."
-          autosize
-          minRows={3}
-          value={notes}
-          onChange={(event): void => setNotes(event.currentTarget.value)}
-        />
+              <Divider label="Lokalizacja i liczba gości" labelPosition="center" />
 
-        <Button size="lg" mt="xl" fullWidth onClick={() => handleSubmit()}>
-          Wyślij formularz
-        </Button>
+              <TextInput
+                label="Kod pocztowy i miejscowość"
+                placeholder="np. 00-001 Warszawa"
+                value={venueLocation}
+                onChange={(e): void => setVenueLocation(e.currentTarget.value)}
+              />
 
-        <Space h={100} />
-      </Stack>
+              <NumberInput
+                label="Planowana liczba gości"
+                placeholder="np. 120"
+                value={numberOfGuests}
+                onChange={(value) => {
+                  if (typeof value === 'number' || value === '') {
+                    setNumberOfGuests(value);
+                  }
+                }}
+                min={0}
+              />
 
-      <Modal
-        opened={!!modalService}
-        onClose={() => setModalService(null)}
-        title={modalService?.label}
-        centered
-      >
-        <Text size="sm">{modalService?.description}</Text>
-      </Modal>
-    </Container>
+              {matchedRange && (
+                <Text size="sm" c="dimmed">
+                  Zostaniesz dopasowany do przedziału: <strong>do {matchedRange} osób</strong>
+                </Text>
+              )}
+
+              <Divider label="Wybór pakietu menu" labelPosition="center" />
+
+              <Box>
+                <Title order={3} ta="center" mb="md">
+                  Wybierz pakiet menu
+                </Title>
+
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
+                  {menuPackages.map((pkg) => (
+                    <Paper
+                      key={pkg.value}
+                      shadow="md"
+                      radius="md"
+                      p="sm"
+                      withBorder
+                      style={{ textAlign: 'center' }}
+                    >
+                      <Image
+                        src={pkg.thumbnail}
+                        alt={pkg.label}
+                        height={120}
+                        fit="cover"
+                        radius="md"
+                        mb="xs"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => window.open(pkg.pdfUrl, '_blank')}
+                      />
+                      <Text fw={500} mb="xs">
+                        {pkg.label}
+                      </Text>
+                      <Button
+                        fullWidth
+                        variant={selectedPackage === pkg.value ? 'filled' : 'light'}
+                        onClick={() => handlePackageSelect(pkg.value)}
+                      >
+                        WYBIERAM
+                      </Button>
+                    </Paper>
+                  ))}
+                </SimpleGrid>
+              </Box>
+
+              <Divider label="Usługi dodatkowe" labelPosition="center" />
+
+              <Box>
+                <Title order={3} ta="center" mb="md">
+                  Usługi dodatkowe
+                </Title>
+
+                <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
+                  {extraServices.map((service) => {
+                    const isSelected = selectedServices.includes(service.value);
+
+                    return (
+                      <Paper
+                        key={service.value}
+                        shadow="md"
+                        radius="md"
+                        p="sm"
+                        withBorder
+                        style={{
+                          height: 300,
+                          borderColor: isSelected ? '#228be6' : undefined,
+                          borderWidth: isSelected ? 2 : undefined,
+                        }}
+                      >
+                        <Stack gap="xs" style={{ height: '100%' }}>
+                          <Image
+                            src={service.image}
+                            alt={service.label}
+                            height={150}
+                            fit="cover"
+                            radius="md"
+                          />
+
+                          <Group justify="space-between" align="start">
+                            <Box>
+                              <Text fw={600} size="sm">
+                                {service.label}
+                              </Text>
+                              <Text size="xs" c="dimmed">
+                                {service.price}
+                              </Text>
+                            </Box>
+
+                            <Button
+                              variant="subtle"
+                              color="gray"
+                              size="compact-sm"
+                              px={4}
+                              ml="auto"
+                              onClick={() => setModalService(service)}
+                            >
+                              <IconInfoCircle size={18} />
+                            </Button>
+                          </Group>
+
+                          <Button
+                            fullWidth
+                            variant={isSelected ? 'filled' : 'light'}
+                            onClick={() => toggleServiceSelection(service.value)}
+                            mt="auto"
+                          >
+                            {isSelected ? 'Wybrano' : 'Wybierz'}
+                          </Button>
+                        </Stack>
+                      </Paper>
+                    );
+                  })}
+                </SimpleGrid>
+              </Box>
+
+              <Divider label="Dodatkowe informacje" labelPosition="center" />
+
+              <Textarea
+                name="notes"
+                label="Uwagi, dodatkowe informacje"
+                placeholder="Napisz tutaj, jeśli masz dodatkowe informacje lub pytania..."
+                autosize
+                minRows={3}
+                value={notes}
+                onChange={(event): void => setNotes(event.currentTarget.value)}
+              />
+
+              <Button size="lg" mt="xl" fullWidth onClick={handleSubmit}>
+                Wyślij formularz
+              </Button>
+            </>
+          )}
+
+          <Space h={100} />
+        </Stack>
+
+        <Modal
+          opened={!!modalService}
+          onClose={() => setModalService(null)}
+          title={modalService?.label}
+          centered
+        >
+          <Text size="sm">{modalService?.description}</Text>
+        </Modal>
+      </Container>
+    </PageLayout>
   );
 };
 
