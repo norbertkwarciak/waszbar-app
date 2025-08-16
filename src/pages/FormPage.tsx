@@ -38,7 +38,6 @@ const FormPage = (): React.JSX.Element => {
   );
 
   const [availability, setAvailability] = useState<AvailabilityEntry[]>([]);
-  console.log('🚀 ~ FormPage ~ availability:', availability);
   const [availabilityLoading, setAvailabilityLoading] = useState<boolean>(true);
 
   const [notes, setNotes] = useState<string>('');
