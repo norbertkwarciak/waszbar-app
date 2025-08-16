@@ -42,6 +42,7 @@ jobs:
         id: deploy-to-netlify
         with:
           publish-dir: './dist'
+          functions-dir: './netlify/functions'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: 'Manual production deploy from GitHub Actions'
