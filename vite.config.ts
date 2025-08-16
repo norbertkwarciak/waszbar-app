@@ -10,7 +10,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(packageJson.version),
   },
   server: {
-    open: true,
+    open: false,
     port: 5173,
   },
   plugins: [
