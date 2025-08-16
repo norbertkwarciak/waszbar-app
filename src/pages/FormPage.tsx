@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Box,
@@ -7,6 +7,7 @@ import {
   Divider,
   Group,
   Image,
+  Loader,
   Modal,
   NumberInput,
   Paper,
@@ -18,17 +19,27 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import dayjs from 'dayjs';
 import { DateInput } from '@mantine/dates';
 import { IconInfoCircle, IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
 import { extraServices, barOptions, menuPackages, guestRanges } from '../config/formConfig';
 import PageLayout from '../components/PageLayout';
 
+type AvailabilityEntry = {
+  date: string;
+  available: boolean;
+};
+
 const FormPage = (): React.JSX.Element => {
   const [dateString, setDateString] = useState<string | null>(null);
   const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
     null,
   );
+
+  const [availability, setAvailability] = useState<AvailabilityEntry[]>([]);
+  console.log('🚀 ~ FormPage ~ availability:', availability);
+  const [availabilityLoading, setAvailabilityLoading] = useState<boolean>(true);
 
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
@@ -38,23 +49,47 @@ const FormPage = (): React.JSX.Element => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
 
-  const checkDateAvailability = async (date: string): Promise<'available' | 'unavailable'> => {
-    setDateStatus('pending');
-    await new Promise((res) => setTimeout(res, 1500));
-
-    const unavailableDates = ['2025-09-01', '2025-08-31'];
-    return unavailableDates.includes(date) ? 'unavailable' : 'available';
+  const fetchAvailability = async (): Promise<void> => {
+    setAvailabilityLoading(true);
+    try {
+      const res = await fetch('/.netlify/functions/get-availability');
+      const data = await res.json();
+      setAvailability(data);
+    } catch (err) {
+      console.log('Failed to load availability:', err);
+      showNotification({
+        title: 'Błąd',
+        message: 'Nie udało się załadować dostępności terminów.',
+        color: 'red',
+        icon: <IconX size={18} />,
+      });
+    } finally {
+      setAvailabilityLoading(false);
+    }
   };
 
-  const handleDateChange = async (value: string | null): Promise<void> => {
+  useEffect(() => {
+    fetchAvailability();
+  }, []);
+
+  const handleDateChange = (value: string | null): void => {
     setDateString(value);
     if (!value) {
       setDateStatus(null);
       return;
     }
 
-    const status = await checkDateAvailability(value);
-    setDateStatus(status);
+    setDateStatus('pending');
+
+    const normalized = dayjs(value).format('YYYY-M-D');
+
+    const match = availability.find((entry) => entry.date === normalized);
+
+    if (match) {
+      setDateStatus(match.available ? 'available' : 'unavailable');
+    } else {
+      setDateStatus('unavailable');
+    }
   };
 
   const handleBarSelect = (barType: string): void => {
@@ -100,7 +135,7 @@ const FormPage = (): React.JSX.Element => {
       icon: <IconCheck size={18} />,
     });
 
-    // TODO: API call here
+    // TODO: Send data to backend or store
   };
 
   return (
@@ -117,24 +152,40 @@ const FormPage = (): React.JSX.Element => {
 
           <Title order={2}>Formularz</Title>
 
-          {/* Date Picker */}
-          <DateInput
-            label="Sprawdź termin"
-            placeholder="Wybierz datę"
-            value={dateString}
-            onChange={handleDateChange}
-            valueFormat="YYYY-MM-DD"
-            locale="pl"
-            withAsterisk
-            disabled={dateStatus === 'pending'}
-            minDate={new Date()}
-            leftSection={<IconCalendar size={18} />}
-            style={{ maxWidth: 250 }}
-          />
+          <Stack gap={4}>
+            <Text size="sm" fw={500}>
+              Sprawdź termin
+              <Text span c="red">
+                *
+              </Text>
+            </Text>
 
-          {/* Date status feedback */}
-          {dateStatus === 'pending' && (
-            <Text c="dimmed" size="sm">
+            <Group align="center" gap="sm" wrap="nowrap">
+              <DateInput
+                placeholder="Wybierz datę"
+                value={dateString}
+                onChange={handleDateChange}
+                valueFormat="YYYY-MM-DD"
+                locale="pl"
+                disabled={dateStatus === 'pending' || availabilityLoading}
+                minDate={new Date()}
+                leftSection={<IconCalendar size={18} />}
+                style={{ maxWidth: 250 }}
+              />
+
+              {availabilityLoading && (
+                <>
+                  <Loader size="xs" />
+                  <Text size="sm" c="dimmed">
+                    Ładowanie dostępnych terminów...
+                  </Text>
+                </>
+              )}
+            </Group>
+          </Stack>
+
+          {!availabilityLoading && dateStatus === 'pending' && (
+            <Text size="sm" c="dimmed">
               Sprawdzanie dostępności terminu...
             </Text>
           )}
@@ -145,7 +196,6 @@ const FormPage = (): React.JSX.Element => {
             </Text>
           )}
 
-          {/* Main form fields – only when available */}
           {dateStatus === 'available' && (
             <>
               <Divider label="Wybór baru" labelPosition="center" />

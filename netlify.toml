@@ -1,0 +1,8 @@
+[dev]
+  command = "vite"
+  port = 3000
+  targetPort = 5173
+  functions = "netlify/functions"
+
+[functions]
+  directory = "netlify/functions"
