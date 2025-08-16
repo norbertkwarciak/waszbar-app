@@ -1,9 +1,8 @@
 [build]
   command = "pnpm build"
-  functions = "netlify/functions"
 
 [functions]
-  directory = "netlify/dist-functions"
+  directory = "netlify/functions"
 
 [dev]
   command = "vite"
