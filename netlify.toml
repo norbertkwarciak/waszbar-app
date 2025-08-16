@@ -9,3 +9,8 @@
   targetPort = 5173         # Vite's default port
   port = 8888               # Netlify's proxy port
   functions = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
