@@ -1,7 +1,9 @@
 import { Button, Container, Image, Paper, Stack, Group } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import PageLayout from '../components/PageLayout';
+import PageLayout from '@/components/PageLayout';
+import { useTranslation } from 'react-i18next';
+import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 
 interface BarCardProps {
   image: string;
@@ -24,6 +26,8 @@ const BarCard = ({ image, alt, buttonText, to }: BarCardProps): React.JSX.Elemen
 };
 
 const HomePage = (): React.JSX.Element => {
+  const { t } = useTranslation();
+
   return (
     <PageLayout>
       <Container
@@ -38,14 +42,14 @@ const HomePage = (): React.JSX.Element => {
         <Group justify="center" gap="xl">
           <BarCard
             image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
-            alt="Wedding"
-            buttonText="Drink Bar Weselny"
+            alt={t(HOME_PAGE_TRANSLATIONS.weddingImageAlt)}
+            buttonText={t(HOME_PAGE_TRANSLATIONS.weddingButton)}
             to="/form/wedding"
           />
           <BarCard
             image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
-            alt="Event"
-            buttonText="Drink Bar Eventowy"
+            alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
+            buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
             to="/form/event"
           />
         </Group>
