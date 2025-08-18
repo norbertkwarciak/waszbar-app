@@ -1,0 +1,38 @@
+{
+  "homePage": {
+    "weddingButton": "Drink Bar Weselny",
+    "eventButton": "Drink Bar Eventowy",
+    "weddingImageAlt": "Wesele",
+    "eventImageAlt": "Event"
+  },
+  "formPage": {
+    "backToHome": "← Powrót do strony głównej",
+    "title": "Formularz",
+    "checkDateLabel": "Sprawdź termin",
+    "loadingAvailability": "Ładowanie dostępnych terminów...",
+    "checkingAvailability": "Sprawdzanie dostępności terminu...",
+    "dateUnavailable": "Termin zajęty, wybierz inny termin.",
+    "barSelectionTitle": "OFERUJEMY 3 ARANŻACJE BARU DO WYBORU",
+    "select": "Wybierz",
+    "skipBar": "NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać",
+    "locationLabel": "Kod pocztowy i miejscowość",
+    "locationPlaceholder": "np. 00-001 Warszawa",
+    "guestsLabel": "Planowana liczba gości",
+    "guestsPlaceholder": "np. 120",
+    "guestRangeText": "Zostaniesz dopasowany do przedziału: do {{range}} osób",
+    "menuSelectionTitle": "Wybierz pakiet menu",
+    "chooseMenu": "WYBIERAM",
+    "additionalServicesTitle": "Usługi dodatkowe",
+    "selectService": "Wybierz",
+    "selectedService": "Wybrano",
+    "additionalInfoLabel": "Uwagi, dodatkowe informacje",
+    "additionalInfoPlaceholder": "Napisz tutaj, jeśli masz dodatkowe informacje lub pytania...",
+    "submit": "Wyślij formularz",
+    "submitSuccessTitle": "Formularz wysłany!",
+    "submitSuccessMsg": "Dziękujemy za przesłanie formularza. Skontaktujemy się wkrótce.",
+    "submitErrorTitle": "Błąd",
+    "submitErrorMsg": "Uzupełnij wszystkie wymagane pola: data, lokalizacja, liczba gości.",
+    "availabilityErrorTitle": "Błąd",
+    "availabilityErrorMsg": "Nie udało się załadować dostępności terminów."
+  }
+}

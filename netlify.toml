@@ -6,9 +6,11 @@
 
 [dev]
   command = "vite"
-  targetPort = 5173         # Vite's default port
-  port = 8888               # Netlify's proxy port
+  framework = "#custom"
+  targetPort = 5173
+  port = 8888
   functions = "netlify/functions"
+  autoLaunch = true
 
 [[redirects]]
   from = "/*"

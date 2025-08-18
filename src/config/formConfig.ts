@@ -1,5 +1,3 @@
-// src/config/formConfig.ts
-
 export const extraServices = [
   {
     label: 'CIĘŻKI DYM NA PIERWSZY TANIEC',

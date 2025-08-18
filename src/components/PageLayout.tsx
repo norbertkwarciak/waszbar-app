@@ -1,6 +1,6 @@
 import { Box, Image } from '@mantine/core';
 import { ReactNode } from 'react';
-import logo from '../assets/logo.png';
+import logo from '@/assets/logo.png';
 
 interface PageLayoutProps {
   children: ReactNode;
