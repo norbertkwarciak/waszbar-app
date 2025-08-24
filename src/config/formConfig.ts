@@ -1,8 +1,16 @@
+import imageWhiteClassicWedding from '@/assets/FOTO_BAR_BIAŁY_KLASYCZNY_WESELNY.jpg';
+import imageBlackGlamour from '@/assets/FOTO_BAR_CZARNY_GLAMOUR.jpeg';
+import imageRustic from '@/assets/FOTO_BAR_RUSTYKALNY.jpg';
+import imageClouds from '@/assets/FOTO_TANIEC_W_CHMURACH.png';
+import imageJagermeister from '@/assets/FOTO_JAGERMEISTER_TAP.jpg';
+import imageJackDaniels from '@/assets/FOTO_JACK_DANIELS_TAP.jpeg';
+import imageGranitor from '@/assets/FOTO_GRANITOR.png';
+
 export const extraServices = [
   {
     label: 'CIĘŻKI DYM NA PIERWSZY TANIEC',
     price: '450 PLN',
-    image: 'https://placehold.co/300x180?text=Ciężki+Dym',
+    image: imageClouds,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin bibendum commodo elit.',
     value: 'smoke',
@@ -10,7 +18,7 @@ export const extraServices = [
   {
     label: 'PAKIET JAGERMEISTER',
     price: '250 PLN',
-    image: 'https://placehold.co/300x180?text=Jagermeister',
+    image: imageJagermeister,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae.',
     value: 'jager',
@@ -18,7 +26,7 @@ export const extraServices = [
   {
     label: 'PAKIET JACK DANIEL FIRE',
     price: '250 PLN',
-    image: 'https://placehold.co/300x180?text=Jack+Daniel+Fire',
+    image: imageJackDaniels,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempus sapien in elit.',
     value: 'jack',
@@ -26,7 +34,7 @@ export const extraServices = [
   {
     label: 'COCKTAILS SUPER COLD – GRANITOR -13°',
     price: '450 PLN',
-    image: 'https://placehold.co/300x180?text=Super+Cold+Granitor',
+    image: imageGranitor,
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque cursus est vel ex efficitur.',
     value: 'granitor',
@@ -36,17 +44,17 @@ export const extraServices = [
 export const barOptions = [
   {
     label: 'BIAŁY KLASYCZNY WESELNY',
-    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac',
+    image: imageWhiteClassicWedding,
     value: 'white-classic',
   },
   {
     label: 'CZARNY GLAMOUR',
-    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac',
+    image: imageBlackGlamour,
     value: 'black-glamour',
   },
   {
     label: 'RUSTYKALNY',
-    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac',
+    image: imageRustic,
     value: 'rustic',
   },
 ];

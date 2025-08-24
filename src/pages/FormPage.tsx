@@ -223,7 +223,7 @@ const FormPage = (): React.JSX.Element => {
                     <Image
                       src={bar.image}
                       alt={bar.label}
-                      height={150}
+                      height={250}
                       fit="cover"
                       radius="md"
                       mb="sm"
@@ -335,7 +335,7 @@ const FormPage = (): React.JSX.Element => {
                       p="sm"
                       withBorder
                       style={{
-                        height: 300,
+                        // height: 500,
                         borderColor: isSelected ? '#228be6' : undefined,
                         borderWidth: isSelected ? 2 : undefined,
                       }}
@@ -344,7 +344,7 @@ const FormPage = (): React.JSX.Element => {
                         <Image
                           src={service.image}
                           alt={service.label}
-                          height={150}
+                          height={350}
                           fit="cover"
                           radius="md"
                         />

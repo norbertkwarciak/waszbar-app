@@ -4,6 +4,8 @@ import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import imageWedding from '@/assets/FOTO_DRINKBAR_NA_WESELE.jpg';
+import imageEvent from '@/assets/FOTO_DRINKBAR_NA_EVENT.jpg';
 
 interface BarCardProps {
   image: string;
@@ -14,9 +16,9 @@ interface BarCardProps {
 
 const BarCard = ({ image, alt, buttonText, to }: BarCardProps): React.JSX.Element => {
   return (
-    <Paper shadow="md" radius="md" p="md" withBorder w={300} ta="center">
+    <Paper shadow="md" radius="md" p="md" withBorder w={500} ta="center">
       <Stack align="center">
-        <Image src={image} alt={alt} height={200} fit="cover" radius="md" />
+        <Image src={image} alt={alt} height={400} fit="cover" radius="md" />
         <Button component={Link} to={to} size="lg" fullWidth>
           {buttonText}
         </Button>
@@ -41,13 +43,13 @@ const HomePage = (): React.JSX.Element => {
       >
         <Group justify="center" gap="xl">
           <BarCard
-            image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
+            image={imageWedding}
             alt={t(HOME_PAGE_TRANSLATIONS.weddingImageAlt)}
             buttonText={t(HOME_PAGE_TRANSLATIONS.weddingButton)}
             to="/form/wedding"
           />
           <BarCard
-            image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac"
+            image={imageEvent}
             alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
             buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
             to="/form/event"
