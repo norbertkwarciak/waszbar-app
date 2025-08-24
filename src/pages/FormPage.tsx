@@ -33,6 +33,11 @@ type AvailabilityEntry = {
   available: boolean;
 };
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+const phoneBasicRegex = /^\+?[0-9\s().-]{7,}$/;
+
+const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
+
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
 
@@ -51,6 +56,34 @@ const FormPage = (): React.JSX.Element => {
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
+
+  // NEW: contact fields + errors
+  const [fullName, setFullName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [phone, setPhone] = useState<string>('');
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
+  const validateEmail = (value: string): string | null => {
+    const v = value.trim();
+
+    if (!v) return t(FORM_PAGE_TRANSLATIONS.emailValidationRequired);
+    if (!emailRegex.test(v)) return t(FORM_PAGE_TRANSLATIONS.emailValidationInvalid);
+
+    return null;
+  };
+
+  const validatePhone = (value: string): string | null => {
+    const v = value.trim();
+
+    if (!v) return t(FORM_PAGE_TRANSLATIONS.phoneValidationRequired);
+    if (!phoneBasicRegex.test(v)) return t(FORM_PAGE_TRANSLATIONS.phoneValidationInvalid);
+
+    const digits = countDigits(v);
+    if (digits < 9 || digits > 15) return t(FORM_PAGE_TRANSLATIONS.phoneValidationLength);
+
+    return null;
+  };
 
   const fetchAvailability = async (): Promise<void> => {
     setAvailabilityLoading(true);
@@ -129,7 +162,12 @@ const FormPage = (): React.JSX.Element => {
   };
 
   const handleSubmit = (): void => {
-    if (!dateString || !numberOfGuests || !venueLocation) {
+    const emailErr = validateEmail(email);
+    const phoneErr = validatePhone(phone);
+    setEmailError(emailErr);
+    setPhoneError(phoneErr);
+
+    if (!dateString || !numberOfGuests || !venueLocation || emailErr || phoneErr) {
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.submitErrorTitle),
         message: t(FORM_PAGE_TRANSLATIONS.submitErrorMsg),
@@ -146,7 +184,7 @@ const FormPage = (): React.JSX.Element => {
       icon: <IconCheck size={18} />,
     });
 
-    // TODO: Send data to backend
+    // TODO: Send data to backend, including email and phone
   };
 
   return (
@@ -259,6 +297,7 @@ const FormPage = (): React.JSX.Element => {
                 placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
                 value={venueLocation}
                 onChange={(e) => setVenueLocation(e.currentTarget.value)}
+                withAsterisk
               />
 
               <NumberInput
@@ -271,6 +310,7 @@ const FormPage = (): React.JSX.Element => {
                   }
                 }}
                 min={0}
+                withAsterisk
               />
 
               {matchedRange && (
@@ -335,7 +375,6 @@ const FormPage = (): React.JSX.Element => {
                       p="sm"
                       withBorder
                       style={{
-                        // height: 500,
                         borderColor: isSelected ? '#228be6' : undefined,
                         borderWidth: isSelected ? 2 : undefined,
                       }}
@@ -402,6 +441,47 @@ const FormPage = (): React.JSX.Element => {
                 value={notes}
                 onChange={(event) => setNotes(event.currentTarget.value)}
               />
+
+              <Divider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} labelPosition="center" />
+
+              <TextInput
+                label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
+                required
+                value={fullName}
+                onChange={(e) => {
+                  setFullName(e.currentTarget.value);
+                }}
+              />
+
+              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+                <TextInput
+                  label={t(FORM_PAGE_TRANSLATIONS.emailLabel)}
+                  placeholder={t(FORM_PAGE_TRANSLATIONS.emailPlaceholder)}
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.currentTarget.value);
+                    setEmailError(validateEmail(e.currentTarget.value));
+                  }}
+                  onBlur={(e) => setEmailError(validateEmail(e.currentTarget.value))}
+                  error={emailError || undefined}
+                />
+                <TextInput
+                  label={t(FORM_PAGE_TRANSLATIONS.phoneLabel)}
+                  placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.currentTarget.value);
+                    setPhoneError(validatePhone(e.currentTarget.value));
+                  }}
+                  onBlur={(e) => setPhoneError(validatePhone(e.currentTarget.value))}
+                  error={phoneError || undefined}
+                />
+              </SimpleGrid>
 
               <Button size="lg" mt="xl" fullWidth onClick={handleSubmit}>
                 {t(FORM_PAGE_TRANSLATIONS.submit)}

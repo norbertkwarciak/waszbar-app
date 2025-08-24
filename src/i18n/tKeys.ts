@@ -29,6 +29,18 @@ export interface PageTranslations {
     selectedService: string;
     additionalInfoLabel: string;
     additionalInfoPlaceholder: string;
+    contactTitle: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    emailValidationRequired: string;
+    emailValidationInvalid: string;
+    phoneLabel: string;
+    phonePlaceholder: string;
+    phoneValidationRequired: string;
+    phoneValidationInvalid: string;
+    phoneValidationLength: string;
     submit: string;
     submitSuccessTitle: string;
     submitSuccessMsg: string;
