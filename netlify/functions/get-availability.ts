@@ -23,10 +23,9 @@ const handler: Handler = async () => {
       return { statusCode: 200, body: JSON.stringify([]) };
     }
 
-    const data = rows.map(([date, status]) => ({
-      date,
-      available: status?.toLowerCase() === 'tak',
-    }));
+    const data = rows
+      .filter(([date, status]) => status?.toLowerCase() === 'tak' && date)
+      .map(([date]) => date);
 
     return { statusCode: 200, body: JSON.stringify(data) };
   } catch (error) {

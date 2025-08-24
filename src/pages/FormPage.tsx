@@ -56,10 +56,19 @@ const FormPage = (): React.JSX.Element => {
     setAvailabilityLoading(true);
     try {
       const res = await fetch('/.netlify/functions/get-availability');
-      const data = await res.json();
-      setAvailability(data);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const raw: unknown = await res.json();
+
+      const mapped: AvailabilityEntry[] = Array.isArray(raw)
+        ? raw
+            .filter((d): d is string => typeof d === 'string' && d.trim().length > 0)
+            .map((date) => ({ date, available: true }))
+        : [];
+
+      setAvailability(mapped);
     } catch (err) {
-      console.log('Failed to load availability:', err);
+      console.error('Failed to load availability:', err);
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.availabilityErrorTitle),
         message: t(FORM_PAGE_TRANSLATIONS.availabilityErrorMsg),
