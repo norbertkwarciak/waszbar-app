@@ -26,10 +26,10 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
-import { env } from '@/core/config/env';
 import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
 import BarOptionBox from '@/components/BarOptionBox';
+import { useAvailability } from '@/core/queries/useAvailability';
 
 const PACKAGE_AVAILABLE_RANGES: Record<string, number[]> = {
   basic: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
@@ -61,11 +61,6 @@ const computeIntendedRange = (guests: number | ''): number | null => {
   return baseRanges.find((r) => n <= r) ?? baseRanges[baseRanges.length - 1];
 };
 
-type AvailabilityEntry = {
-  date: string;
-  available: boolean;
-};
-
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const phoneBasicRegex = /^\+?[0-9\s().-]{7,}$/;
 
@@ -82,8 +77,11 @@ const FormPage = (): React.JSX.Element => {
     null,
   );
 
-  const [availability, setAvailability] = useState<AvailabilityEntry[]>([]);
-  const [availabilityLoading, setAvailabilityLoading] = useState<boolean>(true);
+  const {
+    data: availability = [],
+    isLoading: availabilityLoading,
+    error: availabilityError,
+  } = useAvailability();
 
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
@@ -123,37 +121,16 @@ const FormPage = (): React.JSX.Element => {
     return null;
   };
 
-  const fetchAvailability = async (): Promise<void> => {
-    setAvailabilityLoading(true);
-    try {
-      const res = await fetch(env.netlify.functions.getAvailability);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const raw: unknown = await res.json();
-
-      const mapped: AvailabilityEntry[] = Array.isArray(raw)
-        ? raw
-            .filter((d): d is string => typeof d === 'string' && d.trim().length > 0)
-            .map((date) => ({ date, available: true }))
-        : [];
-
-      setAvailability(mapped);
-    } catch (err) {
-      console.error('Failed to load availability:', err);
+  useEffect(() => {
+    if (availabilityError) {
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.availabilityErrorTitle),
         message: t(FORM_PAGE_TRANSLATIONS.availabilityErrorMsg),
         color: 'red',
         icon: <IconX size={18} />,
       });
-    } finally {
-      setAvailabilityLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchAvailability();
-  }, []);
+  }, [availabilityError, t]);
 
   useEffect(() => {
     if (!dateString || availability.length === 0) return;
