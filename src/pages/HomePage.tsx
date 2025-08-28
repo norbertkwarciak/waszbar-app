@@ -1,4 +1,4 @@
-import { Button, Container, Image, Paper, Stack, Group } from '@mantine/core';
+import { Container, Image, Paper, Stack, Group, Button } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
@@ -16,7 +16,28 @@ interface BarCardProps {
 
 const BarCard = ({ image, alt, buttonText, to }: BarCardProps): React.JSX.Element => {
   return (
-    <Paper shadow="md" radius="md" p="md" withBorder w={500} ta="center">
+    <Paper
+      component={Link}
+      to={to}
+      shadow="md"
+      radius="md"
+      p="md"
+      withBorder
+      w={500}
+      ta="center"
+      style={{
+        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+        textDecoration: 'none',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'none';
+        e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
+      }}
+    >
       <Stack align="center">
         <Image src={image} alt={alt} height={400} fit="cover" radius="md" />
         <Button component={Link} to={to} size="lg" fullWidth>

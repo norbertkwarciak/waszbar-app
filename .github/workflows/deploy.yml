@@ -1,30 +1,40 @@
 name: Deploy to Netlify
 
 on:
+  # Enable either workflow_dispatch (manual) or push to main
+  workflow_dispatch:
   # push:
   #   branches:
   #     - main
-  workflow_dispatch:
 
 jobs:
   test:
+    name: Run Tests
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-env
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM environment
+        uses: ./.github/actions/setup-pnpm-env
 
       - name: Run unit tests
         run: pnpm test -- --run
 
   deploy:
+    name: Deploy to Netlify
     runs-on: ubuntu-22.04
     needs: test
     environment:
       name: 'production'
       url: ${{ steps.deploy-to-netlify.outputs.deploy-url }}
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-pnpm-env
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PNPM environment
+        uses: ./.github/actions/setup-pnpm-env
 
       - name: Lint code
         run: pnpm lint

@@ -1,5 +1,4 @@
-import { Box, Button, Group, Image, Paper, Text } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Box, Button, Image, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
@@ -30,36 +29,53 @@ export default function MenuPackageBox({
 
   return (
     <Box style={isFullWidth ? { gridColumn: '1 / -1' } : {}}>
-      <Paper shadow="md" radius="md" p="sm" withBorder style={{ textAlign: 'center' }}>
-        <Image
-          src={pkg.thumbnail}
-          alt={pkg.label}
-          height={120}
-          fit="cover"
-          radius="md"
-          mb="xs"
-          style={{ cursor: 'pointer' }}
-        />
+      <Paper
+        component="button"
+        type="button"
+        onClick={onOpenModal}
+        shadow="md"
+        radius="md"
+        p="sm"
+        withBorder
+        style={{
+          display: 'block',
+          width: '100%',
+          textAlign: 'center',
+          cursor: 'pointer',
+          transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-2px)';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'none';
+          e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
+        }}
+      >
+        <Stack gap="xs">
+          <Image
+            src={pkg.thumbnail}
+            alt={pkg.label}
+            height={120}
+            fit="cover"
+            radius="md"
+            style={{ pointerEvents: 'none' }}
+          />
 
-        <Group justify="space-between" align="start" mb="xs">
           <Text fw={500}>{pkg.label}</Text>
 
           <Button
-            variant="subtle"
-            color="gray"
-            size="compact-sm"
-            px={4}
-            ml="auto"
-            onClick={onOpenModal}
-            aria-label="Show package details"
+            fullWidth
+            variant={isSelected ? 'filled' : 'light'}
+            onClick={(e) => {
+              e.stopPropagation(); // prevent parent onClick
+              onSelect();
+            }}
           >
-            <IconInfoCircle size={18} />
+            {t(FORM_PAGE_TRANSLATIONS.chooseMenu)}
           </Button>
-        </Group>
-
-        <Button fullWidth variant={isSelected ? 'filled' : 'light'} onClick={onSelect}>
-          {t(FORM_PAGE_TRANSLATIONS.chooseMenu)}
-        </Button>
+        </Stack>
       </Paper>
     </Box>
   );
