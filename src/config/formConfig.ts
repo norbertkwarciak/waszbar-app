@@ -11,32 +11,28 @@ export const extraServices = [
     label: 'CIĘŻKI DYM NA PIERWSZY TANIEC',
     price: '450 PLN',
     image: imageClouds,
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin bibendum commodo elit.',
+    description: 'formPage.extraServicesDescriptions.smoke',
     value: 'smoke',
   },
   {
     label: 'PAKIET JAGERMEISTER',
     price: '250 PLN',
     image: imageJagermeister,
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia odio vitae.',
+    description: 'formPage.extraServicesDescriptions.jager',
     value: 'jager',
   },
   {
     label: 'PAKIET JACK DANIEL FIRE',
     price: '250 PLN',
     image: imageJackDaniels,
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tempus sapien in elit.',
+    description: 'formPage.extraServicesDescriptions.jack',
     value: 'jack',
   },
   {
     label: 'COCKTAILS SUPER COLD – GRANITOR -13°',
-    price: '450 PLN',
+    price: '750 PLN',
     image: imageGranitor,
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque cursus est vel ex efficitur.',
+    description: 'formPage.extraServicesDescriptions.granitor',
     value: 'granitor',
   },
 ];
@@ -64,26 +60,30 @@ export const menuPackages = [
     label: 'PAKIET BASIC',
     value: 'basic',
     thumbnail: 'https://placehold.co/200x120?text=Basic',
-    pdfUrl: '/pdfs/basic.pdf',
+    description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
     label: 'PAKIET MEDIUM',
     value: 'medium',
     thumbnail: 'https://placehold.co/200x120?text=Medium',
-    pdfUrl: '/pdfs/medium.pdf',
+    description: 'formPage.menuPackagesDescriptions.medium',
   },
   {
     label: 'PAKIET MAX',
     value: 'max',
     thumbnail: 'https://placehold.co/200x120?text=Max',
-    pdfUrl: '/pdfs/max.pdf',
+    description: 'formPage.menuPackagesDescriptions.max',
   },
   {
     label: 'PAKIET KLASYCZNY',
     value: 'classic',
     thumbnail: 'https://placehold.co/200x120?text=Klasyczny',
-    pdfUrl: '/pdfs/classic.pdf',
+    description: 'formPage.menuPackagesDescriptions.classic',
+  },
+  {
+    label: 'PAKIET EXCELLENT',
+    value: 'excellent',
+    thumbnail: 'https://placehold.co/200x120?text=Excellent',
+    description: 'formPage.menuPackagesDescriptions.excellent',
   },
 ];
-
-export const guestRanges = [100, 120, 150, 180, 200, 250, 300, 400];

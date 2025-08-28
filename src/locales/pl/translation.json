@@ -7,7 +7,7 @@
   },
   "formPage": {
     "backToHome": "← Powrót do strony głównej",
-    "title": "Formularz",
+    "title": "Wybierz swoją ofertę",
     "checkDateLabel": "Sprawdź termin",
     "loadingAvailability": "Ładowanie dostępnych terminów...",
     "checkingAvailability": "Sprawdzanie dostępności terminu...",
@@ -19,7 +19,6 @@
     "locationPlaceholder": "np. 00-001 Warszawa",
     "guestsLabel": "Planowana liczba gości",
     "guestsPlaceholder": "np. 120",
-    "guestRangeText": "Zostaniesz dopasowany do przedziału: do {{range}} osób",
     "menuSelectionTitle": "Wybierz pakiet menu",
     "chooseMenu": "WYBIERAM",
     "additionalServicesTitle": "Usługi dodatkowe",
@@ -45,6 +44,22 @@
     "submitErrorTitle": "Błąd",
     "submitErrorMsg": "Uzupełnij wszystkie wymagane pola: data, lokalizacja, liczba gości.",
     "availabilityErrorTitle": "Błąd",
-    "availabilityErrorMsg": "Nie udało się załadować dostępności terminów."
+    "availabilityErrorMsg": "Nie udało się załadować dostępności terminów.",
+    "openInNewTab": "Otwórz w nowej karcie",
+
+    "extraServicesDescriptions": {
+      "smoke": "Pierwszy taniec to chyba najważniejszy punkt wesela :) Dzięki naszej profesjonalnej wytwornicy ciężkiego dymu, dodamy temu wydarzeniu prawdziwy efekt WoW.",
+      "jager": "Nasza maszyna do Jagermeistra, która robi wrażenie, zaciekawia gościa i przede wszystkim podaje wspaniale zmrożonego Jagera. Ta maszyna to strzał w 10 na każdym weselu.",
+      "jack": "Coraz częściej goście piją whisky na shoty. Nie na lodzie, nie z colą. Taki sposób cieszenia się whisky powoli przychodzi i do Polski. Nasza maszyna do Jacka Danielsa na pewno ucieszy gości kochających whiskey filtrowany przez węgiel drzewny :)",
+      "granitor": "Całkowita nowość na polskim rynku weselnym. Doskonale zmrożone koktajle do -13°C, bez udziału lodu. niesamowity Por*star Martini, pyszne owocowe Margarity. Zaskocz swoich gości nowym standardem serwowania Waszych ulubionych koktajli :)"
+    },
+
+    "menuPackagesDescriptions": {
+      "basic": "Nasze podstawowe, oparte o wódce, ginie i pakiecie wermutów. Jeżeli nie chca Państwo, aby Wasi gości mieszali, to pakiet dla Was. Koktajle na suchym lodzie w cenie, koktajle 0% w cenie (Mojito Virgin, koktajle owocowe).",
+      "medium": "Średni pakiet menu rozszerzony o koktajle na rumie, Jagermeistrze, tequili. Dzięki większemu asortymentowi półproduktów do koktajli, produktów świeżych, owoców, cytrusów, barmani będą mieli większe możliwości w kreowaniu drinków na życzenie ;) Koktajle na suchym lodzie w cenie, koktajle 0% w cenie.",
+      "max": "Menu MAX to “solidny koktajl bar na wysokim poziomie” na Waszym weselu. 12 koktajli w menu i dziesiątki możliwych do podania drinków alkoholowych i 0%. tutaj kady znajdzie coś dla siebie. Drinki w stylu weselnym i dużo klasycznych koktajli. Koktajle na suchym lodzie w cenie, koktajle 0% w cenie.",
+      "classic": "Pakiet koktajli klasycznych to zbiór znanych, cenionych i lubianych drinków alkoholowych i 0%. tutaj garni koktajlowe to zesty, cytrusy, suszone owoce i dużo ziół. minimalizm i elegancja. Bardzo popularne menu na wesela, które mają formę eleganckiego przyjęcia i garden party. Koktajle 0% w cenie.",
+      "excellent": "Menu dla Par młodych wymagających “czegoś innego”. Excellent to pakiet koktajli wzorowany na koktajlach klasycznych, twz twistów, w większości naszego autorstwa. Oprócz koktajli w karcie menu goście będa mogli, napić się standardowych koktajli klasycznych i drinków 0%. W cenie menu Exellent wliczony jest GRANITOR z 50 porcjami koktajlu Por*star Martini!!!"
+    }
   }
 }

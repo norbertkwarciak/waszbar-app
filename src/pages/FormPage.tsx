@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   Box,
   Button,
   Container,
   Divider,
   Group,
-  Image,
   Loader,
   Modal,
   NumberInput,
-  Paper,
   SimpleGrid,
   Space,
   Stack,
@@ -20,13 +18,48 @@ import {
   Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconInfoCircle, IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
+import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { extraServices, barOptions, menuPackages, guestRanges } from '@/config/formConfig';
+import { extraServices, barOptions, menuPackages } from '@/config/formConfig';
 import PageLayout from '@/components/PageLayout';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
+import { env } from '@/config/env';
+import ExtraServiceBox from '@/components/ExtraServiceBox';
+import MenuPackageBox from '@/components/MenuPackageBox';
+import BarOptionBox from '@/components/BarOptionBox';
+
+const PACKAGE_AVAILABLE_RANGES: Record<string, number[]> = {
+  basic: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
+  medium: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
+  max: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
+  classic: [50, 100, 120, 150, 180, 200, 250, 300],
+  excellent: [50, 100, 120, 150, 180, 200],
+};
+
+const pickClosestAvailableRange = (target: number, avail: number[]): number => {
+  let best = avail[0];
+  let bestDiff = Math.abs(avail[0] - target);
+  for (let i = 1; i < avail.length; i++) {
+    const d = Math.abs(avail[i] - target);
+    if (d < bestDiff || (d === bestDiff && avail[i] > best)) {
+      best = avail[i];
+      bestDiff = d;
+    }
+  }
+  return best;
+};
+
+const computeIntendedRange = (guests: number | ''): number | null => {
+  if (guests === '' || isNaN(Number(guests))) return null;
+  const n = Number(guests);
+  if (n <= 50) return 50;
+
+  const baseRanges = [100, 120, 130, 150, 180, 200, 250, 300, 400];
+  return baseRanges.find((r) => n <= r) ?? baseRanges[baseRanges.length - 1];
+};
 
 type AvailabilityEntry = {
   date: string;
@@ -41,7 +74,10 @@ const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
 
-  const [dateString, setDateString] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const dateFromUrl = searchParams.get('date');
+  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
+
   const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
     null,
   );
@@ -52,12 +88,14 @@ const FormPage = (): React.JSX.Element => {
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
   const [venueLocation, setVenueLocation] = useState<string>('');
-  const [numberOfGuests, setNumberOfGuests] = useState<number | ''>('');
+  const [numberOfGuests, setNumberOfGuests] = useState<number | ''>(100);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
+  const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
 
-  // NEW: contact fields + errors
+  const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
+
   const [fullName, setFullName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -88,7 +126,7 @@ const FormPage = (): React.JSX.Element => {
   const fetchAvailability = async (): Promise<void> => {
     setAvailabilityLoading(true);
     try {
-      const res = await fetch('/.netlify/functions/get-availability');
+      const res = await fetch(env.netlify.functions.getAvailability);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
       const raw: unknown = await res.json();
@@ -117,8 +155,30 @@ const FormPage = (): React.JSX.Element => {
     fetchAvailability();
   }, []);
 
+  useEffect(() => {
+    if (!dateString || availability.length === 0) return;
+
+    const normalized = dayjs(dateString).format('YYYY-M-D');
+    const match = availability.find((entry) => entry.date === normalized);
+
+    if (match) {
+      setDateStatus(match.available ? 'available' : 'unavailable');
+    } else {
+      setDateStatus('unavailable');
+    }
+  }, [availability, dateString]);
+
   const handleDateChange = (value: string | null): void => {
     setDateString(value);
+
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set('date', value);
+    } else {
+      newParams.delete('date');
+    }
+    setSearchParams(newParams);
+
     if (!value) {
       setDateStatus(null);
       return;
@@ -143,13 +203,6 @@ const FormPage = (): React.JSX.Element => {
   const handleSkip = (): void => {
     setSelectedBar('no-bar');
   };
-
-  const getClosestGuestRange = (count: number): number | null => {
-    return guestRanges.find((limit) => count <= limit) || null;
-  };
-
-  const matchedRange =
-    typeof numberOfGuests === 'number' ? getClosestGuestRange(numberOfGuests) : null;
 
   const handlePackageSelect = (value: string): void => {
     setSelectedPackage(value);
@@ -185,6 +238,29 @@ const FormPage = (): React.JSX.Element => {
     });
 
     // TODO: Send data to backend, including email and phone
+  };
+
+  const openPackageModal = (pkg: (typeof menuPackages)[0]): void => {
+    const intended = computeIntendedRange(numberOfGuests);
+    setModalPackage(pkg);
+
+    if (!intended) {
+      setPackagePdfUrl(null);
+      return;
+    }
+
+    const avail = PACKAGE_AVAILABLE_RANGES[pkg.value] ?? [];
+    const resolvedRange = avail.length ? pickClosestAvailableRange(intended, avail) : intended;
+
+    const fileName = buildPdfFileName(pkg.value, resolvedRange);
+    const url = getPdfUrl(fileName);
+
+    if (!url) {
+      setPackagePdfUrl(null);
+      return;
+    }
+
+    setPackagePdfUrl(url);
   };
 
   return (
@@ -250,33 +326,12 @@ const FormPage = (): React.JSX.Element => {
 
               <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
                 {barOptions.map((bar) => (
-                  <Paper
+                  <BarOptionBox
                     key={bar.value}
-                    shadow="md"
-                    radius="md"
-                    p="sm"
-                    withBorder
-                    style={{ textAlign: 'center' }}
-                  >
-                    <Image
-                      src={bar.image}
-                      alt={bar.label}
-                      height={250}
-                      fit="cover"
-                      radius="md"
-                      mb="sm"
-                    />
-                    <Text fw={500} mb="xs">
-                      {bar.label}
-                    </Text>
-                    <Button
-                      fullWidth
-                      variant={selectedBar === bar.value ? 'filled' : 'light'}
-                      onClick={() => handleBarSelect(bar.value)}
-                    >
-                      {t(FORM_PAGE_TRANSLATIONS.select)}
-                    </Button>
-                  </Paper>
+                    option={bar}
+                    isSelected={selectedBar === bar.value}
+                    onSelect={() => handleBarSelect(bar.value)}
+                  />
                 ))}
               </SimpleGrid>
 
@@ -313,48 +368,21 @@ const FormPage = (): React.JSX.Element => {
                 withAsterisk
               />
 
-              {matchedRange && (
-                <Text size="sm" c="dimmed">
-                  {t(FORM_PAGE_TRANSLATIONS.guestRangeText, { range: matchedRange })}
-                </Text>
-              )}
-
               <Divider
                 label={t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}
                 labelPosition="center"
               />
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
-                {menuPackages.map((pkg) => (
-                  <Paper
+                {menuPackages.map((pkg, index) => (
+                  <MenuPackageBox
                     key={pkg.value}
-                    shadow="md"
-                    radius="md"
-                    p="sm"
-                    withBorder
-                    style={{ textAlign: 'center' }}
-                  >
-                    <Image
-                      src={pkg.thumbnail}
-                      alt={pkg.label}
-                      height={120}
-                      fit="cover"
-                      radius="md"
-                      mb="xs"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => window.open(pkg.pdfUrl, '_blank')}
-                    />
-                    <Text fw={500} mb="xs">
-                      {pkg.label}
-                    </Text>
-                    <Button
-                      fullWidth
-                      variant={selectedPackage === pkg.value ? 'filled' : 'light'}
-                      onClick={() => handlePackageSelect(pkg.value)}
-                    >
-                      {t(FORM_PAGE_TRANSLATIONS.chooseMenu)}
-                    </Button>
-                  </Paper>
+                    pkg={pkg}
+                    isSelected={selectedPackage === pkg.value}
+                    onSelect={() => handlePackageSelect(pkg.value)}
+                    onOpenModal={() => openPackageModal(pkg)}
+                    isFullWidth={index === menuPackages.length - 1}
+                  />
                 ))}
               </SimpleGrid>
 
@@ -368,62 +396,13 @@ const FormPage = (): React.JSX.Element => {
                   const isSelected = selectedServices.includes(service.value);
 
                   return (
-                    <Paper
+                    <ExtraServiceBox
                       key={service.value}
-                      shadow="md"
-                      radius="md"
-                      p="sm"
-                      withBorder
-                      style={{
-                        borderColor: isSelected ? '#228be6' : undefined,
-                        borderWidth: isSelected ? 2 : undefined,
-                      }}
-                    >
-                      <Stack gap="xs" style={{ height: '100%' }}>
-                        <Image
-                          src={service.image}
-                          alt={service.label}
-                          height={350}
-                          fit="cover"
-                          radius="md"
-                        />
-
-                        <Group justify="space-between" align="start">
-                          <Box>
-                            <Text fw={600} size="sm">
-                              {service.label}
-                            </Text>
-                            <Text size="xs" c="dimmed">
-                              {service.price}
-                            </Text>
-                          </Box>
-
-                          <Button
-                            variant="subtle"
-                            color="gray"
-                            size="compact-sm"
-                            px={4}
-                            ml="auto"
-                            onClick={() => setModalService(service)}
-                          >
-                            <IconInfoCircle size={18} />
-                          </Button>
-                        </Group>
-
-                        <Button
-                          fullWidth
-                          variant={isSelected ? 'filled' : 'light'}
-                          onClick={() => toggleServiceSelection(service.value)}
-                          mt="auto"
-                        >
-                          {t(
-                            isSelected
-                              ? FORM_PAGE_TRANSLATIONS.selectedService
-                              : FORM_PAGE_TRANSLATIONS.selectService,
-                          )}
-                        </Button>
-                      </Stack>
-                    </Paper>
+                      service={service}
+                      isSelected={isSelected}
+                      onToggle={() => toggleServiceSelection(service.value)}
+                      onOpenModal={() => setModalService(service)}
+                    />
                   );
                 })}
               </SimpleGrid>
@@ -495,10 +474,49 @@ const FormPage = (): React.JSX.Element => {
         <Modal
           opened={!!modalService}
           onClose={() => setModalService(null)}
-          title={modalService?.label}
+          title={
+            <Text fw="bold" size="lg">
+              {modalService ? modalService.label : null}
+            </Text>
+          }
           centered
         >
-          <Text size="sm">{modalService?.description}</Text>
+          <Text size="sm">{modalService ? t(modalService.description) : null}</Text>
+        </Modal>
+
+        <Modal
+          opened={!!modalPackage}
+          onClose={() => {
+            setModalPackage(null);
+            setPackagePdfUrl(null);
+          }}
+          title={
+            <Text fw="bold" size="lg">
+              {modalPackage ? t(modalPackage.label) : null}
+            </Text>
+          }
+          centered
+          size="xl"
+        >
+          <Text size="sm" mb="sm">
+            {modalPackage ? t(modalPackage.description) : null}
+          </Text>
+
+          {packagePdfUrl && (
+            <iframe
+              src={packagePdfUrl}
+              style={{ width: '100%', height: '60vh', border: 'none' }}
+              title="Oferta PDF"
+            />
+          )}
+
+          {packagePdfUrl && (
+            <Group mt="sm" justify="flex-end">
+              <Button component="a" href={packagePdfUrl} target="_blank" rel="noopener noreferrer">
+                {t(FORM_PAGE_TRANSLATIONS.openInNewTab)}
+              </Button>
+            </Group>
+          )}
         </Modal>
       </Container>
     </PageLayout>

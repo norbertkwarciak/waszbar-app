@@ -21,7 +21,6 @@ export interface PageTranslations {
     locationPlaceholder: string;
     guestsLabel: string;
     guestsPlaceholder: string;
-    guestRangeText: string;
     menuSelectionTitle: string;
     chooseMenu: string;
     additionalServicesTitle: string;
@@ -48,6 +47,20 @@ export interface PageTranslations {
     submitErrorMsg: string;
     availabilityErrorTitle: string;
     availabilityErrorMsg: string;
+    openInNewTab: string;
+    extraServicesDescriptions: {
+      smoke: string;
+      jager: string;
+      jack: string;
+      granitor: string;
+    };
+    menuPackagesDescriptions: {
+      basic: string;
+      medium: string;
+      max: string;
+      classic: string;
+      excellent: string;
+    };
   };
 }
 
