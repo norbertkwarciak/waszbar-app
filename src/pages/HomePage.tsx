@@ -4,7 +4,7 @@ import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
-import { IMAGES } from '@/config/assets';
+import { IMAGES } from '@/core/config/assets';
 
 interface BarCardProps {
   image: string;

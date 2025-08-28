@@ -20,13 +20,13 @@ import {
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { extraServices, barOptions, menuPackages } from '@/config/options';
+import { extraServices, barOptions, menuPackages } from '@/core/config/options';
 import PageLayout from '@/components/PageLayout';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
-import { env } from '@/config/env';
+import { env } from '@/core/config/env';
 import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
 import BarOptionBox from '@/components/BarOptionBox';

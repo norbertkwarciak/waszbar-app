@@ -1,4 +1,4 @@
-import { env } from '@/config/env';
+import { env } from '@/core/config/env';
 
 export const IMAGES = {
   drinkBarWedding: `${env.s3.assetsUrl}/FOTO_DRINKBAR_NA_WESELE.jpg`,

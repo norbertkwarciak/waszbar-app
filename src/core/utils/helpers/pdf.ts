@@ -1,4 +1,4 @@
-import { env } from '@/config/env';
+import { env } from '@/core/config/env';
 
 const PACKAGE_FILE_TOKEN: Record<string, string> = {
   basic: 'BASIC',

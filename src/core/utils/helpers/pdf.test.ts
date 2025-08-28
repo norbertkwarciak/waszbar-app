@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { getPdfUrl } from '.';
 
-vi.mock('@/config/env', () => ({
+vi.mock('@/core/config/env', () => ({
   env: {
     s3: {
       pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs/',
@@ -22,7 +22,7 @@ describe('getPdfUrl', () => {
 
   it('removes trailing slashes from base URL', async () => {
     vi.resetModules();
-    vi.doMock('@/config/env', () => ({
+    vi.doMock('@/core/config/env', () => ({
       env: {
         s3: {
           pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs///',
@@ -39,7 +39,7 @@ describe('getPdfUrl', () => {
 
   it('returns null if base URL is empty', async () => {
     vi.resetModules();
-    vi.doMock('@/config/env', () => ({
+    vi.doMock('@/core/config/env', () => ({
       env: {
         s3: {
           pdfsUrl: '',
