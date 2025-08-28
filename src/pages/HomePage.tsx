@@ -1,11 +1,10 @@
-import { Container, Image, Paper, Stack, Group, Button } from '@mantine/core';
+import { Container, Image, Paper, Stack, Group, Box } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
-import imageWedding from '@/assets/FOTO_DRINKBAR_NA_WESELE.jpg';
-import imageEvent from '@/assets/FOTO_DRINKBAR_NA_EVENT.jpg';
+import { IMAGES } from '@/config/assets';
 
 interface BarCardProps {
   image: string;
@@ -40,9 +39,24 @@ const BarCard = ({ image, alt, buttonText, to }: BarCardProps): React.JSX.Elemen
     >
       <Stack align="center">
         <Image src={image} alt={alt} height={400} fit="cover" radius="md" />
-        <Button component={Link} to={to} size="lg" fullWidth>
+        <Box
+          mt="sm"
+          px="md"
+          py="sm"
+          w="100%"
+          style={{
+            borderRadius: 'var(--mantine-radius-default)',
+            backgroundColor: 'var(--mantine-color-primary-filled)',
+            color: 'white',
+            fontWeight: 500,
+            fontSize: '16px',
+            textAlign: 'center',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+          }}
+        >
           {buttonText}
-        </Button>
+        </Box>
       </Stack>
     </Paper>
   );
@@ -64,13 +78,13 @@ const HomePage = (): React.JSX.Element => {
       >
         <Group justify="center" gap="xl">
           <BarCard
-            image={imageWedding}
+            image={IMAGES.drinkBarWedding}
             alt={t(HOME_PAGE_TRANSLATIONS.weddingImageAlt)}
             buttonText={t(HOME_PAGE_TRANSLATIONS.weddingButton)}
             to="/form/wedding"
           />
           <BarCard
-            image={imageEvent}
+            image={IMAGES.drinkBarEvent}
             alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
             buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
             to="/form/event"

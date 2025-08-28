@@ -4,5 +4,8 @@ export const env = {
       getAvailability: '/.netlify/functions/get-availability',
     },
   },
-  s3Url: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/pdfs',
+  s3: {
+    assetsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets',
+    pdfsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/pdfs',
+  },
 };

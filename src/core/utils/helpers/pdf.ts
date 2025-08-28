@@ -16,7 +16,7 @@ export const buildPdfFileName = (pkgValue: string, range: number): string => {
 };
 
 export const getPdfUrl = (fileName: string): string | null => {
-  const base = env.s3Url.replace(/\/+$/, '');
+  const base = env.s3.pdfsUrl.replace(/\/+$/, '');
   if (!base) return null;
 
   const normalized = fileName.normalize('NFD');

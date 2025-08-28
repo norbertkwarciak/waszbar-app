@@ -20,7 +20,7 @@ import {
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { extraServices, barOptions, menuPackages } from '@/config/formConfig';
+import { extraServices, barOptions, menuPackages } from '@/config/options';
 import PageLayout from '@/components/PageLayout';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';

@@ -28,8 +28,6 @@ export default function ExtraServiceBox({
 
   return (
     <Paper
-      component="button"
-      type="button"
       onClick={onOpenModal}
       shadow="md"
       radius="md"

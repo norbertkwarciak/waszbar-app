@@ -1,37 +1,31 @@
-import imageWhiteClassicWedding from '@/assets/FOTO_BAR_BIAŁY_KLASYCZNY_WESELNY.jpg';
-import imageBlackGlamour from '@/assets/FOTO_BAR_CZARNY_GLAMOUR.jpeg';
-import imageRustic from '@/assets/FOTO_BAR_RUSTYKALNY.jpg';
-import imageClouds from '@/assets/FOTO_TANIEC_W_CHMURACH.png';
-import imageJagermeister from '@/assets/FOTO_JAGERMEISTER_TAP.jpg';
-import imageJackDaniels from '@/assets/FOTO_JACK_DANIELS_TAP.jpeg';
-import imageGranitor from '@/assets/FOTO_GRANITOR.png';
+import { IMAGES } from './assets';
 
 export const extraServices = [
   {
     label: 'CIĘŻKI DYM NA PIERWSZY TANIEC',
     price: '450 PLN',
-    image: imageClouds,
+    image: IMAGES.clouds,
     description: 'formPage.extraServicesDescriptions.smoke',
     value: 'smoke',
   },
   {
     label: 'PAKIET JAGERMEISTER',
     price: '250 PLN',
-    image: imageJagermeister,
+    image: IMAGES.jagermeister,
     description: 'formPage.extraServicesDescriptions.jager',
     value: 'jager',
   },
   {
     label: 'PAKIET JACK DANIEL FIRE',
     price: '250 PLN',
-    image: imageJackDaniels,
+    image: IMAGES.jackDaniels,
     description: 'formPage.extraServicesDescriptions.jack',
     value: 'jack',
   },
   {
     label: 'COCKTAILS SUPER COLD – GRANITOR -13°',
     price: '750 PLN',
-    image: imageGranitor,
+    image: IMAGES.granitor,
     description: 'formPage.extraServicesDescriptions.granitor',
     value: 'granitor',
   },
@@ -40,17 +34,17 @@ export const extraServices = [
 export const barOptions = [
   {
     label: 'BIAŁY KLASYCZNY WESELNY',
-    image: imageWhiteClassicWedding,
+    image: IMAGES.whiteClassicWedding,
     value: 'white-classic',
   },
   {
     label: 'CZARNY GLAMOUR',
-    image: imageBlackGlamour,
+    image: IMAGES.blackGlamour,
     value: 'black-glamour',
   },
   {
     label: 'RUSTYKALNY',
-    image: imageRustic,
+    image: IMAGES.rustic,
     value: 'rustic',
   },
 ];

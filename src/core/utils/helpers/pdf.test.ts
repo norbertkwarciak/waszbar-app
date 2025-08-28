@@ -3,7 +3,9 @@ import { getPdfUrl } from '.';
 
 vi.mock('@/config/env', () => ({
   env: {
-    s3Url: 'https://bucket.s3.region.amazonaws.com/pdfs/',
+    s3: {
+      pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs/',
+    },
   },
 }));
 
@@ -13,7 +15,6 @@ describe('getPdfUrl', () => {
 
     const result = getPdfUrl(fileName);
 
-    // Use the actual normalized and encoded output
     expect(result).toEqual(
       'https://bucket.s3.region.amazonaws.com/pdfs/Waszbar.pl+oferta+MEDIUM+do+150+gos%CC%81ci.pdf',
     );
@@ -23,7 +24,9 @@ describe('getPdfUrl', () => {
     vi.resetModules();
     vi.doMock('@/config/env', () => ({
       env: {
-        s3Url: 'https://bucket.s3.region.amazonaws.com/pdfs///',
+        s3: {
+          pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs///',
+        },
       },
     }));
     const { getPdfUrl: getPdfUrlWithTrailing } = await import('.');
@@ -38,7 +41,9 @@ describe('getPdfUrl', () => {
     vi.resetModules();
     vi.doMock('@/config/env', () => ({
       env: {
-        s3Url: '',
+        s3: {
+          pdfsUrl: '',
+        },
       },
     }));
     const { getPdfUrl: getPdfUrlEmpty } = await import('.');

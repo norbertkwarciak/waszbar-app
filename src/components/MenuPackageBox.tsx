@@ -30,8 +30,6 @@ export default function MenuPackageBox({
   return (
     <Box style={isFullWidth ? { gridColumn: '1 / -1' } : {}}>
       <Paper
-        component="button"
-        type="button"
         onClick={onOpenModal}
         shadow="md"
         radius="md"
