@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { env } from '@/core/config/env';
 
-export type AvailabilityEntry = {
-  date: string;
-  available: boolean;
+export type AvailabilityResponse = {
+  takenDates: string[];
+  lastCheckedDate: string | null;
 };
 
-const fetchAvailability = async (): Promise<AvailabilityEntry[]> => {
+const fetchAvailability = async (): Promise<AvailabilityResponse> => {
   const res = await fetch(env.netlify.functions.getAvailability);
 
   if (!res.ok) {
@@ -15,18 +15,24 @@ const fetchAvailability = async (): Promise<AvailabilityEntry[]> => {
 
   const raw: unknown = await res.json();
 
-  if (!Array.isArray(raw)) return [];
+  if (
+    typeof raw === 'object' &&
+    raw !== null &&
+    'takenDates' in raw &&
+    'lastCheckedDate' in raw &&
+    Array.isArray(raw.takenDates)
+  ) {
+    return {
+      takenDates: raw.takenDates.filter((d: unknown): d is string => typeof d === 'string'),
+      lastCheckedDate: typeof raw.lastCheckedDate === 'string' ? raw.lastCheckedDate : null,
+    };
+  }
 
-  return raw
-    .filter((d): d is string => typeof d === 'string' && d.trim().length > 0)
-    .map((date) => ({
-      date,
-      available: true,
-    }));
+  return { takenDates: [], lastCheckedDate: null };
 };
 
-export const useAvailability = (): ReturnType<typeof useQuery<AvailabilityEntry[]>> => {
-  return useQuery<AvailabilityEntry[]>({
+export const useAvailability = (): ReturnType<typeof useQuery<AvailabilityResponse>> => {
+  return useQuery<AvailabilityResponse>({
     queryKey: ['availability'],
     queryFn: fetchAvailability,
     staleTime: 1000 * 60 * 5,

@@ -20,19 +20,32 @@ const handler: Handler = async () => {
 
     const rows = response.data.values;
     if (!rows || rows.length === 0) {
-      return { statusCode: 200, body: JSON.stringify([]) };
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ takenDates: [], lastCheckedDate: null }),
+      };
     }
 
-    const data = rows
-      .filter(([date, status]) => status?.toLowerCase() === 'tak' && date)
+    const dataRows = rows.slice(1);
+
+    const takenDates = dataRows
+      .filter(([date, status]) => status?.toLowerCase() === 'nie' && date)
       .map(([date]) => date);
 
-    return { statusCode: 200, body: JSON.stringify(data) };
+    const lastRowWithDate = [...dataRows].reverse().find(([date]) => date);
+    const lastCheckedDate = lastRowWithDate ? lastRowWithDate[0] : null;
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ takenDates, lastCheckedDate }),
+    };
   } catch (error) {
     console.error('Error fetching spreadsheet:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      body: JSON.stringify({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
     };
   }
 };

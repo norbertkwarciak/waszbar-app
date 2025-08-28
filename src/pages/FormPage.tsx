@@ -71,17 +71,17 @@ const FormPage = (): React.JSX.Element => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const dateFromUrl = searchParams.get('date');
-  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
 
+  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
   const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
     null,
   );
 
-  const {
-    data: availability = [],
-    isLoading: availabilityLoading,
-    error: availabilityError,
-  } = useAvailability();
+  const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
+
+  const takenDates = data?.takenDates ?? [];
+  const lastCheckedDate = data?.lastCheckedDate ?? null;
+  const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
@@ -91,9 +91,7 @@ const FormPage = (): React.JSX.Element => {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
-
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
-
   const [fullName, setFullName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -133,27 +131,22 @@ const FormPage = (): React.JSX.Element => {
   }, [availabilityError, t]);
 
   useEffect(() => {
-    if (!dateString || availability.length === 0) return;
+    if (!dateString || takenDates?.length === 0) return;
 
     const normalized = dayjs(dateString).format('YYYY-M-D');
-    const match = availability.find((entry) => entry.date === normalized);
+    const match = takenDates.find((entry: string) => entry === normalized);
 
-    if (match) {
-      setDateStatus(match.available ? 'available' : 'unavailable');
-    } else {
-      setDateStatus('unavailable');
-    }
-  }, [availability, dateString]);
+    if (match) setDateStatus('unavailable');
+    else setDateStatus('available');
+  }, [takenDates, dateString]);
 
   const handleDateChange = (value: string | null): void => {
     setDateString(value);
 
     const newParams = new URLSearchParams(searchParams);
-    if (value) {
-      newParams.set('date', value);
-    } else {
-      newParams.delete('date');
-    }
+    if (value) newParams.set('date', value);
+    else newParams.delete('date');
+
     setSearchParams(newParams);
 
     if (!value) {
@@ -164,13 +157,10 @@ const FormPage = (): React.JSX.Element => {
     setDateStatus('pending');
 
     const normalized = dayjs(value).format('YYYY-M-D');
-    const match = availability.find((entry) => entry.date === normalized);
+    const match = takenDates?.find((entry: string) => entry === normalized);
 
-    if (match) {
-      setDateStatus(match.available ? 'available' : 'unavailable');
-    } else {
-      setDateStatus('unavailable');
-    }
+    if (match) setDateStatus('unavailable');
+    else setDateStatus('available');
   };
 
   const handleBarSelect = (barType: string): void => {
@@ -270,6 +260,7 @@ const FormPage = (): React.JSX.Element => {
                 locale="pl"
                 disabled={dateStatus === 'pending' || availabilityLoading}
                 minDate={new Date()}
+                maxDate={lastCheckedDateObj ?? undefined}
                 leftSection={<IconCalendar size={18} />}
                 style={{ maxWidth: 250 }}
               />
