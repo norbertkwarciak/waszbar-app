@@ -45,15 +45,10 @@ export interface PageTranslations {
     submitSuccessMsg: string;
     submitErrorTitle: string;
     submitErrorMsg: string;
-    availabilityErrorTitle: string;
-    availabilityErrorMsg: string;
+    dataFetchErrorTitle: string;
+    dataFetchErrorMsg: string;
     openInNewTab: string;
-    extraServicesDescriptions: {
-      smoke: string;
-      jager: string;
-      jack: string;
-      granitor: string;
-    };
+
     menuPackagesDescriptions: {
       basic: string;
       medium: string;

@@ -2,13 +2,13 @@ import { Box, Button, Image, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
+import { IMAGES } from '@/core/config/assets';
 
 type ExtraService = {
+  price: number;
   label: string;
-  price: string;
-  image: string;
+  id: string;
   description: string;
-  value: string;
 };
 
 interface ExtraServiceBoxProps {
@@ -53,7 +53,7 @@ export default function ExtraServiceBox({
     >
       <Stack gap="xs" style={{ height: '100%' }}>
         <Image
-          src={service.image}
+          src={IMAGES[service.id as keyof typeof IMAGES] ?? IMAGES.logo}
           alt={service.label}
           height={350}
           fit="cover"
@@ -66,7 +66,7 @@ export default function ExtraServiceBox({
             {service.label}
           </Text>
           <Text size="xs" c="dimmed">
-            {service.price}
+            {service.price} PLN
           </Text>
         </Box>
 

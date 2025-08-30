@@ -1,7 +1,21 @@
-export const env = {
+type Env = {
+  netlify: {
+    functions: {
+      getAvailability: string;
+      getOffer: string;
+    };
+  };
+  s3: {
+    assetsUrl: string;
+    pdfsUrl: string;
+  };
+};
+
+export const env: Env = {
   netlify: {
     functions: {
       getAvailability: '/.netlify/functions/get-availability',
+      getOffer: '/.netlify/functions/get-offer',
     },
   },
   s3: {

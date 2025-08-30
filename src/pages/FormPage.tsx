@@ -20,7 +20,7 @@ import {
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { extraServices, barOptions, menuPackages } from '@/core/config/options';
+import { barOptions, menuPackages } from '@/core/config/options';
 import PageLayout from '@/components/PageLayout';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -30,36 +30,8 @@ import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
 import BarOptionBox from '@/components/BarOptionBox';
 import { useAvailability } from '@/core/queries/useAvailability';
-
-const PACKAGE_AVAILABLE_RANGES: Record<string, number[]> = {
-  basic: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
-  medium: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
-  max: [50, 100, 120, 130, 150, 180, 200, 250, 300, 350, 400],
-  classic: [50, 100, 120, 150, 180, 200, 250, 300],
-  excellent: [50, 100, 120, 150, 180, 200],
-};
-
-const pickClosestAvailableRange = (target: number, avail: number[]): number => {
-  let best = avail[0];
-  let bestDiff = Math.abs(avail[0] - target);
-  for (let i = 1; i < avail.length; i++) {
-    const d = Math.abs(avail[i] - target);
-    if (d < bestDiff || (d === bestDiff && avail[i] > best)) {
-      best = avail[i];
-      bestDiff = d;
-    }
-  }
-  return best;
-};
-
-const computeIntendedRange = (guests: number | ''): number | null => {
-  if (guests === '' || isNaN(Number(guests))) return null;
-  const n = Number(guests);
-  if (n <= 50) return 50;
-
-  const baseRanges = [100, 120, 130, 150, 180, 200, 250, 300, 400];
-  return baseRanges.find((r) => n <= r) ?? baseRanges[baseRanges.length - 1];
-};
+import { useOffer } from '@/core/queries/useOffer';
+import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const phoneBasicRegex = /^\+?[0-9\s().-]{7,}$/;
@@ -78,6 +50,10 @@ const FormPage = (): React.JSX.Element => {
   );
 
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
+  const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
+
+  const extraServices = offerData?.extraServices ?? [];
+  const rangesMap = offerData ? buildAvailableRanges(offerData.menuPackages) : null;
 
   const takenDates = data?.takenDates ?? [];
   const lastCheckedDate = data?.lastCheckedDate ?? null;
@@ -120,15 +96,15 @@ const FormPage = (): React.JSX.Element => {
   };
 
   useEffect(() => {
-    if (availabilityError) {
+    if (availabilityError || offerError) {
       showNotification({
-        title: t(FORM_PAGE_TRANSLATIONS.availabilityErrorTitle),
-        message: t(FORM_PAGE_TRANSLATIONS.availabilityErrorMsg),
+        title: t(FORM_PAGE_TRANSLATIONS.dataFetchErrorTitle),
+        message: t(FORM_PAGE_TRANSLATIONS.dataFetchErrorMsg),
         color: 'red',
         icon: <IconX size={18} />,
       });
     }
-  }, [availabilityError, t]);
+  }, [availabilityError, offerError, t]);
 
   useEffect(() => {
     if (!dateString || takenDates?.length === 0) return;
@@ -184,6 +160,7 @@ const FormPage = (): React.JSX.Element => {
   const handleSubmit = (): void => {
     const emailErr = validateEmail(email);
     const phoneErr = validatePhone(phone);
+
     setEmailError(emailErr);
     setPhoneError(phoneErr);
 
@@ -208,26 +185,24 @@ const FormPage = (): React.JSX.Element => {
   };
 
   const openPackageModal = (pkg: (typeof menuPackages)[0]): void => {
-    const intended = computeIntendedRange(numberOfGuests);
     setModalPackage(pkg);
 
-    if (!intended) {
+    if (numberOfGuests === '' || isNaN(Number(numberOfGuests))) {
       setPackagePdfUrl(null);
       return;
     }
 
-    const avail = PACKAGE_AVAILABLE_RANGES[pkg.value] ?? [];
-    const resolvedRange = avail.length ? pickClosestAvailableRange(intended, avail) : intended;
+    const availableRanges = rangesMap?.[pkg.value];
+    if (!availableRanges?.length) {
+      setPackagePdfUrl(null);
+      return;
+    }
 
+    const resolvedRange = pickAvailableOrMaxRange(Number(numberOfGuests), availableRanges);
     const fileName = buildPdfFileName(pkg.value, resolvedRange);
     const url = getPdfUrl(fileName);
 
-    if (!url) {
-      setPackagePdfUrl(null);
-      return;
-    }
-
-    setPackagePdfUrl(url);
+    setPackagePdfUrl(url ?? null);
   };
 
   return (
@@ -265,7 +240,7 @@ const FormPage = (): React.JSX.Element => {
                 style={{ maxWidth: 250 }}
               />
 
-              {availabilityLoading && (
+              {availabilityLoading && offerLoading && (
                 <>
                   <Loader size="xs" />
                   <Text size="sm" c="dimmed">
@@ -275,12 +250,6 @@ const FormPage = (): React.JSX.Element => {
               )}
             </Group>
           </Stack>
-
-          {!availabilityLoading && dateStatus === 'pending' && (
-            <Text size="sm" c="dimmed">
-              {t(FORM_PAGE_TRANSLATIONS.checkingAvailability)}
-            </Text>
-          )}
 
           {dateStatus === 'unavailable' && (
             <Text c="red" size="sm">
@@ -361,14 +330,14 @@ const FormPage = (): React.JSX.Element => {
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
                 {extraServices.map((service) => {
-                  const isSelected = selectedServices.includes(service.value);
+                  const isSelected = selectedServices.includes(service.id);
 
                   return (
                     <ExtraServiceBox
-                      key={service.value}
+                      key={service.id}
                       service={service}
                       isSelected={isSelected}
-                      onToggle={() => toggleServiceSelection(service.value)}
+                      onToggle={() => toggleServiceSelection(service.id)}
                       onOpenModal={() => setModalService(service)}
                     />
                   );

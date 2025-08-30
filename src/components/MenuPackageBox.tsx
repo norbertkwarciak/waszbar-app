@@ -2,13 +2,7 @@ import { Box, Button, Image, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
-
-type MenuPackage = {
-  label: string;
-  value: string;
-  thumbnail: string;
-  description: string;
-};
+import type { MenuPackage } from '@/types';
 
 interface MenuPackageBoxProps {
   pkg: MenuPackage;
@@ -67,7 +61,7 @@ export default function MenuPackageBox({
             fullWidth
             variant={isSelected ? 'filled' : 'light'}
             onClick={(e) => {
-              e.stopPropagation(); // prevent parent onClick
+              e.stopPropagation();
               onSelect();
             }}
           >

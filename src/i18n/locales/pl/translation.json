@@ -43,16 +43,9 @@
     "submitSuccessMsg": "Dziękujemy za przesłanie formularza. Skontaktujemy się wkrótce.",
     "submitErrorTitle": "Błąd",
     "submitErrorMsg": "Uzupełnij wszystkie wymagane pola: data, lokalizacja, liczba gości.",
-    "availabilityErrorTitle": "Błąd",
-    "availabilityErrorMsg": "Nie udało się załadować dostępności terminów.",
+    "dataFetchErrorTitle": "Błąd",
+    "dataFetchErrorMsg": "Nie udało się załadować dostępności terminów.",
     "openInNewTab": "Otwórz w nowej karcie",
-
-    "extraServicesDescriptions": {
-      "smoke": "Pierwszy taniec to chyba najważniejszy punkt wesela :) Dzięki naszej profesjonalnej wytwornicy ciężkiego dymu, dodamy temu wydarzeniu prawdziwy efekt WoW.",
-      "jager": "Nasza maszyna do Jagermeistra, która robi wrażenie, zaciekawia gościa i przede wszystkim podaje wspaniale zmrożonego Jagera. Ta maszyna to strzał w 10 na każdym weselu.",
-      "jack": "Coraz częściej goście piją whisky na shoty. Nie na lodzie, nie z colą. Taki sposób cieszenia się whisky powoli przychodzi i do Polski. Nasza maszyna do Jacka Danielsa na pewno ucieszy gości kochających whiskey filtrowany przez węgiel drzewny :)",
-      "granitor": "Całkowita nowość na polskim rynku weselnym. Doskonale zmrożone koktajle do -13°C, bez udziału lodu. niesamowity Por*star Martini, pyszne owocowe Margarity. Zaskocz swoich gości nowym standardem serwowania Waszych ulubionych koktajli :)"
-    },
 
     "menuPackagesDescriptions": {
       "basic": "Nasze podstawowe, oparte o wódce, ginie i pakiecie wermutów. Jeżeli nie chca Państwo, aby Wasi gości mieszali, to pakiet dla Was. Koktajle na suchym lodzie w cenie, koktajle 0% w cenie (Mojito Virgin, koktajle owocowe).",

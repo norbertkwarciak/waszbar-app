@@ -1,35 +1,5 @@
 import { IMAGES } from './assets';
-
-export const extraServices = [
-  {
-    label: 'CIĘŻKI DYM NA PIERWSZY TANIEC',
-    price: '450 PLN',
-    image: IMAGES.clouds,
-    description: 'formPage.extraServicesDescriptions.smoke',
-    value: 'smoke',
-  },
-  {
-    label: 'PAKIET JAGERMEISTER',
-    price: '250 PLN',
-    image: IMAGES.jagermeister,
-    description: 'formPage.extraServicesDescriptions.jager',
-    value: 'jager',
-  },
-  {
-    label: 'PAKIET JACK DANIEL FIRE',
-    price: '250 PLN',
-    image: IMAGES.jackDaniels,
-    description: 'formPage.extraServicesDescriptions.jack',
-    value: 'jack',
-  },
-  {
-    label: 'COCKTAILS SUPER COLD – GRANITOR -13°',
-    price: '750 PLN',
-    image: IMAGES.granitor,
-    description: 'formPage.extraServicesDescriptions.granitor',
-    value: 'granitor',
-  },
-];
+import { MenuPackageType } from '@/types';
 
 export const barOptions = [
   {
@@ -52,31 +22,31 @@ export const barOptions = [
 export const menuPackages = [
   {
     label: 'PAKIET BASIC',
-    value: 'basic',
+    value: MenuPackageType.BASIC,
     thumbnail: 'https://placehold.co/200x120?text=Basic',
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
     label: 'PAKIET MEDIUM',
-    value: 'medium',
+    value: MenuPackageType.MEDIUM,
     thumbnail: 'https://placehold.co/200x120?text=Medium',
     description: 'formPage.menuPackagesDescriptions.medium',
   },
   {
     label: 'PAKIET MAX',
-    value: 'max',
+    value: MenuPackageType.MAX,
     thumbnail: 'https://placehold.co/200x120?text=Max',
     description: 'formPage.menuPackagesDescriptions.max',
   },
   {
     label: 'PAKIET KLASYCZNY',
-    value: 'classic',
+    value: MenuPackageType.KLASYCZNY,
     thumbnail: 'https://placehold.co/200x120?text=Klasyczny',
     description: 'formPage.menuPackagesDescriptions.classic',
   },
   {
     label: 'PAKIET EXCELLENT',
-    value: 'excellent',
+    value: MenuPackageType.EXCELLENT,
     thumbnail: 'https://placehold.co/200x120?text=Excellent',
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
