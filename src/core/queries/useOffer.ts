@@ -89,7 +89,7 @@ export const useOffer = (): ReturnType<typeof useQuery<OfferResponse>> => {
   return useQuery<OfferResponse>({
     queryKey: ['offer'],
     queryFn: fetchOffer,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 1,
     refetchOnWindowFocus: false,
   });
 };

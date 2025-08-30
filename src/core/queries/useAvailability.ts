@@ -35,7 +35,7 @@ export const useAvailability = (): ReturnType<typeof useQuery<AvailabilityRespon
   return useQuery<AvailabilityResponse>({
     queryKey: ['availability'],
     queryFn: fetchAvailability,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 1,
     refetchOnWindowFocus: false,
   });
 };
