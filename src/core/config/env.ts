@@ -19,7 +19,7 @@ export const env: Env = {
       getOffer: '/.netlify/functions/get-offer',
     },
   },
-  ownerEmail: 'waszbar.barmani@gmail.com',
+  ownerEmail: 'biuro@waszbar.pl',
   s3: {
     assetsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets',
     pdfsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/pdfs',
