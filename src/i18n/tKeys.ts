@@ -48,6 +48,7 @@ export interface PageTranslations {
     dataFetchErrorTitle: string;
     dataFetchErrorMsg: string;
     openInNewTab: string;
+    guestsExceedRangeMessage: string;
 
     menuPackagesDescriptions: {
       basic: string;

@@ -46,6 +46,7 @@
     "dataFetchErrorTitle": "Błąd",
     "dataFetchErrorMsg": "Nie udało się załadować dostępności terminów.",
     "openInNewTab": "Otwórz w nowej karcie",
+    "guestsExceedRangeMessage": "Zapytania w sprawie wesel oraz eventów z pakietem {{menuPackage}} dla liczby gości przekraczającej {{maxGuests}} prosimy kierować na adres <1>{{email}}</1> w celu przygotowania dla Państwa indywidualnej oferty.",
 
     "menuPackagesDescriptions": {
       "basic": "Nasze podstawowe, oparte o wódce, ginie i pakiecie wermutów. Jeżeli nie chca Państwo, aby Wasi gości mieszali, to pakiet dla Was. Koktajle na suchym lodzie w cenie, koktajle 0% w cenie (Mojito Virgin, koktajle owocowe).",

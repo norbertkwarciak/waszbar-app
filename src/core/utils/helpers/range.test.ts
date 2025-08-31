@@ -79,43 +79,53 @@ const mockMenuPackages = [
 const PACKAGE_AVAILABLE_RANGES = buildAvailableRanges(mockMenuPackages);
 
 describe('pickAvailableOrMaxRange with dynamic PACKAGE_AVAILABLE_RANGES', () => {
-  it('returns correct range for basic package and target 180', () => {
+  it('returns exact match if available (basic - 180)', () => {
     const result = pickAvailableOrMaxRange(180, PACKAGE_AVAILABLE_RANGES.basic);
     expect(result).toBe(180);
   });
 
-  it('returns closest lower for medium package and target 190', () => {
+  it('returns closest higher (medium - 190 → 200)', () => {
     const result = pickAvailableOrMaxRange(190, PACKAGE_AVAILABLE_RANGES.medium);
-    expect(result).toBe(180);
+    expect(result).toBe(200);
   });
 
-  it('returns exact match for max package and target 300', () => {
+  it('returns exact match (max - 300)', () => {
     const result = pickAvailableOrMaxRange(300, PACKAGE_AVAILABLE_RANGES.max);
     expect(result).toBe(300);
   });
 
-  it('returns closest lower for klasyczny and target 400 (exceeds max)', () => {
+  it('returns max range if guest count exceeds all (klasyczny - 400 → 300)', () => {
     const result = pickAvailableOrMaxRange(400, PACKAGE_AVAILABLE_RANGES.klasyczny);
-    expect(result).toBe(300); // max in klasyczny is 300
+    expect(result).toBe(300);
   });
 
-  it('returns exact match for excellent and target 150', () => {
+  it('returns exact match (excellent - 150)', () => {
     const result = pickAvailableOrMaxRange(150, PACKAGE_AVAILABLE_RANGES.excellent);
     expect(result).toBe(150);
   });
 
-  it('returns first available value when target is too low (e.g. 40)', () => {
+  it('returns lowest available value when target is too low (excellent - 40 → 50)', () => {
     const result = pickAvailableOrMaxRange(40, PACKAGE_AVAILABLE_RANGES.excellent);
-    expect(result).toBe(50); // min value in excellent
+    expect(result).toBe(50);
   });
 
-  it('returns max available value when target exceeds all ranges (excellent)', () => {
+  it('returns max available value when target exceeds all (excellent - 400 → 200)', () => {
     const result = pickAvailableOrMaxRange(400, PACKAGE_AVAILABLE_RANGES.excellent);
-    expect(result).toBe(200); // max value in excellent
+    expect(result).toBe(200);
   });
 
-  it('returns max available value when target exceeds all ranges (klasyczny)', () => {
-    const result = pickAvailableOrMaxRange(400, PACKAGE_AVAILABLE_RANGES.klasyczny);
-    expect(result).toBe(300); // max value in klasyczny
+  it('returns next higher range (basic - 140 → 150)', () => {
+    const result = pickAvailableOrMaxRange(140, PACKAGE_AVAILABLE_RANGES.basic);
+    expect(result).toBe(150);
+  });
+
+  it('returns next higher range (max - 190 → 200)', () => {
+    const result = pickAvailableOrMaxRange(190, PACKAGE_AVAILABLE_RANGES.max);
+    expect(result).toBe(200);
+  });
+
+  it('returns next higher range (klasyczny - 121 → 150)', () => {
+    const result = pickAvailableOrMaxRange(121, PACKAGE_AVAILABLE_RANGES.klasyczny);
+    expect(result).toBe(150);
   });
 });

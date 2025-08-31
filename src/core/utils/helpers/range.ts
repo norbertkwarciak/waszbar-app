@@ -1,8 +1,16 @@
 import type { ApiMenuPackage, MenuPackageType } from '@/types';
 
 export const pickAvailableOrMaxRange = (target: number, avail: number[]): number => {
-  const filtered = avail.filter((value) => value <= target);
-  return filtered.length > 0 ? Math.max(...filtered) : Math.min(...avail);
+  const sorted = [...avail].sort((a, b) => a - b);
+
+  for (const value of sorted) {
+    if (value >= target) {
+      return value;
+    }
+  }
+
+  // If target exceeds all values, return the highest
+  return sorted[sorted.length - 1];
 };
 
 export const buildAvailableRanges = (

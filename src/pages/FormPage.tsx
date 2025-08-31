@@ -31,6 +31,7 @@ import MenuPackageBox from '@/components/MenuPackageBox';
 import BarOptionBox from '@/components/BarOptionBox';
 import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
+import MenuPackageModal from '@/components/MenuPackageModal';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -73,6 +74,7 @@ const FormPage = (): React.JSX.Element => {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [phone, setPhone] = useState<string>('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
 
   const validateEmail = (value: string): string | null => {
     const v = value.trim();
@@ -186,6 +188,7 @@ const FormPage = (): React.JSX.Element => {
 
   const openPackageModal = (pkg: (typeof menuPackages)[0]): void => {
     setModalPackage(pkg);
+    setExceedsMaxRange(null);
 
     if (numberOfGuests === '' || isNaN(Number(numberOfGuests))) {
       setPackagePdfUrl(null);
@@ -198,7 +201,16 @@ const FormPage = (): React.JSX.Element => {
       return;
     }
 
-    const resolvedRange = pickAvailableOrMaxRange(Number(numberOfGuests), availableRanges);
+    const maxRange = Math.max(...availableRanges);
+    const guests = Number(numberOfGuests);
+
+    if (guests > maxRange) {
+      setExceedsMaxRange(maxRange);
+      setPackagePdfUrl(null);
+      return;
+    }
+
+    const resolvedRange = pickAvailableOrMaxRange(guests, availableRanges);
     const fileName = buildPdfFileName(pkg.value, resolvedRange);
     const url = getPdfUrl(fileName);
 
@@ -421,40 +433,19 @@ const FormPage = (): React.JSX.Element => {
           <Text size="sm">{modalService ? t(modalService.description) : null}</Text>
         </Modal>
 
-        <Modal
+        <MenuPackageModal
           opened={!!modalPackage}
           onClose={() => {
             setModalPackage(null);
             setPackagePdfUrl(null);
+            setExceedsMaxRange(null);
           }}
-          title={
-            <Text fw="bold" size="lg">
-              {modalPackage ? t(modalPackage.label) : null}
-            </Text>
-          }
-          centered
-          size="xl"
-        >
-          <Text size="sm" mb="sm">
-            {modalPackage ? t(modalPackage.description) : null}
-          </Text>
-
-          {packagePdfUrl && (
-            <iframe
-              src={packagePdfUrl}
-              style={{ width: '100%', height: '60vh', border: 'none' }}
-              title="Oferta PDF"
-            />
-          )}
-
-          {packagePdfUrl && (
-            <Group mt="sm" justify="flex-end">
-              <Button component="a" href={packagePdfUrl} target="_blank" rel="noopener noreferrer">
-                {t(FORM_PAGE_TRANSLATIONS.openInNewTab)}
-              </Button>
-            </Group>
-          )}
-        </Modal>
+          modalPackage={modalPackage}
+          numberOfGuests={numberOfGuests}
+          rangesMap={rangesMap}
+          packagePdfUrl={packagePdfUrl}
+          exceedsMaxRange={exceedsMaxRange}
+        />
       </Container>
     </PageLayout>
   );
