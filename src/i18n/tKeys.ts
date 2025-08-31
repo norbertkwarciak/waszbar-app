@@ -18,6 +18,7 @@ export interface PageTranslations {
     select: string;
     skipBar: string;
     locationLabel: string;
+    locationValidationRequired: string;
     locationPlaceholder: string;
     guestsLabel: string;
     guestsPlaceholder: string;
@@ -30,6 +31,7 @@ export interface PageTranslations {
     additionalInfoPlaceholder: string;
     contactTitle: string;
     nameLabel: string;
+    nameValidationRequired: string;
     namePlaceholder: string;
     emailLabel: string;
     emailPlaceholder: string;
@@ -49,6 +51,16 @@ export interface PageTranslations {
     dataFetchErrorMsg: string;
     openInNewTab: string;
     guestsExceedRangeMessage: string;
+
+    fieldValidationMessageLabel: {
+      selectedBar: string;
+      venueLocation: string;
+      numberOfGuests: string;
+      selectedPackage: string;
+      fullName: string;
+      email: string;
+      phone: string;
+    };
 
     menuPackagesDescriptions: {
       basic: string;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
 import {
   Box,
   Button,
@@ -33,22 +34,27 @@ import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-const phoneBasicRegex = /^\+?[0-9\s().-]{7,}$/;
+import { regex } from '@/core/utils/regex';
 
 const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
+const NO_BAR = 'Bez baru';
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const fieldLabels: Record<string, string> = {
+    selectedBar: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedBar),
+    venueLocation: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.venueLocation),
+    numberOfGuests: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.numberOfGuests),
+    selectedPackage: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedPackage),
+    fullName: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.fullName),
+    email: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.email),
+    phone: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.phone),
+  };
 
   const [searchParams, setSearchParams] = useSearchParams();
   const dateFromUrl = searchParams.get('date');
-
-  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
-  const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
-    null,
-  );
 
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
@@ -60,9 +66,14 @@ const FormPage = (): React.JSX.Element => {
   const lastCheckedDate = data?.lastCheckedDate ?? null;
   const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
+  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
+  const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
+    null,
+  );
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
   const [venueLocation, setVenueLocation] = useState<string>('');
+  const [venueLocationError, setVenueLocationError] = useState<string | null>(null);
   const [numberOfGuests, setNumberOfGuests] = useState<number | ''>(100);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -70,6 +81,7 @@ const FormPage = (): React.JSX.Element => {
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string>('');
+  const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [phone, setPhone] = useState<string>('');
@@ -80,7 +92,7 @@ const FormPage = (): React.JSX.Element => {
     const v = value.trim();
 
     if (!v) return t(FORM_PAGE_TRANSLATIONS.emailValidationRequired);
-    if (!emailRegex.test(v)) return t(FORM_PAGE_TRANSLATIONS.emailValidationInvalid);
+    if (!regex.email.test(v)) return t(FORM_PAGE_TRANSLATIONS.emailValidationInvalid);
 
     return null;
   };
@@ -89,7 +101,7 @@ const FormPage = (): React.JSX.Element => {
     const v = value.trim();
 
     if (!v) return t(FORM_PAGE_TRANSLATIONS.phoneValidationRequired);
-    if (!phoneBasicRegex.test(v)) return t(FORM_PAGE_TRANSLATIONS.phoneValidationInvalid);
+    if (!regex.phone.test(v)) return t(FORM_PAGE_TRANSLATIONS.phoneValidationInvalid);
 
     const digits = countDigits(v);
     if (digits < 9 || digits > 15) return t(FORM_PAGE_TRANSLATIONS.phoneValidationLength);
@@ -146,7 +158,7 @@ const FormPage = (): React.JSX.Element => {
   };
 
   const handleSkip = (): void => {
-    setSelectedBar('no-bar');
+    setSelectedBar(NO_BAR);
   };
 
   const handlePackageSelect = (value: string): void => {
@@ -159,31 +171,114 @@ const FormPage = (): React.JSX.Element => {
     );
   };
 
-  const handleSubmit = (): void => {
+  const resetForm = (): void => {
+    setDateString(null);
+    setDateStatus(null);
+    setFullName('');
+    setEmail('');
+    setPhone('');
+    setNotes('');
+    setVenueLocation('');
+    setNumberOfGuests(100);
+    setSelectedBar(null);
+    setSelectedPackage(null);
+    setSelectedServices([]);
+    setModalService(null);
+    setModalPackage(null);
+    setPackagePdfUrl(null);
+    setExceedsMaxRange(null);
+    setSearchParams(new URLSearchParams());
+    setEmailError(null);
+    setPhoneError(null);
+  };
+
+  const validateForm = (): void => {
+    const missingFields: string[] = [];
+    if (!dateString) missingFields.push('dateString');
+    if (!venueLocation) missingFields.push('venueLocation');
+    if (!numberOfGuests) missingFields.push('numberOfGuests');
+    if (!selectedBar) missingFields.push('selectedBar');
+    if (!selectedPackage) missingFields.push('selectedPackage');
+    if (!fullName) missingFields.push('fullName');
+    if (!email) missingFields.push('email');
+    if (!phone) missingFields.push('phone');
+
+    const missingLabels = missingFields.map((key) => fieldLabels[key] || key).filter(Boolean);
+
     const emailErr = validateEmail(email);
     const phoneErr = validatePhone(phone);
 
     setEmailError(emailErr);
     setPhoneError(phoneErr);
 
-    if (!dateString || !numberOfGuests || !venueLocation || emailErr || phoneErr) {
+    if (emailErr) missingFields.push(t(FORM_PAGE_TRANSLATIONS.emailLabel));
+    if (phoneErr) missingFields.push(t(FORM_PAGE_TRANSLATIONS.phoneLabel));
+
+    setFullNameError(null);
+    setVenueLocationError(null);
+
+    if (!fullName) {
+      missingFields.push('fullName');
+      setFullNameError(t(FORM_PAGE_TRANSLATIONS.nameValidationRequired));
+    }
+
+    if (!venueLocation) {
+      missingFields.push('venueLocation');
+      setVenueLocationError(t(FORM_PAGE_TRANSLATIONS.locationValidationRequired));
+    }
+
+    if (missingFields.length > 0) {
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.submitErrorTitle),
-        message: t(FORM_PAGE_TRANSLATIONS.submitErrorMsg),
+        message: `${t(FORM_PAGE_TRANSLATIONS.submitErrorMsg)} ${missingLabels.join(', ')}.`,
         color: 'red',
         icon: <IconX size={18} />,
+        autoClose: false,
       });
       return;
     }
+  };
 
-    showNotification({
-      title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
-      message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
-      color: 'green',
-      icon: <IconCheck size={18} />,
-    });
+  const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
 
-    // TODO: Send data to backend, including email and phone
+  const handleSubmit = (): void => {
+    validateForm();
+
+    submitInquiry(
+      {
+        date: dateString ?? '',
+        fullName,
+        email,
+        phone,
+        numberOfGuests: Number(numberOfGuests),
+        venueLocation,
+        selectedPackage,
+        selectedBar,
+        selectedServices,
+        notes,
+      },
+      {
+        onSuccess: () => {
+          showNotification({
+            title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
+            message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
+            color: 'green',
+            icon: <IconCheck size={18} />,
+          });
+
+          navigate('/');
+          resetForm();
+        },
+        onError: (error: Error) => {
+          showNotification({
+            title: t(FORM_PAGE_TRANSLATIONS.submitErrorTitle),
+            message: error.message,
+            color: 'red',
+            icon: <IconX size={18} />,
+          });
+        },
+      },
+    );
   };
 
   const openPackageModal = (pkg: (typeof menuPackages)[0]): void => {
@@ -233,7 +328,7 @@ const FormPage = (): React.JSX.Element => {
           <Stack gap={4}>
             <Text size="sm" fw={500}>
               {t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
-              <Text span c="red">
+              <Text span c="red" ml={4}>
                 *
               </Text>
             </Text>
@@ -271,22 +366,32 @@ const FormPage = (): React.JSX.Element => {
 
           {dateStatus === 'available' && (
             <>
-              <Divider label={t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)} labelPosition="center" />
+              <Divider
+                label={
+                  <>
+                    {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
+                    <Text component="span" c="red" ml={4}>
+                      *
+                    </Text>
+                  </>
+                }
+                labelPosition="center"
+              />
 
               <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
                 {barOptions.map((bar) => (
                   <BarOptionBox
                     key={bar.value}
                     option={bar}
-                    isSelected={selectedBar === bar.value}
-                    onSelect={() => handleBarSelect(bar.value)}
+                    isSelected={selectedBar === bar.label}
+                    onSelect={() => handleBarSelect(bar.label)}
                   />
                 ))}
               </SimpleGrid>
 
               <Box mt="xl" ta="center">
                 <Button
-                  variant={selectedBar === 'no-bar' ? 'filled' : 'outline'}
+                  variant={selectedBar === NO_BAR ? 'filled' : 'outline'}
                   color="gray"
                   onClick={handleSkip}
                 >
@@ -300,6 +405,7 @@ const FormPage = (): React.JSX.Element => {
                 label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
                 placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
                 value={venueLocation}
+                error={venueLocationError || undefined}
                 onChange={(e) => setVenueLocation(e.currentTarget.value)}
                 withAsterisk
               />
@@ -318,7 +424,14 @@ const FormPage = (): React.JSX.Element => {
               />
 
               <Divider
-                label={t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}
+                label={
+                  <>
+                    {t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}{' '}
+                    <Text component="span" c="red" ml={4}>
+                      *
+                    </Text>
+                  </>
+                }
                 labelPosition="center"
               />
 
@@ -342,14 +455,14 @@ const FormPage = (): React.JSX.Element => {
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
                 {extraServices.map((service) => {
-                  const isSelected = selectedServices.includes(service.id);
+                  const isSelected = selectedServices.includes(service.label);
 
                   return (
                     <ExtraServiceBox
                       key={service.id}
                       service={service}
                       isSelected={isSelected}
-                      onToggle={() => toggleServiceSelection(service.id)}
+                      onToggle={() => toggleServiceSelection(service.label)}
                       onOpenModal={() => setModalService(service)}
                     />
                   );
@@ -377,6 +490,7 @@ const FormPage = (): React.JSX.Element => {
                 placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
                 required
                 value={fullName}
+                error={fullNameError || undefined}
                 onChange={(e) => {
                   setFullName(e.currentTarget.value);
                 }}
@@ -411,7 +525,14 @@ const FormPage = (): React.JSX.Element => {
                 />
               </SimpleGrid>
 
-              <Button size="lg" mt="xl" fullWidth onClick={handleSubmit}>
+              <Button
+                size="lg"
+                mt="xl"
+                fullWidth
+                onClick={handleSubmit}
+                loading={isSubmitting}
+                disabled={isSubmitting}
+              >
                 {t(FORM_PAGE_TRANSLATIONS.submit)}
               </Button>
             </>

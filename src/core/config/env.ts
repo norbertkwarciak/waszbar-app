@@ -3,6 +3,7 @@ type Env = {
     functions: {
       getAvailability: string;
       getOffer: string;
+      submitInquiry: string;
     };
   };
   ownerEmail: string;
@@ -17,6 +18,7 @@ export const env: Env = {
     functions: {
       getAvailability: '/.netlify/functions/get-availability',
       getOffer: '/.netlify/functions/get-offer',
+      submitInquiry: '/.netlify/functions/submit-inquiry',
     },
   },
   ownerEmail: 'biuro@waszbar.pl',
