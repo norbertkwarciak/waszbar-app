@@ -4,7 +4,6 @@ import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
-import {} from '@mantine/core';
 import { env } from '@/core/config/env';
 import { useDisclosure } from '@mantine/hooks';
 import BarCard from '@/components/BarCard';
