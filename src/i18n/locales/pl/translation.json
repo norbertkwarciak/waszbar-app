@@ -3,7 +3,14 @@
     "weddingButton": "Drink Bar Weselny",
     "eventButton": "Drink Bar Eventowy",
     "weddingImageAlt": "Wesele",
-    "eventImageAlt": "Event"
+    "eventImageAlt": "Event",
+    "eventModalTitle": "Zapraszamy do kontaktu w sprawie indywidualnej oferty na Państwa event",
+    "eventModalText": "Prosimy o przesłanie zapytania z następującymi informacjami:",
+    "eventModalLocation": "Miejsce eventu",
+    "eventModalDate": "Termin",
+    "eventModalGuests": "Liczba gości",
+    "eventModalEmail": "Państwa adres e-mail",
+    "eventModalGuidelines": "Dodatkowe wytyczne, brief eventu"
   },
   "formPage": {
     "backToHome": "← Powrót do strony głównej",

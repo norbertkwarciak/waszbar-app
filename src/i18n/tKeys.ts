@@ -6,6 +6,13 @@ export interface PageTranslations {
     eventButton: string;
     weddingImageAlt: string;
     eventImageAlt: string;
+    eventModalTitle: string;
+    eventModalText: string;
+    eventModalLocation: string;
+    eventModalDate: string;
+    eventModalGuests: string;
+    eventModalEmail: string;
+    eventModalGuidelines: string;
   };
   formPage: {
     backToHome: string;

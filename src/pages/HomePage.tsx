@@ -1,69 +1,17 @@
-import { Container, Image, Paper, Stack, Group, Box } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Modal, Container, Group, Stack, Text, List } from '@mantine/core';
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
-
-interface BarCardProps {
-  image: string;
-  alt: string;
-  buttonText: string;
-  to: string;
-}
-
-const BarCard = ({ image, alt, buttonText, to }: BarCardProps): React.JSX.Element => {
-  return (
-    <Paper
-      component={Link}
-      to={to}
-      shadow="md"
-      radius="md"
-      p="md"
-      withBorder
-      w={500}
-      ta="center"
-      style={{
-        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-        textDecoration: 'none',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'none';
-        e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
-      }}
-    >
-      <Stack align="center">
-        <Image src={image} alt={alt} height={400} fit="cover" radius="md" />
-        <Box
-          mt="sm"
-          px="md"
-          py="sm"
-          w="100%"
-          style={{
-            borderRadius: 'var(--mantine-radius-default)',
-            backgroundColor: 'var(--mantine-color-primary-filled)',
-            color: 'white',
-            fontWeight: 500,
-            fontSize: '16px',
-            textAlign: 'center',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s ease',
-          }}
-        >
-          {buttonText}
-        </Box>
-      </Stack>
-    </Paper>
-  );
-};
+import {} from '@mantine/core';
+import { env } from '@/core/config/env';
+import { useDisclosure } from '@mantine/hooks';
+import BarCard from '@/components/BarCard';
 
 const HomePage = (): React.JSX.Element => {
   const { t } = useTranslation();
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <PageLayout>
@@ -87,10 +35,40 @@ const HomePage = (): React.JSX.Element => {
             image={IMAGES.drinkBarEvent}
             alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
             buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
-            to="/form/event"
+            onClick={open}
           />
         </Group>
       </Container>
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={
+          <Text fw={600} size="lg">
+            {t(HOME_PAGE_TRANSLATIONS.eventModalTitle)}
+          </Text>
+        }
+        centered
+        size="xl"
+      >
+        <Stack pb="md">
+          <Text size="md">
+            <a href="mailto:biuro@waszbar.pl" style={{ color: 'var(--mantine-color-blue-filled)' }}>
+              {env.ownerEmail}
+            </a>
+          </Text>
+
+          <Text size="md">{t(HOME_PAGE_TRANSLATIONS.eventModalText)}</Text>
+
+          <List spacing={6} size="sm" withPadding listStyleType="disc">
+            <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalLocation)}</List.Item>
+            <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalDate)}</List.Item>
+            <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalGuests)}</List.Item>
+            <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalEmail)}</List.Item>
+            <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalGuidelines)}</List.Item>
+          </List>
+        </Stack>
+      </Modal>
     </PageLayout>
   );
 };
