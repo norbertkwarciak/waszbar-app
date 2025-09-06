@@ -9,7 +9,7 @@ interface MenuPackageBoxProps {
   isSelected: boolean;
   onSelect: () => void;
   onOpenModal: () => void;
-  isFullWidth?: boolean;
+  center?: boolean;
 }
 
 export default function MenuPackageBox({
@@ -17,17 +17,26 @@ export default function MenuPackageBox({
   isSelected,
   onSelect,
   onOpenModal,
-  isFullWidth = false,
+  center = false,
 }: MenuPackageBoxProps): React.JSX.Element {
   const { t } = useTranslation();
 
   return (
-    <Box style={isFullWidth ? { gridColumn: '1 / -1' } : {}}>
+    <Box
+      style={
+        center
+          ? {
+              display: 'flex',
+              justifyContent: 'center',
+            }
+          : undefined
+      }
+    >
       <Paper
         onClick={onOpenModal}
         shadow="md"
         radius="md"
-        p="sm"
+        p="lg"
         withBorder
         style={{
           display: 'block',
@@ -49,7 +58,7 @@ export default function MenuPackageBox({
           <Image
             src={pkg.thumbnail}
             alt={pkg.label}
-            height={250}
+            height={340}
             fit="cover"
             radius="md"
             style={{ pointerEvents: 'none' }}

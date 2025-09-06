@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Divider,
+  Grid,
   Group,
   Loader,
   Modal,
@@ -481,18 +482,23 @@ const FormPage = (): React.JSX.Element => {
                 }}
               />
 
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
-                {menuPackages.map((pkg, index) => (
-                  <MenuPackageBox
-                    key={pkg.value}
-                    pkg={pkg}
-                    isSelected={selectedPackage === pkg.value}
-                    onSelect={() => handlePackageSelect(pkg.value)}
-                    onOpenModal={() => openPackageModal(pkg)}
-                    isFullWidth={index === menuPackages.length - 1}
-                  />
-                ))}
-              </SimpleGrid>
+              <Grid gutter="xl">
+                {menuPackages.map((pkg, i) => {
+                  const isLastItem = i === menuPackages.length - 1;
+                  const isOdd = menuPackages.length % 2 === 1;
+
+                  return (
+                    <Grid.Col key={pkg.value} span={6} offset={isLastItem && isOdd ? 3 : 0}>
+                      <MenuPackageBox
+                        pkg={pkg}
+                        isSelected={selectedPackage === pkg.value}
+                        onSelect={() => handlePackageSelect(pkg.value)}
+                        onOpenModal={() => openPackageModal(pkg)}
+                      />
+                    </Grid.Col>
+                  );
+                })}
+              </Grid>
 
               <Divider
                 label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)}
