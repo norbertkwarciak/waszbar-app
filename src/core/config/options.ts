@@ -21,33 +21,33 @@ export const barOptions = [
 
 export const menuPackages = [
   {
-    label: 'PAKIET BASIC',
+    label: 'BASIC',
     value: MenuPackageType.BASIC,
-    thumbnail: 'https://placehold.co/200x120?text=Basic',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_BASIC.jpg',
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
-    label: 'PAKIET MEDIUM',
+    label: 'MEDIUM',
     value: MenuPackageType.MEDIUM,
-    thumbnail: 'https://placehold.co/200x120?text=Medium',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_MEDIUM.jpg',
     description: 'formPage.menuPackagesDescriptions.medium',
   },
   {
-    label: 'PAKIET MAX',
+    label: 'MAX',
     value: MenuPackageType.MAX,
-    thumbnail: 'https://placehold.co/200x120?text=Max',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_MAX.jpg',
     description: 'formPage.menuPackagesDescriptions.max',
   },
   {
-    label: 'PAKIET KLASYCZNY',
+    label: 'KLASYCZNY',
     value: MenuPackageType.KLASYCZNY,
-    thumbnail: 'https://placehold.co/200x120?text=Klasyczny',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_KLASYCZNY.jpg',
     description: 'formPage.menuPackagesDescriptions.classic',
   },
   {
-    label: 'PAKIET EXCELLENT',
+    label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
-    thumbnail: 'https://placehold.co/200x120?text=Excellent',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_EXCELLENT.jpg',
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
 ];

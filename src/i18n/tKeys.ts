@@ -33,7 +33,6 @@ export interface PageTranslations {
     chooseMenu: string;
     additionalServicesTitle: string;
     selectService: string;
-    selectedService: string;
     additionalInfoLabel: string;
     additionalInfoPlaceholder: string;
     contactTitle: string;

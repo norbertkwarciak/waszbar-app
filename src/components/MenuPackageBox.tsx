@@ -49,13 +49,15 @@ export default function MenuPackageBox({
           <Image
             src={pkg.thumbnail}
             alt={pkg.label}
-            height={120}
+            height={250}
             fit="cover"
             radius="md"
             style={{ pointerEvents: 'none' }}
           />
 
-          <Text fw={500}>{pkg.label}</Text>
+          <Text size="xl" py="sm" fw={700}>
+            {pkg.label}
+          </Text>
 
           <Button
             fullWidth

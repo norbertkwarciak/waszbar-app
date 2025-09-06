@@ -192,8 +192,10 @@ const FormPage = (): React.JSX.Element => {
     setPhoneError(null);
   };
 
-  const validateForm = (): void => {
+  const validateForm = (): boolean => {
     const missingFields: string[] = [];
+    let isValid = true;
+
     if (!dateString) missingFields.push('dateString');
     if (!venueLocation) missingFields.push('venueLocation');
     if (!numberOfGuests) missingFields.push('numberOfGuests');
@@ -211,20 +213,26 @@ const FormPage = (): React.JSX.Element => {
     setEmailError(emailErr);
     setPhoneError(phoneErr);
 
-    if (emailErr) missingFields.push(t(FORM_PAGE_TRANSLATIONS.emailLabel));
-    if (phoneErr) missingFields.push(t(FORM_PAGE_TRANSLATIONS.phoneLabel));
+    if (emailErr) {
+      missingFields.push(t(FORM_PAGE_TRANSLATIONS.emailLabel));
+      isValid = false;
+    }
+    if (phoneErr) {
+      missingFields.push(t(FORM_PAGE_TRANSLATIONS.phoneLabel));
+      isValid = false;
+    }
 
     setFullNameError(null);
     setVenueLocationError(null);
 
     if (!fullName) {
-      missingFields.push('fullName');
       setFullNameError(t(FORM_PAGE_TRANSLATIONS.nameValidationRequired));
+      isValid = false;
     }
 
     if (!venueLocation) {
-      missingFields.push('venueLocation');
       setVenueLocationError(t(FORM_PAGE_TRANSLATIONS.locationValidationRequired));
+      isValid = false;
     }
 
     if (missingFields.length > 0) {
@@ -235,14 +243,17 @@ const FormPage = (): React.JSX.Element => {
         icon: <IconX size={18} />,
         autoClose: false,
       });
-      return;
+      isValid = false;
     }
+
+    return isValid;
   };
 
   const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
 
   const handleSubmit = (): void => {
-    validateForm();
+    const isValid = validateForm();
+    if (!isValid) return;
 
     submitInquiry(
       {
@@ -312,6 +323,21 @@ const FormPage = (): React.JSX.Element => {
     setPackagePdfUrl(url ?? null);
   };
 
+  const handleFieldChange =
+    (
+      setter: (v: string) => void,
+      errorSetter: (e: string | null) => void,
+      validator?: (v: string) => string | null,
+    ) =>
+    (value: string) => {
+      setter(value);
+      if (validator) {
+        errorSetter(validator(value));
+      } else if (value.trim() !== '') {
+        errorSetter(null);
+      }
+    };
+
   return (
     <PageLayout>
       <Container size="md">
@@ -376,6 +402,11 @@ const FormPage = (): React.JSX.Element => {
                   </>
                 }
                 labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
               />
 
               <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
@@ -399,14 +430,24 @@ const FormPage = (): React.JSX.Element => {
                 </Button>
               </Box>
 
-              <Divider label={t(FORM_PAGE_TRANSLATIONS.locationLabel)} labelPosition="center" />
+              <Divider
+                label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
+                labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
+              />
 
               <TextInput
                 label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
                 placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
                 value={venueLocation}
                 error={venueLocationError || undefined}
-                onChange={(e) => setVenueLocation(e.currentTarget.value)}
+                onChange={(e) =>
+                  handleFieldChange(setVenueLocation, setVenueLocationError)(e.currentTarget.value)
+                }
                 withAsterisk
               />
 
@@ -433,6 +474,11 @@ const FormPage = (): React.JSX.Element => {
                   </>
                 }
                 labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
               />
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
@@ -451,6 +497,11 @@ const FormPage = (): React.JSX.Element => {
               <Divider
                 label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)}
                 labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
               />
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
@@ -472,6 +523,11 @@ const FormPage = (): React.JSX.Element => {
               <Divider
                 label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
                 labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
               />
 
               <Textarea
@@ -483,7 +539,15 @@ const FormPage = (): React.JSX.Element => {
                 onChange={(event) => setNotes(event.currentTarget.value)}
               />
 
-              <Divider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} labelPosition="center" />
+              <Divider
+                label={t(FORM_PAGE_TRANSLATIONS.contactTitle)}
+                labelPosition="center"
+                styles={{
+                  label: {
+                    fontSize: '1rem',
+                  },
+                }}
+              />
 
               <TextInput
                 label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
@@ -491,9 +555,9 @@ const FormPage = (): React.JSX.Element => {
                 required
                 value={fullName}
                 error={fullNameError || undefined}
-                onChange={(e) => {
-                  setFullName(e.currentTarget.value);
-                }}
+                onChange={(e) =>
+                  handleFieldChange(setFullName, setFullNameError)(e.currentTarget.value)
+                }
               />
 
               <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
@@ -503,24 +567,21 @@ const FormPage = (): React.JSX.Element => {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.currentTarget.value);
-                    setEmailError(validateEmail(e.currentTarget.value));
-                  }}
-                  onBlur={(e) => setEmailError(validateEmail(e.currentTarget.value))}
+                  onChange={(e) =>
+                    handleFieldChange(setEmail, setEmailError, validateEmail)(e.currentTarget.value)
+                  }
                   error={emailError || undefined}
                 />
+
                 <TextInput
                   label={t(FORM_PAGE_TRANSLATIONS.phoneLabel)}
                   placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
                   type="tel"
                   required
                   value={phone}
-                  onChange={(e) => {
-                    setPhone(e.currentTarget.value);
-                    setPhoneError(validatePhone(e.currentTarget.value));
-                  }}
-                  onBlur={(e) => setPhoneError(validatePhone(e.currentTarget.value))}
+                  onChange={(e) =>
+                    handleFieldChange(setPhone, setPhoneError, validatePhone)(e.currentTarget.value)
+                  }
                   error={phoneError || undefined}
                 />
               </SimpleGrid>

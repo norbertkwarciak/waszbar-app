@@ -62,7 +62,7 @@ export default function ExtraServiceBox({
         />
 
         <Box>
-          <Text fw={600} size="sm">
+          <Text fw={600} size="lg">
             {service.label}
           </Text>
           <Text size="xs" c="dimmed">
@@ -79,11 +79,7 @@ export default function ExtraServiceBox({
           }}
           mt="auto"
         >
-          {t(
-            isSelected
-              ? FORM_PAGE_TRANSLATIONS.selectedService
-              : FORM_PAGE_TRANSLATIONS.selectService,
-          )}
+          {t(FORM_PAGE_TRANSLATIONS.selectService)}
         </Button>
       </Stack>
     </Paper>
