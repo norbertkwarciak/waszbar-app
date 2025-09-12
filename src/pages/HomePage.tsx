@@ -19,10 +19,21 @@ const HomePage = (): React.JSX.Element => {
         style={{
           height: '100vh',
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          textAlign: 'center',
         }}
       >
+        <Stack mb="xl" gap="xs">
+          <Text size="xl" fw={700}>
+            {t(HOME_PAGE_TRANSLATIONS.introText)}
+          </Text>
+          <Text size="md" style={{ whiteSpace: 'pre-line' }}>
+            {t(HOME_PAGE_TRANSLATIONS.descriptionText)}
+          </Text>
+        </Stack>
+
         <Group justify="center" gap="xl">
           <BarCard
             image={IMAGES.drinkBarWedding}

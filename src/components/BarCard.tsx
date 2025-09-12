@@ -16,7 +16,7 @@ const BarCard = ({ image, alt, buttonText, to, onClick }: BarCardProps): React.J
     radius: 'md',
     p: 'md',
     withBorder: true,
-    w: 500,
+    w: 400,
     ta: 'center' as const,
     style: {
       transition: 'transform 0.15s ease, box-shadow 0.15s ease',
@@ -35,7 +35,7 @@ const BarCard = ({ image, alt, buttonText, to, onClick }: BarCardProps): React.J
 
   const content = (
     <Stack align="center">
-      <Image src={image} alt={alt} height={400} fit="cover" radius="md" />
+      <Image src={image} alt={alt} height={300} fit="cover" radius="md" />
       <Box
         mt="sm"
         px="md"

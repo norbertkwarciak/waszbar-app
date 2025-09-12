@@ -2,6 +2,8 @@ import { createTranslationKeys } from './utils';
 
 export interface PageTranslations {
   homePage: {
+    introText: string;
+    descriptionText: string;
     weddingButton: string;
     eventButton: string;
     weddingImageAlt: string;
