@@ -68,9 +68,6 @@ const FormPage = (): React.JSX.Element => {
   const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
   const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
-  const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
-    null,
-  );
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
   const [venueLocation, setVenueLocation] = useState<string>('');
@@ -88,6 +85,14 @@ const FormPage = (): React.JSX.Element => {
   const [phone, setPhone] = useState<string>('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
+
+  // ✅ computed dateStatus
+  const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
+  const dateStatus: 'available' | 'unavailable' | null = !dateString
+    ? null
+    : takenDates?.includes(normalizedDate ?? '')
+      ? 'unavailable'
+      : 'available';
 
   const validateEmail = (value: string): string | null => {
     const v = value.trim();
@@ -121,16 +126,6 @@ const FormPage = (): React.JSX.Element => {
     }
   }, [availabilityError, offerError, t]);
 
-  useEffect(() => {
-    if (!dateString || takenDates?.length === 0) return;
-
-    const normalized = dayjs(dateString).format('YYYY-M-D');
-    const match = takenDates.find((entry: string) => entry === normalized);
-
-    if (match) setDateStatus('unavailable');
-    else setDateStatus('available');
-  }, [takenDates, dateString]);
-
   const handleDateChange = (value: string | null): void => {
     setDateString(value);
 
@@ -139,19 +134,6 @@ const FormPage = (): React.JSX.Element => {
     else newParams.delete('date');
 
     setSearchParams(newParams);
-
-    if (!value) {
-      setDateStatus(null);
-      return;
-    }
-
-    setDateStatus('pending');
-
-    const normalized = dayjs(value).format('YYYY-M-D');
-    const match = takenDates?.find((entry: string) => entry === normalized);
-
-    if (match) setDateStatus('unavailable');
-    else setDateStatus('available');
   };
 
   const handleBarSelect = (barType: string): void => {
@@ -174,7 +156,6 @@ const FormPage = (): React.JSX.Element => {
 
   const resetForm = (): void => {
     setDateString(null);
-    setDateStatus(null);
     setFullName('');
     setEmail('');
     setPhone('');
@@ -367,7 +348,7 @@ const FormPage = (): React.JSX.Element => {
                 onChange={handleDateChange}
                 valueFormat="YYYY-MM-DD"
                 locale="pl"
-                disabled={dateStatus === 'pending' || availabilityLoading}
+                disabled={availabilityLoading}
                 minDate={new Date()}
                 maxDate={lastCheckedDateObj ?? undefined}
                 leftSection={<IconCalendar size={18} />}

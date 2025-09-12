@@ -23,31 +23,31 @@ export const menuPackages = [
   {
     label: 'BASIC',
     value: MenuPackageType.BASIC,
-    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_BASIC.png',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_BASIC.png',
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
     label: 'MEDIUM',
     value: MenuPackageType.MEDIUM,
-    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_MEDIUM.png',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_MEDIUM.png',
     description: 'formPage.menuPackagesDescriptions.medium',
   },
   {
     label: 'MAX',
     value: MenuPackageType.MAX,
-    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_MAX.png',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_MAX.png',
     description: 'formPage.menuPackagesDescriptions.max',
   },
   {
     label: 'KLASYCZNY',
     value: MenuPackageType.KLASYCZNY,
-    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_KLASYCZNY.png',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_KLASYCZNY.png',
     description: 'formPage.menuPackagesDescriptions.classic',
   },
   {
     label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
-    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/Pakiet_EXCELLENT.png',
+    thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_EXCELLENT.png',
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
 ];
