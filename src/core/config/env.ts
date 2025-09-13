@@ -3,6 +3,7 @@ type Env = {
     functions: {
       getAvailability: string;
       getOffer: string;
+      sendInquiryEmail: string;
       submitInquiry: string;
     };
   };
@@ -18,6 +19,7 @@ export const env: Env = {
     functions: {
       getAvailability: '/.netlify/functions/get-availability',
       getOffer: '/.netlify/functions/get-offer',
+      sendInquiryEmail: '/.netlify/functions/send-inquiry-email',
       submitInquiry: '/.netlify/functions/submit-inquiry',
     },
   },

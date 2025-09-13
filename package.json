@@ -43,6 +43,7 @@
     "@mantine/hooks": "8.2.4",
     "@mantine/notifications": "8.2.4",
     "@netlify/functions": "4.2.1",
+    "@sendinblue/client": "3.3.1",
     "@tabler/icons-react": "3.34.1",
     "@tanstack/query-async-storage-persister": "5.85.5",
     "@tanstack/react-query": "5.85.5",
