@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
+import Turnstile from 'react-turnstile';
 import {
   Box,
   Button,
@@ -87,7 +88,8 @@ const FormPage = (): React.JSX.Element => {
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
 
-  // ✅ computed dateStatus
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
   const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
   const dateStatus: 'available' | 'unavailable' | null = !dateString
     ? null
@@ -250,6 +252,7 @@ const FormPage = (): React.JSX.Element => {
         selectedBar,
         selectedServices,
         notes,
+        turnstileToken: captchaToken,
       },
       {
         onSuccess: async () => {
@@ -597,6 +600,11 @@ const FormPage = (): React.JSX.Element => {
                   error={phoneError || undefined}
                 />
               </SimpleGrid>
+
+              <Turnstile
+                sitekey={env.turnstile.siteKey}
+                onVerify={(token) => setCaptchaToken(token)}
+              />
 
               <Button
                 size="lg"

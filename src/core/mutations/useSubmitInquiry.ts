@@ -12,6 +12,7 @@ export interface InquiryPayload {
   selectedBar: string | null;
   selectedServices: string[];
   notes: string;
+  turnstileToken: string | null;
 }
 
 // eslint-disable-next-line

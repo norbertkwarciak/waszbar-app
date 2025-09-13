@@ -12,6 +12,9 @@ type Env = {
     assets: string;
     pdfs: string;
   };
+  turnstile: {
+    siteKey: string;
+  };
 };
 
 export const env: Env = {
@@ -27,5 +30,8 @@ export const env: Env = {
   public: {
     assets: '/assets',
     pdfs: '/pdfs',
+  },
+  turnstile: {
+    siteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
   },
 };
