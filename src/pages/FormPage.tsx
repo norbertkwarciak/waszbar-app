@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
 import {
   Box,
@@ -17,7 +17,6 @@ import {
   Text,
   Textarea,
   TextInput,
-  Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
@@ -36,6 +35,7 @@ import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
+import PageHeader from '@/components/PageHeader';
 
 const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
 const NO_BAR = 'Bez baru';
@@ -322,16 +322,10 @@ const FormPage = (): React.JSX.Element => {
 
   return (
     <PageLayout>
-      <Container size="md">
+      <Container size="md" style={{ paddingTop: 60, paddingBottom: 60, minHeight: '100vh' }}>
         <Space h={20} />
         <Stack gap="xl">
-          <Box>
-            <Button component={Link} to="/" variant="outline" size="xs">
-              {t(FORM_PAGE_TRANSLATIONS.backToHome)}
-            </Button>
-          </Box>
-
-          <Title order={2}>{t(FORM_PAGE_TRANSLATIONS.title)}</Title>
+          <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
 
           <Stack gap={4}>
             <Text size="sm" fw={500}>

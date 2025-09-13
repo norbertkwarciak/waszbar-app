@@ -1,4 +1,4 @@
-import { Modal, Container, Group, Stack, Text, List } from '@mantine/core';
+import { Modal, Container, Group, Stack, Text, Title, List, Box, Anchor } from '@mantine/core';
 import React from 'react';
 import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
@@ -20,34 +20,38 @@ const HomePage = (): React.JSX.Element => {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           alignItems: 'center',
           textAlign: 'center',
+          paddingTop: 40,
+          paddingBottom: 20,
         }}
       >
-        <Stack mb="xl" gap="xs">
-          <Text size="xl" fw={700}>
-            {t(HOME_PAGE_TRANSLATIONS.introText)}
-          </Text>
-          <Text size="md" style={{ whiteSpace: 'pre-line' }}>
-            {t(HOME_PAGE_TRANSLATIONS.descriptionText)}
-          </Text>
-        </Stack>
+        <Box
+          style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+        >
+          <Stack mb="xl" gap="xs">
+            <Title order={2}>{t(HOME_PAGE_TRANSLATIONS.introText)}</Title>
+            <Text size="md" style={{ whiteSpace: 'pre-line' }}>
+              {t(HOME_PAGE_TRANSLATIONS.descriptionText)}
+            </Text>
+          </Stack>
 
-        <Group justify="center" gap="xl">
-          <BarCard
-            image={IMAGES.drinkBarWedding}
-            alt={t(HOME_PAGE_TRANSLATIONS.weddingImageAlt)}
-            buttonText={t(HOME_PAGE_TRANSLATIONS.weddingButton)}
-            to="/form/wedding"
-          />
-          <BarCard
-            image={IMAGES.drinkBarEvent}
-            alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
-            buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
-            onClick={open}
-          />
-        </Group>
+          <Group justify="center" gap="xl">
+            <BarCard
+              image={IMAGES.drinkBarWedding}
+              alt={t(HOME_PAGE_TRANSLATIONS.weddingImageAlt)}
+              buttonText={t(HOME_PAGE_TRANSLATIONS.weddingButton)}
+              to="/form/wedding"
+            />
+            <BarCard
+              image={IMAGES.drinkBarEvent}
+              alt={t(HOME_PAGE_TRANSLATIONS.eventImageAlt)}
+              buttonText={t(HOME_PAGE_TRANSLATIONS.eventButton)}
+              onClick={open}
+            />
+          </Group>
+        </Box>
       </Container>
 
       <Modal
@@ -79,6 +83,21 @@ const HomePage = (): React.JSX.Element => {
           </List>
         </Stack>
       </Modal>
+
+      <Box
+        style={{
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          zIndex: 1000,
+        }}
+      >
+        <Group gap="md">
+          <Anchor href="/faq" size="sm">
+            {t(HOME_PAGE_TRANSLATIONS.faqLink)}
+          </Anchor>
+        </Group>
+      </Box>
     </PageLayout>
   );
 };
