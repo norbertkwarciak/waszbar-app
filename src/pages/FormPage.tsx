@@ -33,6 +33,7 @@ import BarOptionBox from '@/components/BarOptionBox';
 import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
+import { env } from '@/core/config/env';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
@@ -233,7 +234,7 @@ const FormPage = (): React.JSX.Element => {
 
   const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     const isValid = validateForm();
     if (!isValid) return;
 
@@ -251,16 +252,46 @@ const FormPage = (): React.JSX.Element => {
         notes,
       },
       {
-        onSuccess: () => {
-          showNotification({
-            title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
-            message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
-            color: 'green',
-            icon: <IconCheck size={18} />,
-          });
+        onSuccess: async () => {
+          try {
+            await fetch(env.netlify.functions.sendInquiryEmail, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                fullName,
+                email,
+                phone,
+                venueLocation,
+                selectedPackage,
+                selectedBar,
+                selectedServices,
+                notes,
+                numberOfGuests,
+                date: dateString,
+              }),
+            });
 
-          navigate('/');
-          resetForm();
+            showNotification({
+              title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
+              message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
+              color: 'green',
+              icon: <IconCheck size={18} />,
+            });
+
+            navigate('/');
+            resetForm();
+          } catch (emailError) {
+            console.error('Email send failed', emailError);
+            showNotification({
+              title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
+              message: `${t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg)} (but email failed)`,
+              color: 'orange',
+              icon: <IconX size={18} />,
+            });
+
+            navigate('/');
+            resetForm();
+          }
         },
         onError: (error: Error) => {
           showNotification({
