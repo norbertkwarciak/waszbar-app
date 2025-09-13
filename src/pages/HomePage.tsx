@@ -89,7 +89,7 @@ const HomePage = (): React.JSX.Element => {
           position: 'fixed',
           bottom: 20,
           right: 20,
-          zIndex: 1000,
+          zIndex: 99,
         }}
       >
         <Group gap="md">
