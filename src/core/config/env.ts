@@ -8,9 +8,9 @@ type Env = {
     };
   };
   ownerEmail: string;
-  s3: {
-    assetsUrl: string;
-    pdfsUrl: string;
+  public: {
+    assets: string;
+    pdfs: string;
   };
 };
 
@@ -24,8 +24,8 @@ export const env: Env = {
     },
   },
   ownerEmail: 'biuro@waszbar.pl',
-  s3: {
-    assetsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets',
-    pdfsUrl: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/pdfs',
+  public: {
+    assets: '/assets',
+    pdfs: '/pdfs',
   },
 };

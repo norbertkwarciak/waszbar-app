@@ -12,16 +12,21 @@ const PACKAGE_FILE_TOKEN: Record<MenuPackageType, string> = {
 // Build the canonical filename
 export const buildPdfFileName = (pkgValue: MenuPackageType, range: number): string => {
   const token = PACKAGE_FILE_TOKEN[pkgValue];
-  // Example: "Waszbar.pl oferta MEDIUM do 150 gości.pdf"
-  return `Waszbar.pl oferta ${token} do ${range} gości.pdf`;
+  // Example: "Waszbar.pl_oferta_MEDIUM_do_150_gosci.pdf"
+  return `Waszbar.pl_oferta_${token}_do_${range}_gosci.pdf`;
 };
 
 export const getPdfUrl = (fileName: string): string | null => {
-  const base = env.s3.pdfsUrl.replace(/\/+$/, '');
+  const base = env.public.pdfs.replace(/\/+$/, '');
   if (!base) return null;
 
-  const normalized = fileName.normalize('NFD');
+  let normalized = fileName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  normalized = normalized.replace(/\s+/g, '_');
+  normalized = normalized.replace(/[^a-zA-Z0-9._-]/g, '');
 
-  const encoded = encodeURIComponent(normalized).replace(/%20/g, '+');
-  return `${base}/${encoded}`;
+  if (!normalized.toLowerCase().endsWith('.pdf')) {
+    normalized += '.pdf';
+  }
+
+  return `${base}/${normalized}`;
 };

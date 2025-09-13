@@ -3,8 +3,8 @@ import { getPdfUrl } from '.';
 
 vi.mock('@/core/config/env', () => ({
   env: {
-    s3: {
-      pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs/',
+    public: {
+      pdfs: '/pdfs/',
     },
   },
 }));
@@ -15,34 +15,30 @@ describe('getPdfUrl', () => {
 
     const result = getPdfUrl(fileName);
 
-    expect(result).toEqual(
-      'https://bucket.s3.region.amazonaws.com/pdfs/Waszbar.pl+oferta+MEDIUM+do+150+gos%CC%81ci.pdf',
-    );
+    expect(result).toEqual('/pdfs/Waszbar.pl_oferta_MEDIUM_do_150_gosci.pdf');
   });
 
   it('removes trailing slashes from base URL', async () => {
     vi.resetModules();
     vi.doMock('@/core/config/env', () => ({
       env: {
-        s3: {
-          pdfsUrl: 'https://bucket.s3.region.amazonaws.com/pdfs///',
+        public: {
+          pdfs: '/pdfs/',
         },
       },
     }));
     const { getPdfUrl: getPdfUrlWithTrailing } = await import('.');
 
     const result = getPdfUrlWithTrailing('Waszbar.pl oferta CLASSIC do 100 gości.pdf');
-    expect(result).toEqual(
-      'https://bucket.s3.region.amazonaws.com/pdfs/Waszbar.pl+oferta+CLASSIC+do+100+gos%CC%81ci.pdf',
-    );
+    expect(result).toEqual('/pdfs/Waszbar.pl_oferta_CLASSIC_do_100_gosci.pdf');
   });
 
   it('returns null if base URL is empty', async () => {
     vi.resetModules();
     vi.doMock('@/core/config/env', () => ({
       env: {
-        s3: {
-          pdfsUrl: '',
+        public: {
+          pdfs: '',
         },
       },
     }));
