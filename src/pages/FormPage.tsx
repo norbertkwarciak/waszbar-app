@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
 import {
   Box,
@@ -17,7 +17,6 @@ import {
   Text,
   Textarea,
   TextInput,
-  Title,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
@@ -37,6 +36,7 @@ import MenuPackageModal from '@/components/MenuPackageModal';
 import { env } from '@/core/config/env';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
+import PageHeader from '@/components/PageHeader';
 
 const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
 const NO_BAR = 'Bez baru';
@@ -69,9 +69,6 @@ const FormPage = (): React.JSX.Element => {
   const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
   const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
-  const [dateStatus, setDateStatus] = useState<'available' | 'unavailable' | 'pending' | null>(
-    null,
-  );
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
   const [venueLocation, setVenueLocation] = useState<string>('');
@@ -89,6 +86,14 @@ const FormPage = (): React.JSX.Element => {
   const [phone, setPhone] = useState<string>('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
+
+  // ✅ computed dateStatus
+  const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
+  const dateStatus: 'available' | 'unavailable' | null = !dateString
+    ? null
+    : takenDates?.includes(normalizedDate ?? '')
+      ? 'unavailable'
+      : 'available';
 
   const validateEmail = (value: string): string | null => {
     const v = value.trim();
@@ -122,16 +127,6 @@ const FormPage = (): React.JSX.Element => {
     }
   }, [availabilityError, offerError, t]);
 
-  useEffect(() => {
-    if (!dateString || takenDates?.length === 0) return;
-
-    const normalized = dayjs(dateString).format('YYYY-M-D');
-    const match = takenDates.find((entry: string) => entry === normalized);
-
-    if (match) setDateStatus('unavailable');
-    else setDateStatus('available');
-  }, [takenDates, dateString]);
-
   const handleDateChange = (value: string | null): void => {
     setDateString(value);
 
@@ -140,19 +135,6 @@ const FormPage = (): React.JSX.Element => {
     else newParams.delete('date');
 
     setSearchParams(newParams);
-
-    if (!value) {
-      setDateStatus(null);
-      return;
-    }
-
-    setDateStatus('pending');
-
-    const normalized = dayjs(value).format('YYYY-M-D');
-    const match = takenDates?.find((entry: string) => entry === normalized);
-
-    if (match) setDateStatus('unavailable');
-    else setDateStatus('available');
   };
 
   const handleBarSelect = (barType: string): void => {
@@ -175,7 +157,6 @@ const FormPage = (): React.JSX.Element => {
 
   const resetForm = (): void => {
     setDateString(null);
-    setDateStatus(null);
     setFullName('');
     setEmail('');
     setPhone('');
@@ -372,16 +353,10 @@ const FormPage = (): React.JSX.Element => {
 
   return (
     <PageLayout>
-      <Container size="md">
+      <Container size="md" style={{ paddingTop: 60, paddingBottom: 60, minHeight: '100vh' }}>
         <Space h={20} />
         <Stack gap="xl">
-          <Box>
-            <Button component={Link} to="/" variant="outline" size="xs">
-              {t(FORM_PAGE_TRANSLATIONS.backToHome)}
-            </Button>
-          </Box>
-
-          <Title order={2}>{t(FORM_PAGE_TRANSLATIONS.title)}</Title>
+          <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
 
           <Stack gap={4}>
             <Text size="sm" fw={500}>
@@ -398,7 +373,7 @@ const FormPage = (): React.JSX.Element => {
                 onChange={handleDateChange}
                 valueFormat="YYYY-MM-DD"
                 locale="pl"
-                disabled={dateStatus === 'pending' || availabilityLoading}
+                disabled={availabilityLoading}
                 minDate={new Date()}
                 maxDate={lastCheckedDateObj ?? undefined}
                 leftSection={<IconCalendar size={18} />}

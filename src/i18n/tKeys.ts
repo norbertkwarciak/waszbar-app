@@ -2,6 +2,8 @@ import { createTranslationKeys } from './utils';
 
 export interface PageTranslations {
   homePage: {
+    introText: string;
+    descriptionText: string;
     weddingButton: string;
     eventButton: string;
     weddingImageAlt: string;
@@ -13,9 +15,9 @@ export interface PageTranslations {
     eventModalGuests: string;
     eventModalEmail: string;
     eventModalGuidelines: string;
+    faqLink: string;
   };
   formPage: {
-    backToHome: string;
     title: string;
     checkDateLabel: string;
     loadingAvailability: string;
@@ -76,6 +78,12 @@ export interface PageTranslations {
       excellent: string;
     };
   };
+  faqPage: {
+    title: string;
+  };
+  common: {
+    back: string;
+  };
 }
 
 // Type-safe keys for `homePage`
@@ -85,3 +93,7 @@ export const HOME_PAGE_TRANSLATIONS =
 // Type-safe keys for `formPage`
 export const FORM_PAGE_TRANSLATIONS =
   createTranslationKeys<PageTranslations['formPage']>('formPage');
+
+export const FAQ_PAGE_TRANSLATIONS = createTranslationKeys<PageTranslations['faqPage']>('faqPage');
+
+export const COMMON = createTranslationKeys<PageTranslations['common']>('common');
