@@ -1,4 +1,4 @@
-import { Box, Button, Image, Paper, Stack, Text } from '@mantine/core';
+import { Box, Button, Image, List, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
@@ -54,7 +54,7 @@ export default function MenuPackageBox({
           e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
         }}
       >
-        <Stack gap="xs">
+        <Stack gap="md">
           <Image
             src={pkg.thumbnail}
             alt={pkg.label}
@@ -64,9 +64,27 @@ export default function MenuPackageBox({
             style={{ pointerEvents: 'none' }}
           />
 
-          <Text size="xl" py="sm" fw={700}>
+          <Text size="xl" pt="xs" fw={700}>
             {pkg.label}
           </Text>
+
+          <List
+            size="sm"
+            spacing="xs"
+            center
+            style={{
+              textAlign: 'center',
+              minHeight: 120,
+              listStyleType: 'none',
+            }}
+            px="md"
+          >
+            {pkg.features.map((feature) => (
+              <List.Item key={feature} style={{ justifyContent: 'center', lineHeight: 1.3 }}>
+                {feature}
+              </List.Item>
+            ))}
+          </List>
 
           <Button
             fullWidth

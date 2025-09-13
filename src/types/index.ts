@@ -21,6 +21,7 @@ export type MenuPackage = {
   label: string;
   value: MenuPackageType;
   thumbnail: string;
+  features: string[];
   description: string;
 };
 

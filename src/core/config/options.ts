@@ -24,30 +24,60 @@ export const menuPackages = [
     label: 'BASIC',
     value: MenuPackageType.BASIC,
     thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_BASIC.png',
+    features: [
+      'koktajle na wódce i ginie',
+      'drinki 0%',
+      'drinki na suchym lodzie',
+      'drinki dla dzieci',
+    ],
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
     label: 'MEDIUM',
     value: MenuPackageType.MEDIUM,
     thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_MEDIUM.png',
+    features: [
+      'koktajle na wódce, ginie, rumie, Jagermeistrze, tequili',
+      'drinki 0%',
+      'drinki na suchym lodzie',
+      'drinki dla dzieci',
+    ],
     description: 'formPage.menuPackagesDescriptions.medium',
   },
   {
     label: 'MAX',
     value: MenuPackageType.MAX,
     thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_MAX.png',
+    features: [
+      'koktajle na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili',
+      'drinki 0%',
+      'drinki na suchym lodzie',
+      'drinki dla dzieci',
+    ],
     description: 'formPage.menuPackagesDescriptions.max',
   },
   {
     label: 'KLASYCZNY',
     value: MenuPackageType.KLASYCZNY,
     thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_KLASYCZNY.png',
+    features: [
+      'koktajle KLASYCZNE (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
+      'drinki 0%',
+      'drinki dla dzieci',
+    ],
     description: 'formPage.menuPackagesDescriptions.classic',
   },
   {
     label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
     thumbnail: 'https://waszbar-storage.s3.eu-north-1.amazonaws.com/assets/PAKIET_EXCELLENT.png',
+    features: [
+      'koktajle autorskie',
+      'wliczone pakiety (MAX, KLASYCZNY)',
+      'drinki 0%',
+      'drinki dla dzieci',
+      'GRANITA',
+    ],
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
 ];
@@ -98,7 +128,7 @@ export const faqs = [
   },
   { question: 'Czy pobieracie zaliczkę/zadatek?', answer: 'Nie pobieramy.' },
   {
-    question: 'Czy robicie drineczki dla dzieci?',
+    question: 'Czy robicie drinki dla dzieci?',
     answer: 'Tak, tylko dzieci obsługujemy w drugiej kolejności.',
   },
   {
