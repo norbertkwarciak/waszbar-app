@@ -1,5 +1,6 @@
 import type { Handler } from '@netlify/functions';
 import { google } from 'googleapis';
+import dayjs from 'dayjs';
 
 const SPREADSHEET_ID = process.env.GOOGLE_INQUIRY_SHEET_ID!;
 const SHEET_NAME = 'Arkusz1';
@@ -59,6 +60,7 @@ const handler: Handler = async (event) => {
     } = requestData;
 
     const row = [
+      dayjs().format('YYYY-MM-DD HH:mm'),
       date || '',
       fullName || '',
       email || '',
@@ -73,7 +75,7 @@ const handler: Handler = async (event) => {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A1:J1`,
+      range: `${SHEET_NAME}!A1:K1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [row] },
     });
