@@ -1,4 +1,4 @@
-import { Modal, Container, Group, Stack, Text, Title, List, Box, Anchor } from '@mantine/core';
+import { Modal, Container, Group, Stack, Text, Title, List, Box } from '@mantine/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
@@ -82,21 +82,6 @@ const HomePage = (): React.JSX.Element => {
           </List>
         </Stack>
       </Modal>
-
-      <Box
-        style={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          zIndex: 99,
-        }}
-      >
-        <Group gap="md">
-          <Anchor href="/faq" size="sm">
-            {t(HOME_PAGE_TRANSLATIONS.faqLink)}
-          </Anchor>
-        </Group>
-      </Box>
     </>
   );
 };
