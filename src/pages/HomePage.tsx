@@ -1,6 +1,5 @@
 import { Modal, Container, Group, Stack, Text, Title, List, Box, Anchor } from '@mantine/core';
 import React from 'react';
-import PageLayout from '@/components/PageLayout';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
@@ -13,17 +12,17 @@ const HomePage = (): React.JSX.Element => {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
-    <PageLayout>
+    <>
       <Container
         size="lg"
         style={{
-          height: '100vh',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
           alignItems: 'center',
           textAlign: 'center',
-          paddingTop: 40,
+          paddingTop: 20,
           paddingBottom: 20,
         }}
       >
@@ -98,7 +97,7 @@ const HomePage = (): React.JSX.Element => {
           </Anchor>
         </Group>
       </Box>
-    </PageLayout>
+    </>
   );
 };
 

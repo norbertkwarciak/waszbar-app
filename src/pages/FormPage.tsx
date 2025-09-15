@@ -23,7 +23,6 @@ import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
 import { barOptions, menuPackages } from '@/core/config/options';
-import PageLayout from '@/components/PageLayout';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
@@ -355,301 +354,299 @@ const FormPage = (): React.JSX.Element => {
     };
 
   return (
-    <PageLayout>
-      <Container size="md" style={{ paddingTop: 60, paddingBottom: 60, minHeight: '100vh' }}>
-        <Space h={20} />
-        <Stack gap="xl">
-          <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
+    <Container size="md" style={{ paddingTop: 20, paddingBottom: 60 }}>
+      <Space h={20} />
+      <Stack gap="xl">
+        <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
 
-          <Stack gap={4}>
-            <Text size="sm" fw={500}>
-              {t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
-              <Text span c="red" ml={4}>
-                *
-              </Text>
+        <Stack gap={4}>
+          <Text size="sm" fw={500}>
+            {t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
+            <Text span c="red" ml={4}>
+              *
             </Text>
+          </Text>
 
-            <Group align="center" gap="sm" wrap="nowrap">
-              <DateInput
-                placeholder={t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
-                value={dateString}
-                onChange={handleDateChange}
-                valueFormat="YYYY-MM-DD"
-                locale="pl"
-                disabled={availabilityLoading}
-                minDate={new Date()}
-                maxDate={lastCheckedDateObj ?? undefined}
-                leftSection={<IconCalendar size={18} />}
-                style={{ maxWidth: 250 }}
-              />
+          <Group align="center" gap="sm" wrap="nowrap">
+            <DateInput
+              placeholder={t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
+              value={dateString}
+              onChange={handleDateChange}
+              valueFormat="YYYY-MM-DD"
+              locale="pl"
+              disabled={availabilityLoading}
+              minDate={new Date()}
+              maxDate={lastCheckedDateObj ?? undefined}
+              leftSection={<IconCalendar size={18} />}
+              style={{ maxWidth: 250 }}
+            />
 
-              {availabilityLoading && offerLoading && (
-                <>
-                  <Loader size="xs" />
-                  <Text size="sm" c="dimmed">
-                    {t(FORM_PAGE_TRANSLATIONS.loadingAvailability)}
-                  </Text>
-                </>
-              )}
-            </Group>
-          </Stack>
-
-          {dateStatus === 'unavailable' && (
-            <Text c="red" size="sm">
-              {t(FORM_PAGE_TRANSLATIONS.dateUnavailable)}
-            </Text>
-          )}
-
-          {dateStatus === 'available' && (
-            <>
-              <Divider
-                label={
-                  <>
-                    {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
-                    <Text component="span" c="red" ml={4}>
-                      *
-                    </Text>
-                  </>
-                }
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
-                {barOptions.map((bar) => (
-                  <BarOptionBox
-                    key={bar.value}
-                    option={bar}
-                    isSelected={selectedBar === bar.label}
-                    onSelect={() => handleBarSelect(bar.label)}
-                  />
-                ))}
-              </SimpleGrid>
-
-              <Box mt="xl" ta="center">
-                <Button
-                  variant={selectedBar === NO_BAR ? 'filled' : 'outline'}
-                  color="gray"
-                  onClick={handleSkip}
-                >
-                  {t(FORM_PAGE_TRANSLATIONS.skipBar)}
-                </Button>
-              </Box>
-
-              <Divider
-                label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
-                value={venueLocation}
-                error={venueLocationError || undefined}
-                onChange={(e) =>
-                  handleFieldChange(setVenueLocation, setVenueLocationError)(e.currentTarget.value)
-                }
-                withAsterisk
-              />
-
-              <NumberInput
-                label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.guestsPlaceholder)}
-                value={numberOfGuests}
-                onChange={(value) => {
-                  if (typeof value === 'number' || value === '') {
-                    setNumberOfGuests(value);
-                  }
-                }}
-                min={0}
-                withAsterisk
-              />
-
-              <Divider
-                label={
-                  <>
-                    {t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}{' '}
-                    <Text component="span" c="red" ml={4}>
-                      *
-                    </Text>
-                  </>
-                }
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <Grid gutter="xl">
-                {menuPackages.map((pkg, i) => {
-                  const isLastItem = i === menuPackages.length - 1;
-                  const isOdd = menuPackages.length % 2 === 1;
-
-                  return (
-                    <Grid.Col key={pkg.value} span={6} offset={isLastItem && isOdd ? 3 : 0}>
-                      <MenuPackageBox
-                        pkg={pkg}
-                        isSelected={selectedPackage === pkg.value}
-                        onSelect={() => handlePackageSelect(pkg.value)}
-                        onOpenModal={() => openPackageModal(pkg)}
-                      />
-                    </Grid.Col>
-                  );
-                })}
-              </Grid>
-
-              <Divider
-                label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)}
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
-                {extraServices.map((service) => {
-                  const isSelected = selectedServices.includes(service.label);
-
-                  return (
-                    <ExtraServiceBox
-                      key={service.id}
-                      service={service}
-                      isSelected={isSelected}
-                      onToggle={() => toggleServiceSelection(service.label)}
-                      onOpenModal={() => setModalService(service)}
-                    />
-                  );
-                })}
-              </SimpleGrid>
-
-              <Divider
-                label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <Textarea
-                label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.additionalInfoPlaceholder)}
-                autosize
-                minRows={3}
-                value={notes}
-                onChange={(event) => setNotes(event.currentTarget.value)}
-              />
-
-              <Divider
-                label={t(FORM_PAGE_TRANSLATIONS.contactTitle)}
-                labelPosition="center"
-                styles={{
-                  label: {
-                    fontSize: '1rem',
-                  },
-                }}
-              />
-
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
-                required
-                value={fullName}
-                error={fullNameError || undefined}
-                onChange={(e) =>
-                  handleFieldChange(setFullName, setFullNameError)(e.currentTarget.value)
-                }
-              />
-
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-                <TextInput
-                  label={t(FORM_PAGE_TRANSLATIONS.emailLabel)}
-                  placeholder={t(FORM_PAGE_TRANSLATIONS.emailPlaceholder)}
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) =>
-                    handleFieldChange(setEmail, setEmailError, validateEmail)(e.currentTarget.value)
-                  }
-                  error={emailError || undefined}
-                />
-
-                <TextInput
-                  label={t(FORM_PAGE_TRANSLATIONS.phoneLabel)}
-                  placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) =>
-                    handleFieldChange(setPhone, setPhoneError, validatePhone)(e.currentTarget.value)
-                  }
-                  error={phoneError || undefined}
-                />
-              </SimpleGrid>
-
-              <Turnstile
-                sitekey={env.turnstile.siteKey}
-                onVerify={(token) => setCaptchaToken(token)}
-              />
-
-              <Button
-                size="lg"
-                mt="xl"
-                fullWidth
-                onClick={handleSubmit}
-                loading={isSubmitting}
-                disabled={isSubmitting}
-              >
-                {t(FORM_PAGE_TRANSLATIONS.submit)}
-              </Button>
-            </>
-          )}
-
-          <Space h={100} />
+            {availabilityLoading && offerLoading && (
+              <>
+                <Loader size="xs" />
+                <Text size="sm" c="dimmed">
+                  {t(FORM_PAGE_TRANSLATIONS.loadingAvailability)}
+                </Text>
+              </>
+            )}
+          </Group>
         </Stack>
 
-        <Modal
-          opened={!!modalService}
-          onClose={() => setModalService(null)}
-          title={
-            <Text fw="bold" size="lg">
-              {modalService ? modalService.label : null}
-            </Text>
-          }
-          centered
-        >
-          <Text size="sm">{modalService ? t(modalService.description) : null}</Text>
-        </Modal>
+        {dateStatus === 'unavailable' && (
+          <Text c="red" size="sm">
+            {t(FORM_PAGE_TRANSLATIONS.dateUnavailable)}
+          </Text>
+        )}
 
-        <MenuPackageModal
-          opened={!!modalPackage}
-          onClose={() => {
-            setModalPackage(null);
-            setPackagePdfUrl(null);
-            setExceedsMaxRange(null);
-          }}
-          modalPackage={modalPackage}
-          numberOfGuests={numberOfGuests}
-          rangesMap={rangesMap}
-          packagePdfUrl={packagePdfUrl}
-          exceedsMaxRange={exceedsMaxRange}
-        />
-      </Container>
-    </PageLayout>
+        {dateStatus === 'available' && (
+          <>
+            <Divider
+              label={
+                <>
+                  {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
+                  <Text component="span" c="red" ml={4}>
+                    *
+                  </Text>
+                </>
+              }
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
+              {barOptions.map((bar) => (
+                <BarOptionBox
+                  key={bar.value}
+                  option={bar}
+                  isSelected={selectedBar === bar.label}
+                  onSelect={() => handleBarSelect(bar.label)}
+                />
+              ))}
+            </SimpleGrid>
+
+            <Box mt="xl" ta="center">
+              <Button
+                variant={selectedBar === NO_BAR ? 'filled' : 'outline'}
+                color="gray"
+                onClick={handleSkip}
+              >
+                {t(FORM_PAGE_TRANSLATIONS.skipBar)}
+              </Button>
+            </Box>
+
+            <Divider
+              label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <TextInput
+              label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
+              placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
+              value={venueLocation}
+              error={venueLocationError || undefined}
+              onChange={(e) =>
+                handleFieldChange(setVenueLocation, setVenueLocationError)(e.currentTarget.value)
+              }
+              withAsterisk
+            />
+
+            <NumberInput
+              label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
+              placeholder={t(FORM_PAGE_TRANSLATIONS.guestsPlaceholder)}
+              value={numberOfGuests}
+              onChange={(value) => {
+                if (typeof value === 'number' || value === '') {
+                  setNumberOfGuests(value);
+                }
+              }}
+              min={0}
+              withAsterisk
+            />
+
+            <Divider
+              label={
+                <>
+                  {t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}{' '}
+                  <Text component="span" c="red" ml={4}>
+                    *
+                  </Text>
+                </>
+              }
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <Grid gutter="xl">
+              {menuPackages.map((pkg, i) => {
+                const isLastItem = i === menuPackages.length - 1;
+                const isOdd = menuPackages.length % 2 === 1;
+
+                return (
+                  <Grid.Col key={pkg.value} span={6} offset={isLastItem && isOdd ? 3 : 0}>
+                    <MenuPackageBox
+                      pkg={pkg}
+                      isSelected={selectedPackage === pkg.value}
+                      onSelect={() => handlePackageSelect(pkg.value)}
+                      onOpenModal={() => openPackageModal(pkg)}
+                    />
+                  </Grid.Col>
+                );
+              })}
+            </Grid>
+
+            <Divider
+              label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)}
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
+              {extraServices.map((service) => {
+                const isSelected = selectedServices.includes(service.label);
+
+                return (
+                  <ExtraServiceBox
+                    key={service.id}
+                    service={service}
+                    isSelected={isSelected}
+                    onToggle={() => toggleServiceSelection(service.label)}
+                    onOpenModal={() => setModalService(service)}
+                  />
+                );
+              })}
+            </SimpleGrid>
+
+            <Divider
+              label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <Textarea
+              label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
+              placeholder={t(FORM_PAGE_TRANSLATIONS.additionalInfoPlaceholder)}
+              autosize
+              minRows={3}
+              value={notes}
+              onChange={(event) => setNotes(event.currentTarget.value)}
+            />
+
+            <Divider
+              label={t(FORM_PAGE_TRANSLATIONS.contactTitle)}
+              labelPosition="center"
+              styles={{
+                label: {
+                  fontSize: '1rem',
+                },
+              }}
+            />
+
+            <TextInput
+              label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
+              placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
+              required
+              value={fullName}
+              error={fullNameError || undefined}
+              onChange={(e) =>
+                handleFieldChange(setFullName, setFullNameError)(e.currentTarget.value)
+              }
+            />
+
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
+              <TextInput
+                label={t(FORM_PAGE_TRANSLATIONS.emailLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.emailPlaceholder)}
+                type="email"
+                required
+                value={email}
+                onChange={(e) =>
+                  handleFieldChange(setEmail, setEmailError, validateEmail)(e.currentTarget.value)
+                }
+                error={emailError || undefined}
+              />
+
+              <TextInput
+                label={t(FORM_PAGE_TRANSLATIONS.phoneLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) =>
+                  handleFieldChange(setPhone, setPhoneError, validatePhone)(e.currentTarget.value)
+                }
+                error={phoneError || undefined}
+              />
+            </SimpleGrid>
+
+            <Turnstile
+              sitekey={env.turnstile.siteKey}
+              onVerify={(token) => setCaptchaToken(token)}
+            />
+
+            <Button
+              size="lg"
+              mt="xl"
+              fullWidth
+              onClick={handleSubmit}
+              loading={isSubmitting}
+              disabled={isSubmitting}
+            >
+              {t(FORM_PAGE_TRANSLATIONS.submit)}
+            </Button>
+          </>
+        )}
+
+        <Space h={100} />
+      </Stack>
+
+      <Modal
+        opened={!!modalService}
+        onClose={() => setModalService(null)}
+        title={
+          <Text fw="bold" size="lg">
+            {modalService ? modalService.label : null}
+          </Text>
+        }
+        centered
+      >
+        <Text size="sm">{modalService ? t(modalService.description) : null}</Text>
+      </Modal>
+
+      <MenuPackageModal
+        opened={!!modalPackage}
+        onClose={() => {
+          setModalPackage(null);
+          setPackagePdfUrl(null);
+          setExceedsMaxRange(null);
+        }}
+        modalPackage={modalPackage}
+        numberOfGuests={numberOfGuests}
+        rangesMap={rangesMap}
+        packagePdfUrl={packagePdfUrl}
+        exceedsMaxRange={exceedsMaxRange}
+      />
+    </Container>
   );
 };
 

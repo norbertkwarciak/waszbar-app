@@ -36,6 +36,7 @@ persistQueryClient({
 const HomePage = lazy(() => import('./pages/HomePage'));
 const FormPage = lazy(() => import('./pages/FormPage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 const flatColor = (
   hex: string,
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: 'faq',
         element: <FaqPage />,
+      },
+      {
+        path: 'contact',
+        element: <ContactPage />,
       },
     ],
   },

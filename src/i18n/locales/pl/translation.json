@@ -79,6 +79,16 @@
   "faqPage": {
     "title": "Najczęściej zadawane pytania"
   },
+  "contactPage": {
+    "title": "Skontaktuj się z nami",
+    "mainText": "WaszBar.pl – Obsługa barmańska imprez",
+    "website": "www.waszbar.pl",
+    "email": "biuro@waszbar.pl",
+    "phone": "698 836 034",
+    "fbLink": "Facebook: barmani.eventy",
+    "slogan": "Zaufaj profesjonalistom",
+    "signature": "Pozdrawiam,\nŁukasz Kwarciak"
+  },
   "common": {
     "back": "← Powrót do strony głównej"
   }

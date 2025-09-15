@@ -81,6 +81,16 @@ export interface PageTranslations {
   faqPage: {
     title: string;
   };
+  contactPage: {
+    title: string;
+    mainText: string;
+    website: string;
+    email: string;
+    phone: string;
+    fbLink: string;
+    slogan: string;
+    signature: string;
+  };
   common: {
     back: string;
   };
@@ -94,6 +104,12 @@ export const HOME_PAGE_TRANSLATIONS =
 export const FORM_PAGE_TRANSLATIONS =
   createTranslationKeys<PageTranslations['formPage']>('formPage');
 
+// Type-safe keys for `faqPage`
 export const FAQ_PAGE_TRANSLATIONS = createTranslationKeys<PageTranslations['faqPage']>('faqPage');
 
+// Type-safe keys for `contactPage`
+export const CONTACT_PAGE_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['contactPage']>('contactPage');
+
+// Type-safe keys for `common`
 export const COMMON = createTranslationKeys<PageTranslations['common']>('common');
