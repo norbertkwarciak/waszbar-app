@@ -6,9 +6,9 @@ import { NavLink } from 'react-router-dom';
 const HEADER_HEIGHT = 60;
 
 const LINKS = [
-  { label: 'Home', to: '/' },
+  { label: 'Strona Główna', to: '/' },
   { label: 'FAQ', to: '/faq' },
-  { label: 'Contact', to: '/contact' },
+  { label: 'Kontakt', to: '/contact' },
 ];
 
 function AppLayout({ children }: { children: React.ReactNode }): React.ReactElement {
