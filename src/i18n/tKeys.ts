@@ -27,6 +27,7 @@ export interface PageTranslations {
     select: string;
     skipBar: string;
     locationLabel: string;
+    locationInputLabel: string;
     locationValidationRequired: string;
     locationPlaceholder: string;
     guestsLabel: string;

@@ -26,6 +26,7 @@
     "select": "WYBIERAM",
     "skipBar": "NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać",
     "locationLabel": "Podaj miejsce wesela oraz liczbę gości",
+    "locationInputLabel": "Kod pocztowy i miejscowość",
     "locationValidationRequired": "Kod pocztowy i miejscowość są wymagane.",
     "locationPlaceholder": "np. 00-001 Warszawa",
     "guestsLabel": "Planowana liczba gości",

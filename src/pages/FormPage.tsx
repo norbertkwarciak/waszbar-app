@@ -449,7 +449,7 @@ const FormPage = (): React.JSX.Element => {
             />
 
             <TextInput
-              label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
+              label={t(FORM_PAGE_TRANSLATIONS.locationInputLabel)}
               placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
               value={venueLocation}
               error={venueLocationError || undefined}
