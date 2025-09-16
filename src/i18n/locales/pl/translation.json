@@ -59,7 +59,6 @@
     "dataFetchErrorMsg": "Nie udało się załadować dostępności terminów.",
     "openInNewTab": "Otwórz w nowej karcie",
     "guestsExceedRangeMessage": "Zapytania w sprawie wesel oraz eventów z pakietem {{menuPackage}} dla liczby gości przekraczającej {{maxGuests}} prosimy kierować na adres <1>{{email}}</1> w celu przygotowania dla Państwa indywidualnej oferty.",
-
     "fieldValidationMessageLabel": {
       "selectedBar": "aranżacja baru",
       "venueLocation": "kod pocztowy i miejscowość",
@@ -76,6 +75,9 @@
       "classic": "Pakiet koktajli klasycznych to zbiór znanych, cenionych i lubianych drinków – alkoholowych i bezalkoholowych. Tutaj garnish to zesty, cytrusy, suszone owoce i mnóstwo ziół. Minimalizm i elegancja. Bardzo popularne menu na wesela w formie eleganckiego przyjęcia lub garden party. Koktajle bezalkoholowe w cenie.",
       "excellent": "Menu dla Par Młodych wymagających „czegoś innego”. Excellent to pakiet koktajli inspirowanych klasyką, tzw. twistów, w większości naszego autorstwa. Oprócz koktajli z karty goście będą mogli napić się standardowych klasyków i drinków bezalkoholowych. W cenie menu Excellent wliczony jest granitor z 50 porcjami koktajlu Pornstar Martini."
     }
+  },
+  "galleryPage": {
+    "title": "Jak pracujemy"
   },
   "faqPage": {
     "title": "Najczęściej zadawane pytania"

@@ -60,7 +60,6 @@ export interface PageTranslations {
     dataFetchErrorMsg: string;
     openInNewTab: string;
     guestsExceedRangeMessage: string;
-
     fieldValidationMessageLabel: {
       selectedBar: string;
       venueLocation: string;
@@ -70,7 +69,6 @@ export interface PageTranslations {
       email: string;
       phone: string;
     };
-
     menuPackagesDescriptions: {
       basic: string;
       medium: string;
@@ -78,6 +76,9 @@ export interface PageTranslations {
       classic: string;
       excellent: string;
     };
+  };
+  galleryPage: {
+    title: string;
   };
   faqPage: {
     title: string;
@@ -104,6 +105,10 @@ export const HOME_PAGE_TRANSLATIONS =
 // Type-safe keys for `formPage`
 export const FORM_PAGE_TRANSLATIONS =
   createTranslationKeys<PageTranslations['formPage']>('formPage');
+
+// Type-safe keys for `galleryPage`
+export const GALLERY_PAGE_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['galleryPage']>('galleryPage');
 
 // Type-safe keys for `faqPage`
 export const FAQ_PAGE_TRANSLATIONS = createTranslationKeys<PageTranslations['faqPage']>('faqPage');

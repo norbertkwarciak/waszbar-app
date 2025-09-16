@@ -7,6 +7,7 @@ const HEADER_HEIGHT = 60;
 
 const LINKS = [
   { label: 'Strona Główna', to: '/' },
+  { label: 'Jak pracujemy', to: '/gallery' },
   { label: 'FAQ', to: '/faq' },
   { label: 'Kontakt', to: '/contact' },
 ];

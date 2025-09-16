@@ -4,6 +4,7 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import ReactDOM from 'react-dom/client';
 import '@mantine/core/styles.css';
+import '@mantine/carousel/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
@@ -37,6 +38,7 @@ const HomePage = lazy(() => import('./pages/HomePage'));
 const FormPage = lazy(() => import('./pages/FormPage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 
 const flatColor = (
   hex: string,
@@ -87,6 +89,10 @@ const router = createBrowserRouter([
       {
         path: 'form/:formType',
         element: <FormPage />,
+      },
+      {
+        path: 'gallery',
+        element: <GalleryPage />,
       },
       {
         path: 'faq',
