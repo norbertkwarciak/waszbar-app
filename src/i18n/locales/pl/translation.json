@@ -25,7 +25,7 @@
     "barSelectionTitle": "Oferujemy 3 aranżacje baru do wyboru",
     "select": "WYBIERAM",
     "skipBar": "NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać",
-    "locationLabel": "Kod pocztowy i miejscowość",
+    "locationLabel": "Podaj miejsce wesela oraz liczbę gości",
     "locationValidationRequired": "Kod pocztowy i miejscowość są wymagane.",
     "locationPlaceholder": "np. 00-001 Warszawa",
     "guestsLabel": "Planowana liczba gości",
