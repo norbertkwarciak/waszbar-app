@@ -32,7 +32,7 @@ const handler: Handler = async (event) => {
       senderEmail: ADMIN_EMAIL,
       senderName: ADMIN_SENDER_NAME,
       adminEmails: [
-        { email: ADMIN_EMAIL, name: 'Biuro WaszBar' },
+        { email: ADMIN_EMAIL, name: 'Biuro Waszbar' },
         { email: SECONDARY_ADMIN_EMAIL, name: 'Norbert' },
       ],
     });

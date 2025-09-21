@@ -15,7 +15,7 @@ export function renderBaseEmailLayout({
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1D1E24; height: 100px;">
           <tr>
             <td align="center" valign="middle">
-              <img src="https://waszbar.pl/wp-content/uploads/2024/10/logo-waszbarblack.png" alt="WaszBar logo" style="max-height: 50px;" />
+              <img src="https://waszbar.pl/wp-content/uploads/2024/10/logo-waszbarblack.png" alt="Waszbar logo" style="max-height: 50px;" />
             </td>
           </tr>
         </table>
