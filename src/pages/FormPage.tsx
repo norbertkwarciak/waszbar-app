@@ -37,9 +37,9 @@ import { env } from '@/core/config/env';
 import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
+import type { MenuPackage } from '@/types';
 
 const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
-const NO_BAR = 'Bez baru';
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
@@ -74,7 +74,7 @@ const FormPage = (): React.JSX.Element => {
   const [venueLocation, setVenueLocation] = useState<string>('');
   const [venueLocationError, setVenueLocationError] = useState<string | null>(null);
   const [numberOfGuests, setNumberOfGuests] = useState<number | ''>(100);
-  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<MenuPackage | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
@@ -143,10 +143,10 @@ const FormPage = (): React.JSX.Element => {
   };
 
   const handleSkip = (): void => {
-    setSelectedBar(NO_BAR);
+    setSelectedBar(t(FORM_PAGE_TRANSLATIONS.noBar));
   };
 
-  const handlePackageSelect = (value: string): void => {
+  const handlePackageSelect = (value: MenuPackage | null): void => {
     setSelectedPackage(value);
   };
 
@@ -235,9 +235,37 @@ const FormPage = (): React.JSX.Element => {
 
   const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
 
+  function getPackagePrice(
+    menuPackages: { name: string; prices: { people: number; price: number }[] }[],
+    selectedPackageValue: string,
+    numberOfGuests: number,
+  ): number {
+    const pkg = menuPackages.find(
+      (p) => p.name.toUpperCase() === selectedPackageValue.toUpperCase(),
+    );
+    if (!pkg) return 0;
+
+    const sortedPrices = [...pkg.prices].sort((a, b) => a.people - b.people);
+    const selected = sortedPrices.find((p) => numberOfGuests <= p.people) ?? sortedPrices.at(-1);
+
+    return selected?.price ?? 0;
+  }
+
   const handleSubmit = async (): Promise<void> => {
     const isValid = validateForm();
     if (!isValid) return;
+
+    const guests = Number(numberOfGuests);
+
+    const packagePrice = getPackagePrice(
+      offerData?.menuPackages ?? [],
+      selectedPackage?.value ?? '',
+      guests,
+    );
+
+    const selectedExtraServiceObjects = extraServices.filter((s) =>
+      selectedServices.includes(s.label),
+    );
 
     submitInquiry(
       {
@@ -247,7 +275,7 @@ const FormPage = (): React.JSX.Element => {
         phone,
         numberOfGuests: Number(numberOfGuests),
         venueLocation,
-        selectedPackage,
+        selectedPackage: selectedPackage?.value ?? '',
         selectedBar,
         selectedServices,
         notes,
@@ -264,12 +292,13 @@ const FormPage = (): React.JSX.Element => {
                 email,
                 phone,
                 venueLocation,
-                selectedPackage,
+                selectedPackage: selectedPackage?.value ?? '',
                 selectedBar,
-                selectedServices,
+                selectedServices: selectedExtraServiceObjects,
                 notes,
                 numberOfGuests,
                 date: dateString,
+                packagePrice,
               }),
             });
 
@@ -290,9 +319,6 @@ const FormPage = (): React.JSX.Element => {
               color: 'orange',
               icon: <IconX size={18} />,
             });
-
-            navigate('/');
-            resetForm();
           }
         },
         onError: (error: Error) => {
@@ -430,7 +456,7 @@ const FormPage = (): React.JSX.Element => {
 
             <Box mt="xl" ta="center">
               <Button
-                variant={selectedBar === NO_BAR ? 'filled' : 'outline'}
+                variant={selectedBar === t(FORM_PAGE_TRANSLATIONS.noBar) ? 'filled' : 'outline'}
                 color="gray"
                 onClick={handleSkip}
               >
@@ -498,8 +524,8 @@ const FormPage = (): React.JSX.Element => {
                   <Grid.Col key={pkg.value} span={6} offset={isLastItem && isOdd ? 3 : 0}>
                     <MenuPackageBox
                       pkg={pkg}
-                      isSelected={selectedPackage === pkg.value}
-                      onSelect={() => handlePackageSelect(pkg.value)}
+                      isSelected={selectedPackage?.value === pkg.value}
+                      onSelect={() => handlePackageSelect(pkg)}
                       onOpenModal={() => openPackageModal(pkg)}
                     />
                   </Grid.Col>

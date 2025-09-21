@@ -26,6 +26,6 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "netlify/functions"],
+  "include": ["src", "netlify/functions", "netlify/emailTemplates"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
