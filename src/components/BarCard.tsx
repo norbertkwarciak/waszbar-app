@@ -35,7 +35,15 @@ const BarCard = ({ image, alt, buttonText, to, onClick }: BarCardProps): React.J
 
   const content = (
     <Stack align="center">
-      <Image src={image} alt={alt} height={300} fit="cover" radius="md" />
+      <Image
+        component="img"
+        data-src={image}
+        className="lazyload blur-on-load"
+        alt={alt}
+        height={300}
+        fit="cover"
+        radius="md"
+      />
       <Box
         mt="sm"
         px="md"

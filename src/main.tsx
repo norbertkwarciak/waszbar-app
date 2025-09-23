@@ -12,6 +12,7 @@ import { MantineProvider, createTheme } from '@mantine/core';
 import App from './App';
 import { Notifications } from '@mantine/notifications';
 import './i18n';
+import 'lazysizes';
 
 import './core/theme/theme-style.scss';
 

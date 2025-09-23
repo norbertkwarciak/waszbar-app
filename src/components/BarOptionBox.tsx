@@ -24,7 +24,16 @@ export default function BarOptionBox({
 
   return (
     <Paper shadow="md" radius="md" p="sm" withBorder style={{ textAlign: 'center' }}>
-      <Image src={option.image} alt={option.label} height={250} fit="cover" radius="md" mb="sm" />
+      <Image
+        component="img"
+        data-src={option.image}
+        className="lazyload blur-on-load"
+        alt={option.label}
+        height={250}
+        fit="cover"
+        radius="md"
+        mb="sm"
+      />
       <Box
         h="100px"
         style={{

@@ -56,7 +56,9 @@ export default function MenuPackageBox({
       >
         <Stack gap="md">
           <Image
-            src={pkg.thumbnail}
+            component="img"
+            data-src={pkg.thumbnail}
+            className="lazyload blur-on-load"
             alt={pkg.label}
             height={340}
             fit="cover"

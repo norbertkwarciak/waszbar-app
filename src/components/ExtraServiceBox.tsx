@@ -53,7 +53,9 @@ export default function ExtraServiceBox({
     >
       <Stack gap="xs" style={{ height: '100%' }}>
         <Image
-          src={IMAGES[service.id as keyof typeof IMAGES] ?? IMAGES.logo}
+          component="img"
+          data-src={IMAGES[service.id as keyof typeof IMAGES] ?? IMAGES.logo}
+          className="lazyload blur-on-load"
           alt={service.label}
           height={350}
           fit="cover"

@@ -45,3 +45,14 @@ select {
 button {
   cursor: pointer;
 }
+
+.blur-on-load {
+  filter: blur(15px);
+  background-color: #eee;
+  transition: filter 0.5s ease;
+  will-change: filter;
+}
+
+.blur-on-load.lazyloaded {
+  filter: blur(0);
+}
