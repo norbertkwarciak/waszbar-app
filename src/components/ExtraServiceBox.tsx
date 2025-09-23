@@ -31,7 +31,7 @@ export default function ExtraServiceBox({
       onClick={onOpenModal}
       shadow="md"
       radius="md"
-      p="sm"
+      p="md"
       withBorder
       style={{
         display: 'block',
@@ -39,8 +39,6 @@ export default function ExtraServiceBox({
         textAlign: 'left',
         cursor: 'pointer',
         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-        borderColor: isSelected ? '#228be6' : undefined,
-        borderWidth: isSelected ? 2 : undefined,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'translateY(-2px)';
@@ -57,7 +55,7 @@ export default function ExtraServiceBox({
           data-src={IMAGES[service.id as keyof typeof IMAGES] ?? IMAGES.logo}
           className="lazyload blur-on-load"
           alt={service.label}
-          height={350}
+          height={300}
           fit="cover"
           radius="md"
           style={{ pointerEvents: 'none' }}

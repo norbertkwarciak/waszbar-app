@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
 import Turnstile from 'react-turnstile';
 import {
-  Box,
   Button,
   Container,
   Divider,
@@ -140,10 +139,6 @@ const FormPage = (): React.JSX.Element => {
 
   const handleBarSelect = (barType: string): void => {
     setSelectedBar(barType);
-  };
-
-  const handleSkip = (): void => {
-    setSelectedBar(t(FORM_PAGE_TRANSLATIONS.noBar));
   };
 
   const handlePackageSelect = (value: MenuPackage | null): void => {
@@ -443,26 +438,16 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <SimpleGrid cols={{ base: 1, sm: 3 }} spacing="xl">
+            <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="md" p="xl">
               {barOptions.map((bar) => (
                 <BarOptionBox
                   key={bar.value}
                   option={bar}
-                  isSelected={selectedBar === bar.label}
-                  onSelect={() => handleBarSelect(bar.label)}
+                  isSelected={selectedBar === bar.value}
+                  onSelect={() => handleBarSelect(bar.value)}
                 />
               ))}
             </SimpleGrid>
-
-            <Box mt="xl" ta="center">
-              <Button
-                variant={selectedBar === t(FORM_PAGE_TRANSLATIONS.noBar) ? 'filled' : 'outline'}
-                color="gray"
-                onClick={handleSkip}
-              >
-                {t(FORM_PAGE_TRANSLATIONS.skipBar)}
-              </Button>
-            </Box>
 
             <Divider
               label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
@@ -515,7 +500,7 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <Grid gutter="xl">
+            <Grid gutter="md" p="xl">
               {menuPackages.map((pkg, i) => {
                 const isLastItem = i === menuPackages.length - 1;
                 const isOdd = menuPackages.length % 2 === 1;
@@ -543,7 +528,7 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="xl">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" p="xl">
               {extraServices.map((service) => {
                 const isSelected = selectedServices.includes(service.label);
 

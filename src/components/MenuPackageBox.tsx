@@ -36,7 +36,7 @@ export default function MenuPackageBox({
         onClick={onOpenModal}
         shadow="md"
         radius="md"
-        p="lg"
+        p="md"
         withBorder
         style={{
           display: 'block',
@@ -60,7 +60,7 @@ export default function MenuPackageBox({
             data-src={pkg.thumbnail}
             className="lazyload blur-on-load"
             alt={pkg.label}
-            height={340}
+            height={300}
             fit="cover"
             radius="md"
             style={{ pointerEvents: 'none' }}

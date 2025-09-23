@@ -5,17 +5,22 @@ export const barOptions = [
   {
     label: 'BIAŁY KLASYCZNY WESELNY',
     image: IMAGES.whiteClassicWedding,
-    value: 'white-classic',
+    value: 'biały klasyczny weselny',
   },
   {
     label: 'CZARNY GLAMOUR',
     image: IMAGES.blackGlamour,
-    value: 'black-glamour',
+    value: 'czarny glamour',
   },
   {
     label: 'RUSTYKALNY',
     image: IMAGES.rustic,
-    value: 'rustic',
+    value: 'rustykalny',
+  },
+  {
+    label: 'Nie potrzebujemy baru. Na sali będzie bar, z którego będzie można skorzystać.',
+    image: '',
+    value: 'bez baru',
   },
 ];
 

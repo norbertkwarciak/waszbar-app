@@ -24,8 +24,6 @@
     "dateUnavailable": "Termin zajęty, wybierz inny termin.",
     "barSelectionTitle": "Oferujemy 3 aranżacje baru do wyboru",
     "select": "WYBIERAM",
-    "skipBar": "NIE POTRZEBUJEMY BARU, na sali jest bar, z którego można skorzystać",
-    "noBar": "Bez baru",
     "locationLabel": "Podaj miejsce wesela oraz liczbę gości",
     "locationInputLabel": "Kod pocztowy i miejscowość",
     "locationValidationRequired": "Kod pocztowy i miejscowość są wymagane.",

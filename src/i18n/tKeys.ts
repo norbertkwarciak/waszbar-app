@@ -25,8 +25,6 @@ export interface PageTranslations {
     dateUnavailable: string;
     barSelectionTitle: string;
     select: string;
-    skipBar: string;
-    noBar: string;
     locationLabel: string;
     locationInputLabel: string;
     locationValidationRequired: string;
