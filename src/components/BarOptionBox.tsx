@@ -32,7 +32,16 @@ export default function BarOptionBox({
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
+        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
         height: '100%',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'none';
+        e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
       }}
     >
       {!option.image ? (
