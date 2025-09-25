@@ -1,9 +1,23 @@
-import React from 'react';
-import { Button, Divider, Group, Modal, Text } from '@mantine/core';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  Divider,
+  Group,
+  Modal,
+  Text,
+  Box,
+  Alert,
+  Center,
+  Loader,
+  Stack,
+} from '@mantine/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { menuPackages } from '@/core/config/options';
 import { env } from '@/core/config/env';
+import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer';
+import '@cyntler/react-doc-viewer/dist/index.css';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 interface Props {
   opened: boolean;
@@ -23,8 +37,87 @@ export default function MenuPackageModal({
   exceedsMaxRange,
 }: Props): React.JSX.Element {
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    if (!packagePdfUrl) return;
+    setIsLoading(true);
+    setIsError(false);
+
+    fetch(packagePdfUrl, { method: 'HEAD' })
+      .then((res) => {
+        if (!res.ok) throw new Error('Not OK');
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        setIsError(true);
+      });
+  }, [packagePdfUrl]);
 
   if (!modalPackage) return <></>;
+
+  const renderDocViewer = (): React.JSX.Element => {
+    if (isLoading) {
+      return (
+        <Center h="100%" style={{ minHeight: '60vh' }}>
+          <Stack align="center" gap="sm">
+            <Loader size="lg" />
+            <Text c="dimmed" size="sm">
+              {t(FORM_PAGE_TRANSLATIONS.loadingDocument)}
+            </Text>
+          </Stack>
+        </Center>
+      );
+    }
+
+    if (isError || !packagePdfUrl) {
+      return (
+        <Alert
+          icon={<IconAlertCircle size="1rem" />}
+          title={t(FORM_PAGE_TRANSLATIONS.failedToLoadDocumentError)}
+          color="red"
+          variant="light"
+        >
+          {t(FORM_PAGE_TRANSLATIONS.failedToLoadDocumentMessage)}
+        </Alert>
+      );
+    }
+
+    try {
+      return (
+        <DocViewer
+          documents={[{ uri: packagePdfUrl }]}
+          pluginRenderers={DocViewerRenderers}
+          config={{
+            header: {
+              disableHeader: true,
+              disableFileName: true,
+              retainURLParams: false,
+            },
+            pdfVerticalScrollByDefault: true,
+            pdfZoom: {
+              defaultZoom: 1.0,
+              zoomJump: 0.2,
+            },
+          }}
+          style={{ width: '100%', height: '100%' }}
+        />
+      );
+    } catch {
+      return (
+        <Alert
+          icon={<IconAlertCircle size="1rem" />}
+          title={t(FORM_PAGE_TRANSLATIONS.failedToLoadDocumentError)}
+          color="red"
+          variant="light"
+        >
+          {t(FORM_PAGE_TRANSLATIONS.unsupportedFileType)}
+        </Alert>
+      );
+    }
+  };
 
   return (
     <Modal
@@ -59,20 +152,18 @@ export default function MenuPackageModal({
             />
           </Text>
         </>
-      ) : packagePdfUrl ? (
+      ) : (
         <>
-          <iframe
-            src={packagePdfUrl}
-            style={{ width: '100%', height: '60vh', border: 'none' }}
-            title="Oferta PDF"
-          />
-          <Group mt="sm" justify="flex-end">
-            <Button component="a" href={packagePdfUrl} target="_blank" rel="noopener noreferrer">
-              {t(FORM_PAGE_TRANSLATIONS.openInNewTab)}
-            </Button>
-          </Group>
+          <Box style={{ width: '100%' }}>{renderDocViewer()}</Box>
+          {packagePdfUrl && !isError && (
+            <Group mt="sm" justify="flex-end">
+              <Button component="a" href={packagePdfUrl} target="_blank" rel="noopener noreferrer">
+                {t(FORM_PAGE_TRANSLATIONS.openInNewTab)}
+              </Button>
+            </Group>
+          )}
         </>
-      ) : null}
+      )}
     </Modal>
   );
 }

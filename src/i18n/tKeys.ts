@@ -75,6 +75,10 @@ export interface PageTranslations {
       classic: string;
       excellent: string;
     };
+    failedToLoadDocumentError: string;
+    failedToLoadDocumentMessage: string;
+    loadingDocument: string;
+    unsupportedFileType: string;
   };
   galleryPage: {
     title: string;

@@ -56,3 +56,12 @@ button {
 .blur-on-load.lazyloaded {
   filter: blur(0);
 }
+
+/* chowamy toolbar react-doc-viewer */
+#pdf-controls {
+  display: none !important;
+}
+
+#pdf-page-wrapper {
+  margin-top: 20px !important;
+}
