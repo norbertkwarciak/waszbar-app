@@ -39,9 +39,31 @@ const handler: Handler = async (event) => {
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
         fullAddress,
       )}&countrycodes=pl&limit=1`,
+      {
+        headers: {
+          'User-Agent': 'waszbar-app (norbert.kwarciak@gmail.com)', // wymagany nagłówek
+          'Accept-Language': 'pl',
+        },
+      },
     );
 
+    const geoContentType = geoRes.headers.get('content-type') || '';
+    if (!geoContentType.includes('application/json')) {
+      const errorText = await geoRes.text();
+      console.error('[Nominatim ERROR]', geoRes.status, errorText.slice(0, 300));
+      return {
+        statusCode: 502,
+        body: JSON.stringify({
+          error: 'Błąd zapytania do OpenStreetMap (Nominatim)',
+          status: geoRes.status,
+          contentType: geoContentType,
+          details: errorText.slice(0, 300),
+        }),
+      };
+    }
+
     const geoData = await geoRes.json();
+
     const { lat, lon, display_name } = geoData?.[0] || {};
 
     if (!lat || !lon) {
