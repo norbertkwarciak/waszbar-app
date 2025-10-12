@@ -20,6 +20,13 @@ const handler: Handler = async (event) => {
       };
     }
 
+    if (!OPENROUTESERVICE_API_KEY) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Brakuje API KEY do OpenRouteService w środowisku.' }),
+      };
+    }
+
     const { postalCode, city } = JSON.parse(event.body || '{}');
 
     if (!postalCode || !city) {
@@ -60,9 +67,15 @@ const handler: Handler = async (event) => {
     const normalizedPostalCode = normalize(postalCode);
 
     const cityMatches = normalizedDisplayName.includes(normalizedCity);
-    const postalMatches =
-      normalizedDisplayName.includes(normalizedPostalCode) ||
-      normalizedDisplayName.includes(normalizedPostalCode.replace('-', ''));
+
+    const postalVariants = [
+      normalizedPostalCode,
+      normalizedPostalCode.replace('-', ''),
+      normalizedPostalCode.replace('-', ' '),
+      normalizedPostalCode.replace('-', '').replace(/\s/g, ''),
+    ];
+
+    const postalMatches = postalVariants.some((variant) => normalizedDisplayName.includes(variant));
 
     if (!cityMatches || !postalMatches) {
       return {
@@ -77,7 +90,7 @@ const handler: Handler = async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: OPENROUTESERVICE_API_KEY ?? '',
+        Authorization: OPENROUTESERVICE_API_KEY,
       },
       body: JSON.stringify({
         locations: [
@@ -88,13 +101,28 @@ const handler: Handler = async (event) => {
       }),
     });
 
+    if (!matrixRes.ok) {
+      const errorText = await matrixRes.text(); // nie .json() – to może być HTML!
+      console.error('[OpenRouteService ERROR]', matrixRes.status, errorText);
+
+      return {
+        statusCode: matrixRes.status,
+        body: JSON.stringify({
+          error: 'Błąd połączenia z usługą obliczania odległości.',
+          orsStatus: matrixRes.status,
+          details: errorText.slice(0, 200),
+        }),
+      };
+    }
+
     const matrixData = await matrixRes.json();
+
     const distanceMeters = matrixData?.distances?.[0]?.[1];
 
     if (!distanceMeters) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Błąd podczas obliczania odległości.' }),
+        body: JSON.stringify({ error: 'Nie udało się odczytać odległości z odpowiedzi ORS.' }),
       };
     }
 
@@ -121,10 +149,13 @@ const handler: Handler = async (event) => {
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
+    console.error('[calculate-travel-cost] Unexpected error', err);
+
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: err.message || 'Wystąpił nieoczekiwany błąd.',
+        error: 'Wystąpił nieoczekiwany błąd.',
+        message: err.message,
       }),
     };
   }
