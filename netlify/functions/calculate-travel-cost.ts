@@ -101,8 +101,13 @@ const handler: Handler = async (event) => {
       }),
     });
 
-    if (!matrixRes.ok) {
-      const errorText = await matrixRes.text(); // nie .json() – to może być HTML!
+    // 🔍 DEBUG START
+    const contentType = matrixRes.headers.get('content-type');
+    console.log('[OpenRouteService] response status:', matrixRes.status);
+    console.log('[OpenRouteService] content-type:', contentType);
+
+    if (!matrixRes.ok || !contentType?.includes('application/json')) {
+      const errorText = await matrixRes.text();
       console.error('[OpenRouteService ERROR]', matrixRes.status, errorText);
 
       return {
@@ -110,10 +115,12 @@ const handler: Handler = async (event) => {
         body: JSON.stringify({
           error: 'Błąd połączenia z usługą obliczania odległości.',
           orsStatus: matrixRes.status,
+          contentType,
           details: errorText.slice(0, 200),
         }),
       };
     }
+    // 🔍 DEBUG END
 
     const matrixData = await matrixRes.json();
 
