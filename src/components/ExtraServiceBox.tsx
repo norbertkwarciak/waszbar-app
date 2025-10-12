@@ -15,20 +15,17 @@ interface ExtraServiceBoxProps {
   service: ExtraService;
   isSelected: boolean;
   onToggle: () => void;
-  onOpenModal: () => void;
 }
 
 export default function ExtraServiceBox({
   service,
   isSelected,
   onToggle,
-  onOpenModal,
 }: ExtraServiceBoxProps): React.JSX.Element {
   const { t } = useTranslation();
 
   return (
     <Paper
-      onClick={onOpenModal}
       shadow="md"
       radius="md"
       p="md"
@@ -37,16 +34,6 @@ export default function ExtraServiceBox({
         display: 'block',
         width: '100%',
         textAlign: 'left',
-        cursor: 'pointer',
-        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'none';
-        e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
       }}
     >
       <Stack gap="xs" style={{ height: '100%' }}>
@@ -67,6 +54,9 @@ export default function ExtraServiceBox({
           </Text>
           <Text size="xs" c="dimmed">
             {service.price} PLN
+          </Text>
+          <Text size="sm" mt="xs">
+            {service.description}
           </Text>
         </Box>
 

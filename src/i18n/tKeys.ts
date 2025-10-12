@@ -25,10 +25,19 @@ export interface PageTranslations {
     dateUnavailable: string;
     barSelectionTitle: string;
     select: string;
+
     locationLabel: string;
-    locationInputLabel: string;
-    locationValidationRequired: string;
-    locationPlaceholder: string;
+    postalCodeInputLabel: string;
+    postalCodePlaceholder: string;
+    postalCodeInvalidError: string;
+    cityInputLabel: string;
+    cityPlaceholder: string;
+    cityRequiredError: string;
+    calculateTravelCostButtonText: string;
+    travelCostLabel: string;
+    freeTravelCostLabel: string;
+    dataTravelCostFetchErrorMsg: string;
+
     guestsLabel: string;
     guestsPlaceholder: string;
     menuSelectionTitle: string;
@@ -61,7 +70,8 @@ export interface PageTranslations {
     guestsExceedRangeMessage: string;
     fieldValidationMessageLabel: {
       selectedBar: string;
-      venueLocation: string;
+      postalCode: string;
+      city: string;
       numberOfGuests: string;
       selectedPackage: string;
       fullName: string;

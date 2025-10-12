@@ -9,7 +9,6 @@ import {
   Grid,
   Group,
   Loader,
-  Modal,
   NumberInput,
   SimpleGrid,
   Space,
@@ -33,12 +32,10 @@ import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
 import { env } from '@/core/config/env';
-import { pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
+import { countDigits, pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
 import type { MenuPackage } from '@/types';
-
-const countDigits = (s: string): number => (s.match(/\d/g) ?? []).length;
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
@@ -46,7 +43,8 @@ const FormPage = (): React.JSX.Element => {
 
   const fieldLabels: Record<string, string> = {
     selectedBar: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedBar),
-    venueLocation: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.venueLocation),
+    postalCode: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.postalCode),
+    city: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.city),
     numberOfGuests: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.numberOfGuests),
     selectedPackage: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedPackage),
     fullName: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.fullName),
@@ -70,21 +68,30 @@ const FormPage = (): React.JSX.Element => {
   const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
   const [notes, setNotes] = useState<string>('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
-  const [venueLocation, setVenueLocation] = useState<string>('');
-  const [venueLocationError, setVenueLocationError] = useState<string | null>(null);
+
+  const [travelCost, setTravelCost] = useState<number | null>(null);
+  const [travelLoading, setTravelLoading] = useState<boolean>(false);
+  const [travelError, setTravelError] = useState<string | null>(null);
+
+  const [postalCode, setPostalCode] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCodeError, setPostalCodeError] = useState<string | null>(null);
+  const [cityError, setCityError] = useState<string | null>(null);
+
   const [numberOfGuests, setNumberOfGuests] = useState<number | ''>(100);
+  const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
+
   const [selectedPackage, setSelectedPackage] = useState<MenuPackage | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [modalService, setModalService] = useState<null | (typeof extraServices)[0]>(null);
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
+
   const [fullName, setFullName] = useState<string>('');
   const [fullNameError, setFullNameError] = useState<string | null>(null);
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [phone, setPhone] = useState<string>('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
-  const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
@@ -141,6 +148,45 @@ const FormPage = (): React.JSX.Element => {
     setSelectedBar(barType);
   };
 
+  const handleFetchTravelCost = async (): Promise<void> => {
+    setTravelLoading(true);
+    setTravelError(null);
+    setTravelCost(null);
+
+    if (!postalCode.match(/^\d{2}-\d{3}$/)) {
+      setPostalCodeError(t(FORM_PAGE_TRANSLATIONS.postalCodeInvalidError));
+      return;
+    }
+
+    if (!city.trim()) {
+      setCityError(t(FORM_PAGE_TRANSLATIONS.cityRequiredError));
+      return;
+    }
+
+    try {
+      const response = await fetch(env.netlify.functions.calculateTravelCost, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          postalCode,
+          city,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(t(FORM_PAGE_TRANSLATIONS.dataTravelCostFetchErrorMsg));
+      }
+
+      const data = await response.json();
+      setTravelCost(data.cost ?? 0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setTravelError(error.message || 'Wystąpił błąd');
+    } finally {
+      setTravelLoading(false);
+    }
+  };
+
   const handlePackageSelect = (value: MenuPackage | null): void => {
     setSelectedPackage(value);
   };
@@ -157,12 +203,17 @@ const FormPage = (): React.JSX.Element => {
     setEmail('');
     setPhone('');
     setNotes('');
-    setVenueLocation('');
+    setPostalCode('');
+    setCity('');
+    setPostalCodeError(null);
+    setCityError(null);
+    setTravelCost(null);
+    setTravelError(null);
+    setTravelLoading(false);
     setNumberOfGuests(100);
     setSelectedBar(null);
     setSelectedPackage(null);
     setSelectedServices([]);
-    setModalService(null);
     setModalPackage(null);
     setPackagePdfUrl(null);
     setExceedsMaxRange(null);
@@ -176,7 +227,8 @@ const FormPage = (): React.JSX.Element => {
     let isValid = true;
 
     if (!dateString) missingFields.push('dateString');
-    if (!venueLocation) missingFields.push('venueLocation');
+    if (!postalCode) missingFields.push('postalCode');
+    if (!city) missingFields.push('city');
     if (!numberOfGuests) missingFields.push('numberOfGuests');
     if (!selectedBar) missingFields.push('selectedBar');
     if (!selectedPackage) missingFields.push('selectedPackage');
@@ -202,15 +254,9 @@ const FormPage = (): React.JSX.Element => {
     }
 
     setFullNameError(null);
-    setVenueLocationError(null);
 
     if (!fullName) {
       setFullNameError(t(FORM_PAGE_TRANSLATIONS.nameValidationRequired));
-      isValid = false;
-    }
-
-    if (!venueLocation) {
-      setVenueLocationError(t(FORM_PAGE_TRANSLATIONS.locationValidationRequired));
       isValid = false;
     }
 
@@ -269,7 +315,7 @@ const FormPage = (): React.JSX.Element => {
         email,
         phone,
         numberOfGuests: Number(numberOfGuests),
-        venueLocation,
+        venueLocation: `${postalCode.trim()} ${city.trim()}`,
         selectedPackage: selectedPackage?.value ?? '',
         selectedBar,
         selectedServices,
@@ -286,7 +332,7 @@ const FormPage = (): React.JSX.Element => {
                 fullName,
                 email,
                 phone,
-                venueLocation,
+                venueLocation: `${postalCode.trim()} ${city.trim()}`,
                 selectedPackage: selectedPackage?.value ?? '',
                 selectedBar,
                 selectedServices: selectedExtraServiceObjects,
@@ -459,16 +505,55 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <TextInput
-              label={t(FORM_PAGE_TRANSLATIONS.locationInputLabel)}
-              placeholder={t(FORM_PAGE_TRANSLATIONS.locationPlaceholder)}
-              value={venueLocation}
-              error={venueLocationError || undefined}
-              onChange={(e) =>
-                handleFieldChange(setVenueLocation, setVenueLocationError)(e.currentTarget.value)
-              }
-              withAsterisk
-            />
+            <Group>
+              <TextInput
+                label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
+                value={postalCode}
+                onChange={(e) =>
+                  handleFieldChange(setPostalCode, setPostalCodeError)(e.currentTarget.value)
+                }
+                error={postalCodeError || undefined}
+                withAsterisk
+                style={{ flex: 1 }}
+              />
+
+              <TextInput
+                label={t(FORM_PAGE_TRANSLATIONS.cityInputLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.cityPlaceholder)}
+                value={city}
+                onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
+                error={cityError || undefined}
+                withAsterisk
+                style={{ flex: 1 }}
+              />
+            </Group>
+
+            <Group>
+              <Button
+                size="xs"
+                loading={travelLoading}
+                onClick={handleFetchTravelCost}
+                disabled={travelLoading || !postalCode || !city}
+              >
+                {t(FORM_PAGE_TRANSLATIONS.calculateTravelCostButtonText)}
+              </Button>
+
+              {travelCost !== null && !travelLoading && (
+                <Text size="sm">
+                  {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
+                  {travelCost === 0
+                    ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
+                    : `${travelCost} PLN`}
+                </Text>
+              )}
+            </Group>
+
+            {travelError && (
+              <Text size="xs" c="red" mt={4}>
+                {travelError}
+              </Text>
+            )}
 
             <NumberInput
               label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
@@ -481,6 +566,7 @@ const FormPage = (): React.JSX.Element => {
               }}
               min={0}
               withAsterisk
+              style={{ maxWidth: 200 }}
             />
 
             <Divider
@@ -538,7 +624,6 @@ const FormPage = (): React.JSX.Element => {
                     service={service}
                     isSelected={isSelected}
                     onToggle={() => toggleServiceSelection(service.label)}
-                    onOpenModal={() => setModalService(service)}
                   />
                 );
               })}
@@ -630,19 +715,6 @@ const FormPage = (): React.JSX.Element => {
 
         <Space h={100} />
       </Stack>
-
-      <Modal
-        opened={!!modalService}
-        onClose={() => setModalService(null)}
-        title={
-          <Text fw="bold" size="lg">
-            {modalService ? modalService.label : null}
-          </Text>
-        }
-        centered
-      >
-        <Text size="sm">{modalService ? t(modalService.description) : null}</Text>
-      </Modal>
 
       <MenuPackageModal
         opened={!!modalPackage}

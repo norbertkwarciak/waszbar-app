@@ -1,6 +1,7 @@
 type Env = {
   netlify: {
     functions: {
+      calculateTravelCost: string;
       getAvailability: string;
       getOffer: string;
       sendInquiryEmail: string;
@@ -20,6 +21,7 @@ type Env = {
 export const env: Env = {
   netlify: {
     functions: {
+      calculateTravelCost: '/.netlify/functions/calculate-travel-cost',
       getAvailability: '/.netlify/functions/get-availability',
       getOffer: '/.netlify/functions/get-offer',
       sendInquiryEmail: '/.netlify/functions/send-inquiry-email',
