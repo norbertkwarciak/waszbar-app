@@ -13,6 +13,9 @@ const OPENROUTESERVICE_API_KEY = process.env.OPENROUTESERVICE_API_KEY;
 
 const handler: Handler = async (event) => {
   try {
+    console.log('[DEBUG] Start calculate-travel-cost');
+    console.log('[DEBUG] ENV KEY length:', OPENROUTESERVICE_API_KEY?.length || 'MISSING');
+
     if (event.httpMethod !== 'POST') {
       return {
         statusCode: 405,
@@ -23,20 +26,14 @@ const handler: Handler = async (event) => {
     if (!OPENROUTESERVICE_API_KEY) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'Brakuje API KEY do OpenRouteService w środowisku.' }),
+        body: JSON.stringify({ error: 'Brak API KEY w środowisku.' }),
       };
     }
 
     const { postalCode, city } = JSON.parse(event.body || '{}');
+    const fullAddress = `${postalCode?.trim()} ${city?.trim()}`;
 
-    if (!postalCode || !city) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Kod pocztowy i miasto są wymagane.' }),
-      };
-    }
-
-    const fullAddress = `${postalCode.trim()} ${city.trim()}`;
+    console.log('[DEBUG] Full address:', fullAddress);
 
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -45,46 +42,24 @@ const handler: Handler = async (event) => {
     );
 
     const geoData = await geoRes.json();
+    const { lat, lon, display_name } = geoData?.[0] || {};
 
-    if (!geoData.length) {
+    if (!lat || !lon) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ error: 'Nie znaleziono lokalizacji dla podanego adresu.' }),
+        body: JSON.stringify({ error: 'Nie znaleziono lokalizacji.' }),
       };
     }
 
-    const { lat, lon, display_name } = geoData[0];
+    const locationsPayload = {
+      locations: [
+        [START_COORDS.lon, START_COORDS.lat],
+        [parseFloat(lon), parseFloat(lat)],
+      ],
+      metrics: ['distance'],
+    };
 
-    const normalize = (str: string): string =>
-      str
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s/g, '');
-
-    const normalizedDisplayName = normalize(display_name);
-    const normalizedCity = normalize(city);
-    const normalizedPostalCode = normalize(postalCode);
-
-    const cityMatches = normalizedDisplayName.includes(normalizedCity);
-
-    const postalVariants = [
-      normalizedPostalCode,
-      normalizedPostalCode.replace('-', ''),
-      normalizedPostalCode.replace('-', ' '),
-      normalizedPostalCode.replace('-', '').replace(/\s/g, ''),
-    ];
-
-    const postalMatches = postalVariants.some((variant) => normalizedDisplayName.includes(variant));
-
-    if (!cityMatches || !postalMatches) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          error: 'Kod pocztowy nie pasuje do podanego miasta. Sprawdź poprawność danych.',
-        }),
-      };
-    }
+    console.log('[DEBUG] Sending ORS payload:', JSON.stringify(locationsPayload));
 
     const matrixRes = await fetch('https://api.openrouteservice.org/v2/matrix/driving-car', {
       method: 'POST',
@@ -92,47 +67,31 @@ const handler: Handler = async (event) => {
         'Content-Type': 'application/json',
         Authorization: OPENROUTESERVICE_API_KEY,
       },
-      body: JSON.stringify({
-        locations: [
-          [START_COORDS.lon, START_COORDS.lat],
-          [parseFloat(lon), parseFloat(lat)],
-        ],
-        metrics: ['distance'],
-      }),
+      body: JSON.stringify(locationsPayload),
     });
 
-    // 🔍 DEBUG START
     const contentType = matrixRes.headers.get('content-type');
-    console.log('[OpenRouteService] response status:', matrixRes.status);
-    console.log('[OpenRouteService] content-type:', contentType);
+    console.log('[DEBUG] ORS status:', matrixRes.status);
+    console.log('[DEBUG] ORS content-type:', contentType);
 
     if (!matrixRes.ok || !contentType?.includes('application/json')) {
       const errorText = await matrixRes.text();
-      console.error('[OpenRouteService ERROR]', matrixRes.status, errorText);
+      console.error('[ORS ERROR]', matrixRes.status, errorText.slice(0, 300));
 
       return {
-        statusCode: matrixRes.status,
+        statusCode: 502,
         body: JSON.stringify({
-          error: 'Błąd połączenia z usługą obliczania odległości.',
-          orsStatus: matrixRes.status,
+          error: 'Błąd ORS',
+          status: matrixRes.status,
           contentType,
-          details: errorText.slice(0, 200),
+          details: errorText.slice(0, 300),
         }),
       };
     }
-    // 🔍 DEBUG END
 
     const matrixData = await matrixRes.json();
 
     const distanceMeters = matrixData?.distances?.[0]?.[1];
-
-    if (!distanceMeters) {
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Nie udało się odczytać odległości z odpowiedzi ORS.' }),
-      };
-    }
-
     const distanceKm = distanceMeters / 1000;
 
     let cost = 0;
@@ -145,8 +104,8 @@ const handler: Handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify({
-        distanceKm: Math.round(distanceKm),
         cost,
+        distanceKm: Math.round(distanceKm),
         location: {
           lat,
           lon,
@@ -156,13 +115,13 @@ const handler: Handler = async (event) => {
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
-    console.error('[calculate-travel-cost] Unexpected error', err);
+    console.error('[FATAL ERROR]', err);
 
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: 'Wystąpił nieoczekiwany błąd.',
-        message: err.message,
+        error: 'Unhandled error',
+        message: err?.message,
       }),
     };
   }
