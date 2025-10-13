@@ -18,6 +18,8 @@ export interface EmailParams {
   selectedServices: ExtraService[];
   senderEmail: string;
   senderName: string;
+  totalCost: number;
+  travelCost: number;
   venueLocation: string;
 }
 

@@ -109,6 +109,15 @@ export interface PageTranslations {
   common: {
     back: string;
   };
+  components: {
+    priceSummaryBar: {
+      packageLabel: string;
+      extrasLabel: string;
+      travelCostLabel: string;
+      travelCostFree: string;
+      totalLabel: string;
+    };
+  };
 }
 
 // Type-safe keys for `homePage`
@@ -132,3 +141,8 @@ export const CONTACT_PAGE_TRANSLATIONS =
 
 // Type-safe keys for `common`
 export const COMMON = createTranslationKeys<PageTranslations['common']>('common');
+
+// Type-safe keys for `components.priceSummaryBar`
+export const PRICE_SUMMARY_BAR_TRANSLATIONS = createTranslationKeys<
+  PageTranslations['components']['priceSummaryBar']
+>('components.priceSummaryBar');

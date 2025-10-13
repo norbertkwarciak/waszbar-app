@@ -6,23 +6,25 @@ interface AdminEmailParams extends EmailParams {
 }
 
 export function createAdminNotificationEmail({
-  fullName,
+  adminEmails,
+  date,
   email,
-  phone,
-  venueLocation,
-  selectedPackage,
-  selectedBar,
-  selectedServices,
+  fullName,
   notes,
   numberOfGuests,
-  date,
   packagePrice,
+  phone,
+  selectedBar,
+  selectedPackage,
+  selectedServices,
   senderEmail,
   senderName,
-  adminEmails,
+  totalCost,
+  travelCost,
+  venueLocation,
 }: AdminEmailParams): EmailData {
   const extraServicesHtml = selectedServices.length
-    ? `<ul style="margin: 0; padding-left: 20px;">${selectedServices
+    ? `<ul style="margin: 0; padding-left: 0px;">${selectedServices
         .map(
           (s) =>
             `<li style="margin-bottom: 6px;">${s.label} – <strong>${s.price.toLocaleString(
@@ -66,6 +68,14 @@ export function createAdminNotificationEmail({
         <tr valign="top">
           <td style="padding: 8px 0;"><strong>Usługi dodatkowe:</strong></td>
           <td style="padding: 8px 0;">${extraServicesHtml}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;"><strong>Koszt dojazdu:</strong></td>
+          <td style="padding: 8px 0;">${travelCost ? `${travelCost.toLocaleString('pl-PL')} zł` : '0 zł (w cenie)'}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;"><strong>Łączny koszt:</strong></td>
+          <td style="padding: 8px 0;"><strong>${totalCost.toLocaleString('pl-PL')} zł</strong></td>
         </tr>
         <tr>
           <td style="padding: 8px 0;"><strong>Liczba gości:</strong></td>

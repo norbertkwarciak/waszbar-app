@@ -13,9 +13,6 @@ const OPENROUTESERVICE_API_KEY = process.env.OPENROUTESERVICE_API_KEY;
 
 const handler: Handler = async (event) => {
   try {
-    console.log('[DEBUG] Start calculate-travel-cost');
-    console.log('[DEBUG] ENV KEY length:', OPENROUTESERVICE_API_KEY?.length || 'MISSING');
-
     if (event.httpMethod !== 'POST') {
       return {
         statusCode: 405,
@@ -33,15 +30,13 @@ const handler: Handler = async (event) => {
     const { postalCode, city } = JSON.parse(event.body || '{}');
     const fullAddress = `${postalCode?.trim()} ${city?.trim()}`;
 
-    console.log('[DEBUG] Full address:', fullAddress);
-
     const geoRes = await fetch(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
         fullAddress,
       )}&countrycodes=pl&limit=1`,
       {
         headers: {
-          'User-Agent': 'waszbar-app (norbert.kwarciak@gmail.com)', // wymagany nagłówek
+          'User-Agent': 'waszbar-app (norbert.kwarciak@gmail.com)',
           'Accept-Language': 'pl',
         },
       },
@@ -50,7 +45,7 @@ const handler: Handler = async (event) => {
     const geoContentType = geoRes.headers.get('content-type') || '';
     if (!geoContentType.includes('application/json')) {
       const errorText = await geoRes.text();
-      console.error('[Nominatim ERROR]', geoRes.status, errorText.slice(0, 300));
+
       return {
         statusCode: 502,
         body: JSON.stringify({
@@ -81,8 +76,6 @@ const handler: Handler = async (event) => {
       metrics: ['distance'],
     };
 
-    console.log('[DEBUG] Sending ORS payload:', JSON.stringify(locationsPayload));
-
     const matrixRes = await fetch('https://api.openrouteservice.org/v2/matrix/driving-car', {
       method: 'POST',
       headers: {
@@ -93,12 +86,9 @@ const handler: Handler = async (event) => {
     });
 
     const contentType = matrixRes.headers.get('content-type');
-    console.log('[DEBUG] ORS status:', matrixRes.status);
-    console.log('[DEBUG] ORS content-type:', contentType);
 
     if (!matrixRes.ok || !contentType?.includes('application/json')) {
       const errorText = await matrixRes.text();
-      console.error('[ORS ERROR]', matrixRes.status, errorText.slice(0, 300));
 
       return {
         statusCode: 502,

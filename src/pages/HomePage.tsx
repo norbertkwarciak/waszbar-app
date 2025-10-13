@@ -73,7 +73,7 @@ const HomePage = (): React.JSX.Element => {
 
           <Text size="md">{t(HOME_PAGE_TRANSLATIONS.eventModalText)}</Text>
 
-          <List spacing={6} size="sm" withPadding listStyleType="disc">
+          <List spacing={6} size="md" withPadding listStyleType="disc">
             <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalLocation)}</List.Item>
             <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalDate)}</List.Item>
             <List.Item>{t(HOME_PAGE_TRANSLATIONS.eventModalGuests)}</List.Item>

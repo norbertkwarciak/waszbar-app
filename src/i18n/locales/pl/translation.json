@@ -107,5 +107,14 @@
   },
   "common": {
     "back": "← Powrót do strony głównej"
+  },
+  "components": {
+    "priceSummaryBar": {
+      "packageLabel": "Pakiet:",
+      "extrasLabel": "Usługi dodatkowe:",
+      "travelCostLabel": "Koszt dojazdu:",
+      "travelCostFree": "Gratis (do 30 km)",
+      "totalLabel": "Suma:"
+    }
   }
 }

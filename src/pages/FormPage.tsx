@@ -35,6 +35,7 @@ import { env } from '@/core/config/env';
 import { countDigits, pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
+import PriceSummaryBar from '@/components/PriceSummaryBar';
 import type { MenuPackage } from '@/types';
 
 const FormPage = (): React.JSX.Element => {
@@ -153,13 +154,20 @@ const FormPage = (): React.JSX.Element => {
     setTravelError(null);
     setTravelCost(null);
 
+    let hasValidationError = false;
+
     if (!postalCode.match(/^\d{2}-\d{3}$/)) {
       setPostalCodeError(t(FORM_PAGE_TRANSLATIONS.postalCodeInvalidError));
-      return;
+      hasValidationError = true;
     }
 
     if (!city.trim()) {
       setCityError(t(FORM_PAGE_TRANSLATIONS.cityRequiredError));
+      hasValidationError = true;
+    }
+
+    if (hasValidationError) {
+      setTravelLoading(false);
       return;
     }
 
@@ -325,6 +333,9 @@ const FormPage = (): React.JSX.Element => {
       {
         onSuccess: async () => {
           try {
+            const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
+            const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
+
             await fetch(env.netlify.functions.sendInquiryEmail, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -340,6 +351,8 @@ const FormPage = (): React.JSX.Element => {
                 numberOfGuests,
                 date: dateString,
                 packagePrice,
+                travelCost,
+                totalCost,
               }),
             });
 
@@ -419,6 +432,17 @@ const FormPage = (): React.JSX.Element => {
         errorSetter(null);
       }
     };
+
+  const currentPackagePrice = selectedPackage
+    ? getPackagePrice(
+        offerData?.menuPackages ?? [],
+        selectedPackage?.value ?? '',
+        Number(numberOfGuests),
+      )
+    : null;
+
+  const selectedExtraServices =
+    offerData?.extraServices.filter((s) => selectedServices.includes(s.label)) ?? [];
 
   return (
     <Container size="md" style={{ paddingTop: 20, paddingBottom: 60 }}>
@@ -505,7 +529,7 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <Group>
+            <Group align="flex-start">
               <TextInput
                 label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
                 placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
@@ -728,6 +752,13 @@ const FormPage = (): React.JSX.Element => {
         rangesMap={rangesMap}
         packagePdfUrl={packagePdfUrl}
         exceedsMaxRange={exceedsMaxRange}
+      />
+
+      <PriceSummaryBar
+        packageLabel={selectedPackage?.label ?? null}
+        packagePrice={currentPackagePrice}
+        extraServices={selectedExtraServices}
+        travelCost={travelCost}
       />
     </Container>
   );
