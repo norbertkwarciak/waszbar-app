@@ -55,7 +55,7 @@ export default function BarOptionBox({
             padding: '0 12px',
           }}
         >
-          <Text size="md" fw={600}>
+          <Text size="md" fw={600} style={{ margin: '24px 0' }}>
             {option.label}
           </Text>
         </Box>

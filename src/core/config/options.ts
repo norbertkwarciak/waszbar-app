@@ -138,7 +138,7 @@ export const faqs = [
   },
   {
     question: 'Czy obsługujecie wesela i imprezy w tygodniu?',
-    answer: 'Tak. Pracujemy 7dni w tygodniu.',
+    answer: 'Tak. Pracujemy 7 dni w tygodniu.',
   },
   {
     question: 'Ile kosztuje obsługa poprawin?',

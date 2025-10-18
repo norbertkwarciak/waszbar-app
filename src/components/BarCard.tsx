@@ -1,4 +1,5 @@
 import { Image, Paper, Stack, Box } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import React from 'react';
 
@@ -11,17 +12,20 @@ interface BarCardProps {
 }
 
 const BarCard = ({ image, alt, buttonText, to, onClick }: BarCardProps): React.JSX.Element => {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   const commonProps = {
     shadow: 'md',
     radius: 'md',
     p: 'md',
     withBorder: true,
-    w: 400,
+    w: isMobile ? '100%' : 400,
     ta: 'center' as const,
     style: {
       transition: 'transform 0.15s ease, box-shadow 0.15s ease',
       textDecoration: 'none',
       cursor: 'pointer',
+      margin: '0 auto',
     },
     onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
       e.currentTarget.style.transform = 'translateY(-2px)';

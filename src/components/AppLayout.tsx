@@ -1,7 +1,7 @@
 import { AppShell, Burger, Image, Group, Container, Box, Drawer, Stack } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IMAGES } from '@/core/config/assets';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const HEADER_HEIGHT = 60;
 
@@ -19,7 +19,9 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
     <AppShell padding="md" header={{ height: HEADER_HEIGHT }}>
       <AppShell.Header>
         <Group h="100%" px="md">
-          <Image src={IMAGES.logo} alt="Logo" h={40} w="auto" fit="contain" />
+          <Link to="/">
+            <Image src={IMAGES.logo} alt="Logo" h={40} w="auto" fit="contain" />
+          </Link>
 
           <Box style={{ flex: 1 }}>
             <Container size="md" h="100%">

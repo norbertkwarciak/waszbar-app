@@ -1,5 +1,6 @@
 import { Modal, Container, Group, Stack, Text, Title, List, Box } from '@mantine/core';
 import React from 'react';
+import { useMediaQuery } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
@@ -10,6 +11,8 @@ import BarCard from '@/components/BarCard';
 const HomePage = (): React.JSX.Element => {
   const { t } = useTranslation();
   const [opened, { open, close }] = useDisclosure(false);
+
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   return (
     <>
@@ -24,6 +27,8 @@ const HomePage = (): React.JSX.Element => {
           textAlign: 'center',
           paddingTop: 20,
           paddingBottom: 20,
+          paddingLeft: isMobile ? 0 : 16,
+          paddingRight: isMobile ? 0 : 16,
         }}
       >
         <Box

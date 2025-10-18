@@ -17,6 +17,7 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
@@ -41,6 +42,8 @@ import type { MenuPackage } from '@/types';
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const fieldLabels: Record<string, string> = {
     selectedBar: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedBar),
@@ -445,7 +448,15 @@ const FormPage = (): React.JSX.Element => {
     offerData?.extraServices.filter((s) => selectedServices.includes(s.label)) ?? [];
 
   return (
-    <Container size="md" style={{ paddingTop: 20, paddingBottom: 60 }}>
+    <Container
+      size="md"
+      style={{
+        paddingTop: 20,
+        paddingBottom: 60,
+        paddingLeft: isMobile ? 0 : 16,
+        paddingRight: isMobile ? 0 : 16,
+      }}
+    >
       <Space h={20} />
       <Stack gap="xl">
         <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
@@ -508,7 +519,11 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <SimpleGrid cols={{ base: 2, sm: 2 }} spacing="md" p="xl">
+            <SimpleGrid
+              cols={{ base: isMobile ? 1 : 2, sm: 2 }}
+              spacing="md"
+              p={isMobile ? 0 : 'xl'}
+            >
               {barOptions.map((bar) => (
                 <BarOptionBox
                   key={bar.value}
@@ -529,7 +544,14 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <Group align="flex-start">
+            <Group
+              align="flex-start"
+              gap="md"
+              style={{
+                flexDirection: isMobile ? 'column' : 'row',
+                width: '100%',
+              }}
+            >
               <TextInput
                 label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
                 placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
@@ -539,7 +561,10 @@ const FormPage = (): React.JSX.Element => {
                 }
                 error={postalCodeError || undefined}
                 withAsterisk
-                style={{ flex: 1 }}
+                style={{
+                  flex: 1,
+                  width: isMobile ? '100%' : 'auto',
+                }}
               />
 
               <TextInput
@@ -549,7 +574,10 @@ const FormPage = (): React.JSX.Element => {
                 onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
                 error={cityError || undefined}
                 withAsterisk
-                style={{ flex: 1 }}
+                style={{
+                  flex: 1,
+                  width: isMobile ? '100%' : 'auto',
+                }}
               />
             </Group>
 
@@ -610,13 +638,17 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <Grid gutter="md" p="xl">
+            <Grid gutter="md" p={isMobile ? 0 : 'xl'}>
               {menuPackages.map((pkg, i) => {
                 const isLastItem = i === menuPackages.length - 1;
                 const isOdd = menuPackages.length % 2 === 1;
 
                 return (
-                  <Grid.Col key={pkg.value} span={6} offset={isLastItem && isOdd ? 3 : 0}>
+                  <Grid.Col
+                    key={pkg.value}
+                    span={{ base: 12, sm: 6 }}
+                    offset={isLastItem && isOdd ? { base: 0, sm: 3 } : 0}
+                  >
                     <MenuPackageBox
                       pkg={pkg}
                       isSelected={selectedPackage?.value === pkg.value}
@@ -638,7 +670,7 @@ const FormPage = (): React.JSX.Element => {
               }}
             />
 
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" p="xl">
+            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" p={isMobile ? 0 : 'xl'}>
               {extraServices.map((service) => {
                 const isSelected = selectedServices.includes(service.label);
 

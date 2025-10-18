@@ -17,7 +17,6 @@ const FaqPage = (): React.JSX.Element => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        textAlign: 'center',
         paddingTop: 20,
         paddingBottom: 60,
       }}

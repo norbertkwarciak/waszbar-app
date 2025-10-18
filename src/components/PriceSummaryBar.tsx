@@ -1,6 +1,7 @@
 import { Flex, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { PRICE_SUMMARY_BAR_TRANSLATIONS } from '@/i18n/tKeys';
+import { useMediaQuery } from '@mantine/hooks';
 
 interface PriceSummaryBarProps {
   packageLabel: string | null;
@@ -16,6 +17,7 @@ const PriceSummaryBar = ({
   travelCost,
 }: PriceSummaryBarProps): React.JSX.Element => {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const extrasTotal = extraServices.reduce((sum, s) => sum + s.price, 0);
   const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
@@ -38,7 +40,7 @@ const PriceSummaryBar = ({
       <Flex justify="space-between" align="flex-start" wrap="wrap" gap="md">
         <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
           {packageLabel && packagePrice !== null && (
-            <Text size="sm">
+            <Text size={isMobile ? 'xs' : 'sm'}>
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
               </Text>{' '}
@@ -47,7 +49,7 @@ const PriceSummaryBar = ({
           )}
 
           {extraServices.length > 0 && (
-            <Text size="sm">
+            <Text size={isMobile ? 'xs' : 'sm'}>
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.extrasLabel)}
               </Text>{' '}
@@ -56,7 +58,7 @@ const PriceSummaryBar = ({
           )}
 
           {travelCost !== null && (
-            <Text size="sm">
+            <Text size={isMobile ? 'xs' : 'sm'}>
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostLabel)}
               </Text>{' '}

@@ -1,5 +1,5 @@
-import { Title, Image, Modal, Box } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Title, Image, Modal, Box, Stack } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Carousel } from '@mantine/carousel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ function GalleryPage(): React.JSX.Element {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { t } = useTranslation();
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   const openFullScreen = (src: string): void => {
     setSelectedImage(src);
@@ -35,37 +36,56 @@ function GalleryPage(): React.JSX.Element {
         {t(GALLERY_PAGE_TRANSLATIONS.title)}
       </Title>
 
-      <Carousel
-        withIndicators
-        withControls
-        slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
-        slideGap={{ base: 0, sm: 'md' }}
-        emblaOptions={{ loop: true, align: 'start', slidesToScroll: 1 }}
-        styles={{
-          indicator: {
-            backgroundColor: 'gray',
-            '&[dataActive]': {
-              backgroundColor: 'var(--mantine-color-primary-filled)',
-            },
-          },
-        }}
-      >
-        {IMAGES.map((src, index) => (
-          <Carousel.Slide key={index}>
+      {isMobile ? (
+        <Stack gap="md">
+          {IMAGES.map((src, index) => (
             <Image
+              key={index}
               src={src}
               alt={`Gallery image ${index + 1}`}
               radius="md"
               onClick={() => openFullScreen(src)}
               style={{
                 cursor: 'pointer',
-                height: '100%',
+                width: '100%',
                 objectFit: 'cover',
               }}
             />
-          </Carousel.Slide>
-        ))}
-      </Carousel>
+          ))}
+        </Stack>
+      ) : (
+        <Carousel
+          withIndicators
+          withControls
+          slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
+          slideGap={{ base: 0, sm: 'md' }}
+          emblaOptions={{ loop: true, align: 'start', slidesToScroll: 1 }}
+          styles={{
+            indicator: {
+              backgroundColor: 'gray',
+              '&[dataActive]': {
+                backgroundColor: 'var(--mantine-color-primary-filled)',
+              },
+            },
+          }}
+        >
+          {IMAGES.map((src, index) => (
+            <Carousel.Slide key={index}>
+              <Image
+                src={src}
+                alt={`Gallery image ${index + 1}`}
+                radius="md"
+                onClick={() => openFullScreen(src)}
+                style={{
+                  cursor: 'pointer',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            </Carousel.Slide>
+          ))}
+        </Carousel>
+      )}
 
       <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false}>
         {selectedImage && (
