@@ -105,10 +105,37 @@
     "slogan": "Zaufaj profesjonalistom",
     "signature": "Pozdrawiam,\nŁukasz Kwarciak"
   },
+  "privacyPolicyPage": {
+    "title": "Polityka Prywatności i Wykorzystania Plików Cookies",
+    "publicationDate": "Data publikacji: 28.11.2025",
+    "intro": "Dziękujemy za zaufanie i odwiedzenie naszej aplikacji. Dbamy o Twoją prywatność i szanujemy Twoje dane osobowe.\nPoniżej przedstawiamy informacje na temat tego, jakie dane gromadzimy, w jakim celu oraz w jaki sposób możesz nimi zarządzać.",
+    "section1Title": "1. Administrator danych",
+    "section1Text": "Administratorem danych osobowych przetwarzanych za pośrednictwem tej aplikacji jest:\nŁukasz Kwarciak\nkontakt: {{email}}",
+    "section2Title": "2. Zakres przetwarzanych danych",
+    "section2Text": "Za pośrednictwem tej aplikacji mogą być przetwarzane następujące dane:\n- dane wprowadzone w formularzach kontaktowych (np. imię, e-mail, treść wiadomości),\n- dane techniczne wymagane do działania aplikacji (np. identyfikator sesji).",
+    "section3Title": "3. W jakim celu przetwarzamy dane?",
+    "section3Text": "- Odpowiedź na zapytania wysyłane przez formularz kontaktowy.\n- Obsługa zapytań ofertowych.\n- Zapewnienie poprawnego działania aplikacji.",
+    "section4Title": "4. Z kim dzielimy się danymi?",
+    "section4Text": "Twoje dane nie są przekazywane podmiotom trzecim w celach marketingowych.\nDane przesyłane przez formularze są przetwarzane za pomocą bezpiecznych integracji z zewnętrznymi usługami po stronie serwera, m.in.:\n- Brevo (Sendinblue) – do obsługi wiadomości e-mail,\n- Google API – np. w celu synchronizacji kalendarza lub wysyłki wiadomości e-mail.\nUsługi te przetwarzają dane wyłącznie na nasze zlecenie i zgodnie z obowiązującymi przepisami.",
+    "section5Title": "5. Pliki cookies",
+    "section5Text": "Nasza aplikacja korzysta wyłącznie z niezbędnych plików cookies, wymaganych do:\n- utrzymania sesji użytkownika,\n- zapamiętania ustawień interfejsu (np. język, zgoda na cookies),\n- zabezpieczenia formularzy (np. za pomocą Cloudflare Turnstile).\nNie wykorzystujemy cookies do celów analitycznych, marketingowych ani remarketingowych.",
+    "section6Title": "6. Twoje prawa",
+    "section6Text": "Masz prawo do:\n- dostępu do swoich danych,\n- sprostowania danych,\n- usunięcia danych („prawo do bycia zapomnianym”),\n- ograniczenia przetwarzania,\n- przenoszenia danych,\n- wniesienia sprzeciwu wobec przetwarzania,\n- wniesienia skargi do Prezesa UODO.\nW celu realizacji powyższych praw – skontaktuj się z nami mailowo: {{email}}",
+    "section7Title": "7. Zmiany w polityce prywatności",
+    "section7Text": "Zastrzegamy sobie prawo do aktualizacji niniejszej polityki w dowolnym momencie.\nZmiany będą publikowane na tej stronie.",
+    "section8Title": "8. Kontakt",
+    "section8Text": "W razie pytań dotyczących ochrony danych osobowych – napisz do nas:\n📧 {{email}}"
+  },
   "common": {
     "back": "← Powrót do strony głównej"
   },
   "components": {
+    "cookiesBar": {
+      "description": "Używamy tylko niezbędnych plików cookies wymaganych do działania strony.",
+      "learnMore": "Dowiedz się więcej",
+      "decline": "Odrzuć",
+      "accept": "Akceptuj"
+    },
     "priceSummaryBar": {
       "packageLabel": "Pakiet:",
       "extrasLabel": "Usługi dodatkowe:",

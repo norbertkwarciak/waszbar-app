@@ -106,10 +106,37 @@ export interface PageTranslations {
     slogan: string;
     signature: string;
   };
+  privacyPolicyPage: {
+    title: string;
+    publicationDate: string;
+    intro: string;
+    section1Title: string;
+    section1Text: string;
+    section2Title: string;
+    section2Text: string;
+    section3Title: string;
+    section3Text: string;
+    section4Title: string;
+    section4Text: string;
+    section5Title: string;
+    section5Text: string;
+    section6Title: string;
+    section6Text: string;
+    section7Title: string;
+    section7Text: string;
+    section8Title: string;
+    section8Text: string;
+  };
   common: {
     back: string;
   };
   components: {
+    cookiesBar: {
+      description: string;
+      learnMore: string;
+      decline: string;
+      accept: string;
+    };
     priceSummaryBar: {
       packageLabel: string;
       extrasLabel: string;
@@ -139,8 +166,16 @@ export const FAQ_PAGE_TRANSLATIONS = createTranslationKeys<PageTranslations['faq
 export const CONTACT_PAGE_TRANSLATIONS =
   createTranslationKeys<PageTranslations['contactPage']>('contactPage');
 
+// Type-safe keys for `privacyPolicyPage`
+export const PRIVACY_POLICY_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['privacyPolicyPage']>('privacyPolicyPage');
+
 // Type-safe keys for `common`
 export const COMMON = createTranslationKeys<PageTranslations['common']>('common');
+
+// Type-safe keys for `components.cookiesBar`
+export const COOKIES_BAR_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['components']['cookiesBar']>('components.cookiesBar');
 
 // Type-safe keys for `components.priceSummaryBar`
 export const PRICE_SUMMARY_BAR_TRANSLATIONS = createTranslationKeys<

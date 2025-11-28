@@ -1,6 +1,7 @@
 import { Container, Title, Text, Stack, Anchor, Card } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { CONTACT_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { env } from '@/core/config/env';
 
 function ContactPage(): React.JSX.Element {
   const { t } = useTranslation();
@@ -24,11 +25,11 @@ function ContactPage(): React.JSX.Element {
           </Text>
 
           <Text>
-            <Anchor href="mailto:biuro@waszbar.pl">{t(CONTACT_PAGE_TRANSLATIONS.email)}</Anchor>
+            <Anchor href={`mailto:${env.ownerEmail}`}>{t(CONTACT_PAGE_TRANSLATIONS.email)}</Anchor>
           </Text>
 
           <Text>
-            <Anchor href="tel:698836034">{t(CONTACT_PAGE_TRANSLATIONS.phone)}</Anchor>
+            <Anchor href={`tel:${env.phoneNumber}`}>{t(CONTACT_PAGE_TRANSLATIONS.phone)}</Anchor>
           </Text>
 
           <Text>

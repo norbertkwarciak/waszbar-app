@@ -1,4 +1,5 @@
 type Env = {
+  cookiesConsentKey: string;
   netlify: {
     functions: {
       calculateTravelCost: string;
@@ -9,6 +10,7 @@ type Env = {
     };
   };
   ownerEmail: string;
+  phoneNumber: string;
   public: {
     assets: string;
     pdfs: string;
@@ -19,6 +21,7 @@ type Env = {
 };
 
 export const env: Env = {
+  cookiesConsentKey: 'WaszBarApp__cookieConsent',
   netlify: {
     functions: {
       calculateTravelCost: '/.netlify/functions/calculate-travel-cost',
@@ -29,6 +32,7 @@ export const env: Env = {
     },
   },
   ownerEmail: 'biuro@waszbar.pl',
+  phoneNumber: '+48698836034',
   public: {
     assets: '/assets',
     pdfs: '/pdfs',
