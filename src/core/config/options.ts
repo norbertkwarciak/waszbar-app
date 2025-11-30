@@ -28,7 +28,7 @@ export const menuPackages = [
   {
     label: 'BASIC',
     value: MenuPackageType.BASIC,
-    thumbnail: '/assets/PAKIET_BASIC.png',
+    thumbnail: '/PAKIET_BASIC.png',
     features: [
       'koktajle na wódce i ginie',
       'drinki 0%',
@@ -40,7 +40,7 @@ export const menuPackages = [
   {
     label: 'MEDIUM',
     value: MenuPackageType.MEDIUM,
-    thumbnail: '/assets/PAKIET_MEDIUM.png',
+    thumbnail: '/PAKIET_MEDIUM.png',
     features: [
       'koktajle na wódce, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
@@ -52,7 +52,7 @@ export const menuPackages = [
   {
     label: 'MAX',
     value: MenuPackageType.MAX,
-    thumbnail: '/assets/PAKIET_MAX.png',
+    thumbnail: '/PAKIET_MAX.png',
     features: [
       'koktajle na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
@@ -64,7 +64,7 @@ export const menuPackages = [
   {
     label: 'KLASYCZNY',
     value: MenuPackageType.KLASYCZNY,
-    thumbnail: '/assets/PAKIET_KLASYCZNY.png',
+    thumbnail: '/PAKIET_KLASYCZNY.png',
     features: [
       'koktajle KLASYCZNE (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
       'drinki 0%',
@@ -75,7 +75,7 @@ export const menuPackages = [
   {
     label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
-    thumbnail: '/assets/PAKIET_EXCELLENT.png',
+    thumbnail: '/PAKIET_EXCELLENT.png',
     features: [
       'koktajle autorskie',
       'wliczone pakiety (MAX, KLASYCZNY)',

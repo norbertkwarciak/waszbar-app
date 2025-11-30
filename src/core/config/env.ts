@@ -34,7 +34,7 @@ export const env: Env = {
   ownerEmail: 'biuro@waszbar.pl',
   phoneNumber: '+48698836034',
   public: {
-    assets: '/assets',
+    assets: '',
     pdfs: '/pdfs',
   },
   turnstile: {
