@@ -37,7 +37,6 @@ const handler: Handler = async (event) => {
       };
     }
 
-    // ✅ Captcha passed → proceed with saving to Google Sheets
     const auth = new google.auth.JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL!,
       key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -57,6 +56,7 @@ const handler: Handler = async (event) => {
       selectedBar,
       selectedServices,
       notes,
+      isIndividualOffer,
     } = requestData;
 
     const row = [
@@ -71,11 +71,12 @@ const handler: Handler = async (event) => {
       selectedBar || '',
       (selectedServices ?? []).join(', '),
       notes || '',
+      isIndividualOffer ? 'TAK' : '',
     ];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A1:K1`,
+      range: `${SHEET_NAME}!A1:L1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [row] },
     });

@@ -66,7 +66,7 @@
     "dataFetchErrorTitle": "Błąd",
     "dataFetchErrorMsg": "Nie udało się załadować dostępności terminów.",
     "openInNewTab": "Otwórz w nowej karcie",
-    "guestsExceedRangeMessage": "Zapytania w sprawie wesel oraz eventów z pakietem {{menuPackage}} dla liczby gości przekraczającej {{maxGuests}} prosimy kierować na adres <1>{{email}}</1> w celu przygotowania dla Państwa indywidualnej oferty.",
+    "guestsExceedRangeMessage": "W przypadku zapytania w sprawie wesela lub eventu z pakietem {{menuPackage}} dla liczby gości przekraczającej {{maxGuests}} prosimy o uzupełnienie formularza o interesujące Państwa opcje i jego wysłanie. Skontaktujemy się z Państwem w celu przedstawienia indywidualnej oferty.",
     "fieldValidationMessageLabel": {
       "selectedBar": "aranżacja baru",
       "postalCode": "kod pocztowy",
@@ -141,7 +141,8 @@
       "extrasLabel": "Usługi dodatkowe:",
       "travelCostLabel": "Koszt dojazdu:",
       "travelCostFree": "Gratis (do 30 km)",
-      "totalLabel": "Suma:"
+      "totalLabel": "Suma:",
+      "individualOfferLabel": "Oferta indywidualna"
     }
   }
 }

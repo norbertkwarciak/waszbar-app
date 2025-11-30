@@ -143,6 +143,7 @@ export interface PageTranslations {
       travelCostLabel: string;
       travelCostFree: string;
       totalLabel: string;
+      individualOfferLabel: string;
     };
   };
 }

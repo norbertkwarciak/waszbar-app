@@ -96,6 +96,7 @@ const FormPage = (): React.JSX.Element => {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [phone, setPhone] = useState<string>('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [isIndividualOffer, setIsIndividualOffer] = useState(false);
 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
@@ -198,9 +199,43 @@ const FormPage = (): React.JSX.Element => {
     }
   };
 
-  const handlePackageSelect = (value: MenuPackage | null): void => {
-    setSelectedPackage(value);
+  const handlePackageSelect = (pkg: MenuPackage | null): void => {
+    setSelectedPackage(pkg);
+
+    if (!pkg || !rangesMap) {
+      setIsIndividualOffer(false);
+      return;
+    }
+
+    const availableRanges = rangesMap[pkg.value];
+    if (!availableRanges?.length) {
+      setIsIndividualOffer(false);
+      return;
+    }
+
+    const maxRange = Math.max(...availableRanges);
+    const guests = Number(numberOfGuests);
+
+    setIsIndividualOffer(guests > maxRange);
   };
+
+  useEffect(() => {
+    if (!selectedPackage || !rangesMap) {
+      setIsIndividualOffer(false);
+      return;
+    }
+
+    const availableRanges = rangesMap[selectedPackage.value];
+    if (!availableRanges?.length) {
+      setIsIndividualOffer(false);
+      return;
+    }
+
+    const maxRange = Math.max(...availableRanges);
+    const guests = Number(numberOfGuests);
+
+    setIsIndividualOffer(guests > maxRange);
+  }, [numberOfGuests, selectedPackage, rangesMap]);
 
   const toggleServiceSelection = (value: string): void => {
     setSelectedServices((prev) =>
@@ -331,6 +366,7 @@ const FormPage = (): React.JSX.Element => {
         selectedBar,
         selectedServices,
         notes,
+        isIndividualOffer,
         turnstileToken: captchaToken,
       },
       {
@@ -356,6 +392,7 @@ const FormPage = (): React.JSX.Element => {
                 packagePrice,
                 travelCost,
                 totalCost,
+                isIndividualOffer,
               }),
             });
 
@@ -791,6 +828,7 @@ const FormPage = (): React.JSX.Element => {
         packagePrice={currentPackagePrice}
         extraServices={selectedExtraServices}
         travelCost={travelCost}
+        isIndividualOffer={isIndividualOffer}
       />
     </Container>
   );

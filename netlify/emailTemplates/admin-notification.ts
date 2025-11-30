@@ -22,6 +22,7 @@ export function createAdminNotificationEmail({
   totalCost,
   travelCost,
   venueLocation,
+  isIndividualOffer,
 }: AdminEmailParams): EmailData {
   const extraServicesHtml = selectedServices.length
     ? `<ul style="margin: 0; padding-left: 0px;">${selectedServices
@@ -75,11 +76,15 @@ export function createAdminNotificationEmail({
         </tr>
         <tr>
           <td style="padding: 8px 0;"><strong>Łączny koszt:</strong></td>
-          <td style="padding: 8px 0;"><strong>${totalCost.toLocaleString('pl-PL')} zł</strong></td>
+          <td style="padding: 8px 0;"><strong>${isIndividualOffer ? '-' : totalCost.toLocaleString('pl-PL') + ' zł'}</strong></td>
         </tr>
         <tr>
           <td style="padding: 8px 0;"><strong>Liczba gości:</strong></td>
           <td style="padding: 8px 0;">${numberOfGuests}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0;"><strong>Oferta indywidualna:</strong></td>
+          <td style="padding: 8px 0;">${isIndividualOffer ? 'TAK' : 'NIE'}</td>
         </tr>
         <tr>
           <td style="padding: 8px 0;"><strong>Data imprezy:</strong></td>

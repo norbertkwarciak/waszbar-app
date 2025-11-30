@@ -8,6 +8,7 @@ interface PriceSummaryBarProps {
   packagePrice: number | null;
   extraServices: { label: string; price: number }[];
   travelCost: number | null;
+  isIndividualOffer?: boolean;
 }
 
 const PriceSummaryBar = ({
@@ -15,6 +16,7 @@ const PriceSummaryBar = ({
   packagePrice,
   extraServices,
   travelCost,
+  isIndividualOffer = false,
 }: PriceSummaryBarProps): React.JSX.Element => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -37,9 +39,15 @@ const PriceSummaryBar = ({
         zIndex: 1000,
       }}
     >
-      <Flex justify="space-between" align="flex-start" wrap="wrap" gap="md">
-        <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>
-          {packageLabel && packagePrice !== null && (
+      <Flex justify="space-between" align="flex-start" gap="lg">
+        <Stack
+          gap={4}
+          style={{
+            flex: 1,
+            minWidth: 0,
+          }}
+        >
+          {packageLabel && packagePrice !== null && !isIndividualOffer && (
             <Text size={isMobile ? 'xs' : 'sm'}>
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
@@ -69,13 +77,35 @@ const PriceSummaryBar = ({
           )}
         </Stack>
 
-        <Stack gap={2} style={{ minWidth: 100, textAlign: 'right' }}>
+        <Stack
+          gap={2}
+          style={{
+            flex: 1,
+            minWidth: 0,
+            textAlign: 'right',
+            whiteSpace: 'normal',
+          }}
+        >
           <Text size="sm" fw={600}>
             {t(PRICE_SUMMARY_BAR_TRANSLATIONS.totalLabel)}
           </Text>
-          <Text size="lg" fw={700} c="primary">
-            {total} PLN
-          </Text>
+
+          {isIndividualOffer ? (
+            <Text
+              size="lg"
+              fw={700}
+              c="red"
+              style={{
+                wordBreak: 'break-word',
+              }}
+            >
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.individualOfferLabel)}
+            </Text>
+          ) : (
+            <Text size="lg" fw={700} c="primary">
+              {total} PLN
+            </Text>
+          )}
         </Stack>
       </Flex>
     </Paper>
