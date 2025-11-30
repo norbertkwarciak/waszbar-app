@@ -6,16 +6,22 @@ import { useTranslation } from 'react-i18next';
 import { GALLERY_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 
 const IMAGES: string[] = [
-  '/Waszbar_drinkbar_1.jpeg',
-  '/Waszbar_drinkbar_2.jpg',
-  '/Waszbar_drinkbar_3.jpg',
-  '/Waszbar_drinkbar_4.jpeg',
-  '/Waszbar_drinkbar_5.jpg',
-  '/Waszbar_drinkbar_6.jpg',
-  '/Waszbar_drinkbar_7.jpg',
-  '/Waszbar_drinkbar_8.jpeg',
-  '/Waszbar_drinkbar_9.jpg',
-  '/Waszbar_drinkbar_10.jpg',
+  '/Galeria_1.png',
+  '/Galeria_2.png',
+  '/Galeria_3.png',
+  '/Galeria_4.png',
+  '/Galeria_5.png',
+  '/Galeria_6.png',
+  '/Galeria_7.png',
+  '/Galeria_8.png',
+  '/Galeria_9.png',
+  '/Galeria_10.png',
+  '/Galeria_11.png',
+  '/Galeria_12.png',
+  '/Galeria_13.png',
+  '/Galeria_14.png',
+  '/Galeria_15.png',
+  '/Galeria_16.png',
 ];
 
 function GalleryPage(): React.JSX.Element {
