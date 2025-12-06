@@ -55,7 +55,7 @@ const BarCard = ({ image, alt, buttonText, to, onClick }: BarCardProps): React.J
         w="100%"
         style={{
           borderRadius: 'var(--mantine-radius-default)',
-          backgroundColor: 'var(--mantine-color-primary-filled)',
+          backgroundColor: 'var(--mantine-color-black)',
           color: 'white',
           fontWeight: 500,
           fontSize: '16px',

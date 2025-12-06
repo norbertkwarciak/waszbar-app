@@ -35,7 +35,15 @@ const HomePage = (): React.JSX.Element => {
           style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
         >
           <Stack mb="xl" gap="xs">
-            <Title order={2}>{t(HOME_PAGE_TRANSLATIONS.introText)}</Title>
+            <Title
+              order={2}
+              style={{
+                fontSize: 60,
+                fontFamily: 'var(--font-secondary)',
+              }}
+            >
+              {t(HOME_PAGE_TRANSLATIONS.introText)}
+            </Title>
             <Text size="md" style={{ whiteSpace: 'pre-line' }}>
               {t(HOME_PAGE_TRANSLATIONS.descriptionText)}
             </Text>

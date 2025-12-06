@@ -1,4 +1,4 @@
-import { Title, Image, Modal, Box, Stack } from '@mantine/core';
+import { Title, Image, Modal, Box, Stack, useMantineTheme } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Carousel } from '@mantine/carousel';
 import { useState } from 'react';
@@ -29,6 +29,7 @@ function GalleryPage(): React.JSX.Element {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { t } = useTranslation();
+  const theme = useMantineTheme();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const openFullScreen = (src: string): void => {
@@ -38,6 +39,17 @@ function GalleryPage(): React.JSX.Element {
 
   return (
     <Box py="xl">
+      <style>
+        {`
+          .mantine-Carousel-indicator {
+            transition: all 150ms ease;
+            background-color: rgba(255, 255, 255, 0.4);
+          }
+          .mantine-Carousel-indicator[data-active] {
+            background-color: ${theme.colors.primary[5]};
+          }
+        `}
+      </style>
       <Title order={2} ta="center" mb="xl">
         {t(GALLERY_PAGE_TRANSLATIONS.title)}
       </Title>
@@ -66,14 +78,6 @@ function GalleryPage(): React.JSX.Element {
           slideSize={{ base: '100%', sm: '50%', md: '33.333333%' }}
           slideGap={{ base: 0, sm: 'md' }}
           emblaOptions={{ loop: true, align: 'start', slidesToScroll: 1 }}
-          styles={{
-            indicator: {
-              backgroundColor: 'gray',
-              '&[dataActive]': {
-                backgroundColor: 'var(--mantine-color-primary-filled)',
-              },
-            },
-          }}
         >
           {IMAGES.map((src, index) => (
             <Carousel.Slide key={index}>

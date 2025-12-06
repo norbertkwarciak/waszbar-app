@@ -60,18 +60,23 @@ const flatColor = (
 
 const theme = createTheme({
   /** Put your mantine theme override here */
+  fontFamily: 'Montserrat, Helvetica Neue, Arial, sans-serif',
+  headings: {
+    fontFamily: 'Montserrat, Helvetica Neue, Arial, sans-serif',
+    fontWeight: '700',
+  },
   colors: {
     primary: [
-      '#E6F3F3',
-      '#B3DADC',
-      '#80C1C5',
-      '#4DA8AD',
-      '#1A8F96',
-      '#00838A',
-      '#00767C',
-      '#00696E',
-      '#005C61',
-      '#004F53',
+      '#FFF4E6', // 0 — bardzo jasny, tło
+      '#FFE8CC', // 1
+      '#FFD8A8', // 2
+      '#FFC085', // 3
+      '#FFA94D', // 4
+      '#FF922B', // 5 — główny odcień (primaryShade)
+      '#FF8A00', // 6 — nasycony pomarańcz (Twój brand color)
+      '#E67700', // 7
+      '#CC6600', // 8
+      '#B35400', // 9 — najciemniejszy, mocny akcent
     ],
     secondary: flatColor('#5479BD'),
   },

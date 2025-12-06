@@ -1,0 +1,105 @@
+@use 'sass:map';
+@use 'common-colors' as colors;
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./assets/fonts/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./assets/fonts/Montserrat-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('./assets/fonts/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Great Vibes';
+  src: url('./assets/fonts/GreatVibes-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+$font-primary: 'Montserrat', 'Helvetica Neue', Arial;
+$font-secondary: (
+  'Great Vibes',
+  'Brush Script MT',
+  'Segoe Script',
+  'Lucida Handwriting',
+  'Snell Roundhand',
+  cursive
+);
+
+:root {
+  --font-secondary: #{$font-secondary};
+}
+
+$fonts: (
+  '': 16px,
+  '8': 8px,
+  '10': 10px,
+  '11': 11px,
+  '12': 12px,
+  '13': 13px,
+  '14': 14px,
+  '15': 15px,
+  '16': 16px,
+  '17': 17px,
+  '18': 18px,
+  '19': 19px,
+  '20': 20px,
+  '22': 22px,
+  '23': 23px,
+  '24': 24px,
+  '26': 26px,
+  '28': 28px,
+  '29': 29px,
+  '30': 30px,
+  '32': 32px,
+  '36': 36px,
+  '40': 40px,
+  '44': 44px,
+  '45': 45px,
+  '73': 73px,
+);
+
+$font-w-regular: 400;
+$font-w-medium: 500;
+$font-w-semibold: 600;
+$font-w-bold: 700;
+
+@mixin font($font, $weight: $font-w-regular, $height: normal) {
+  font-size: map.get($fonts, '#{$font}');
+  line-height: $height;
+
+  @if $weight == bold {
+    font-weight: $font-w-bold;
+  } @else if $weight == semibold {
+    font-weight: $font-w-semibold;
+  } @else if $weight == medium {
+    font-weight: $font-w-medium;
+  } @else if $weight == regular {
+    font-weight: $font-w-regular;
+  } @else {
+    font-weight: $weight;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-primary;
+  line-height: 1.25;
+}

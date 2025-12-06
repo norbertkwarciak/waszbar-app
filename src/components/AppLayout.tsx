@@ -17,7 +17,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
 
   return (
     <AppShell padding="md" header={{ height: HEADER_HEIGHT }}>
-      <AppShell.Header>
+      <AppShell.Header style={{ backgroundColor: 'black' }}>
         <Group h="100%" px="md">
           <Link to="/">
             <Image src={IMAGES.logo} alt="Logo" h={40} w="auto" fit="contain" />
@@ -34,7 +34,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
                       style={({ isActive }) => ({
                         textDecoration: 'none',
                         fontWeight: 500,
-                        color: isActive ? 'var(--mantine-color-primary-filled)' : 'black',
+                        color: isActive ? 'var(--mantine-color-primary-filled)' : 'white',
                       })}
                     >
                       {link.label}
