@@ -58,6 +58,7 @@ const FormPage = (): React.JSX.Element => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const dateFromUrl = searchParams.get('date');
+  const minSelectableDate = dayjs().add(7, 'day').startOf('day').toDate();
 
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
@@ -514,7 +515,7 @@ const FormPage = (): React.JSX.Element => {
               valueFormat="YYYY-MM-DD"
               locale="pl"
               disabled={availabilityLoading}
-              minDate={new Date()}
+              minDate={minSelectableDate}
               maxDate={lastCheckedDateObj ?? undefined}
               leftSection={<IconCalendar size={18} />}
               style={{ maxWidth: 250 }}
