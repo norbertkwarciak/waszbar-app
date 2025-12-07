@@ -520,6 +520,7 @@ const FormPage = (): React.JSX.Element => {
               maxDate={lastCheckedDateObj ?? undefined}
               leftSection={<IconCalendar size={18} />}
               style={{ maxWidth: 250 }}
+              inputMode="none"
             />
 
             {availabilityLoading && offerLoading && (
