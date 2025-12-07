@@ -17,7 +17,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
 
   return (
     <AppShell padding="md" header={{ height: HEADER_HEIGHT }}>
-      <AppShell.Header style={{ backgroundColor: 'black' }}>
+      <AppShell.Header style={{ backgroundColor: 'black', borderBottom: 'none' }}>
         <Group h="100%" px="md">
           <Link to="/">
             <Image src={IMAGES.logo} alt="Logo" h={40} w="auto" fit="contain" />
@@ -68,7 +68,30 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
         </Stack>
       </Drawer>
 
-      <AppShell.Main style={{ minHeight: `calc(100vh - ${HEADER_HEIGHT}px)` }}>
+      <AppShell.Main
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            backgroundImage: 'url(/background.png)',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            opacity: 0.3,
+            filter: 'blur(1px)',
+            zIndex: -1,
+            pointerEvents: 'none',
+          }}
+        />
+
         {children}
       </AppShell.Main>
     </AppShell>

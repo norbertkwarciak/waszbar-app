@@ -5,11 +5,11 @@ import Turnstile from 'react-turnstile';
 import {
   Button,
   Container,
-  Divider,
   Grid,
   Group,
   Loader,
   NumberInput,
+  Paper,
   SimpleGrid,
   Space,
   Stack,
@@ -37,6 +37,7 @@ import { countDigits, pickAvailableOrMaxRange, buildAvailableRanges } from '@/co
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
 import PriceSummaryBar from '@/components/PriceSummaryBar';
+import FormDivider from '@/components/FormDivider';
 import type { MenuPackage } from '@/types';
 
 const FormPage = (): React.JSX.Element => {
@@ -540,7 +541,7 @@ const FormPage = (): React.JSX.Element => {
 
         {dateStatus === 'available' && (
           <>
-            <Divider
+            <FormDivider
               label={
                 <>
                   {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
@@ -549,12 +550,6 @@ const FormPage = (): React.JSX.Element => {
                   </Text>
                 </>
               }
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
             />
 
             <SimpleGrid
@@ -572,94 +567,90 @@ const FormPage = (): React.JSX.Element => {
               ))}
             </SimpleGrid>
 
-            <Divider
-              label={t(FORM_PAGE_TRANSLATIONS.locationLabel)}
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
-            />
+            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.locationLabel)} />
 
-            <Group
-              align="flex-start"
-              gap="md"
-              style={{
-                flexDirection: isMobile ? 'column' : 'row',
-                width: '100%',
-              }}
-            >
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
-                value={postalCode}
-                onChange={(e) =>
-                  handleFieldChange(setPostalCode, setPostalCodeError)(e.currentTarget.value)
-                }
-                error={postalCodeError || undefined}
-                withAsterisk
+            <Paper p="md" mx={isMobile ? 0 : 'xl'}>
+              <Group
+                align="flex-start"
+                gap="md"
+                mb="md"
                 style={{
-                  flex: 1,
-                  width: isMobile ? '100%' : 'auto',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  width: '100%',
                 }}
-              />
-
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.cityInputLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.cityPlaceholder)}
-                value={city}
-                onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
-                error={cityError || undefined}
-                withAsterisk
-                style={{
-                  flex: 1,
-                  width: isMobile ? '100%' : 'auto',
-                }}
-              />
-            </Group>
-
-            <Group>
-              <Button
-                size="xs"
-                loading={travelLoading}
-                onClick={handleFetchTravelCost}
-                disabled={travelLoading || !postalCode || !city}
               >
-                {t(FORM_PAGE_TRANSLATIONS.calculateTravelCostButtonText)}
-              </Button>
+                <TextInput
+                  label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
+                  placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
+                  value={postalCode}
+                  onChange={(e) =>
+                    handleFieldChange(setPostalCode, setPostalCodeError)(e.currentTarget.value)
+                  }
+                  error={postalCodeError || undefined}
+                  withAsterisk
+                  style={{
+                    flex: 1,
+                    width: isMobile ? '100%' : 'auto',
+                  }}
+                />
 
-              {travelCost !== null && !travelLoading && (
-                <Text size="sm">
-                  {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
-                  {travelCost === 0
-                    ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
-                    : `${travelCost} PLN`}
+                <TextInput
+                  label={t(FORM_PAGE_TRANSLATIONS.cityInputLabel)}
+                  placeholder={t(FORM_PAGE_TRANSLATIONS.cityPlaceholder)}
+                  value={city}
+                  onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
+                  error={cityError || undefined}
+                  withAsterisk
+                  style={{
+                    flex: 1,
+                    width: isMobile ? '100%' : 'auto',
+                  }}
+                />
+              </Group>
+
+              <Group>
+                <Button
+                  size="xs"
+                  loading={travelLoading}
+                  onClick={handleFetchTravelCost}
+                  disabled={travelLoading || !postalCode || !city}
+                >
+                  {t(FORM_PAGE_TRANSLATIONS.calculateTravelCostButtonText)}
+                </Button>
+
+                {travelCost !== null && !travelLoading && (
+                  <Text size="sm">
+                    {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
+                    {travelCost === 0
+                      ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
+                      : `${travelCost} PLN`}
+                  </Text>
+                )}
+              </Group>
+
+              {travelError && (
+                <Text size="xs" c="red" mt={4}>
+                  {travelError}
                 </Text>
               )}
-            </Group>
 
-            {travelError && (
-              <Text size="xs" c="red" mt={4}>
-                {travelError}
-              </Text>
-            )}
+              <NumberInput
+                mt="md"
+                label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
+                placeholder={t(FORM_PAGE_TRANSLATIONS.guestsPlaceholder)}
+                value={numberOfGuests}
+                onChange={(value) => {
+                  if (typeof value === 'number' || value === '') {
+                    setNumberOfGuests(value);
+                  }
+                }}
+                min={0}
+                withAsterisk
+                style={{ maxWidth: 200 }}
+              />
+            </Paper>
 
-            <NumberInput
-              label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
-              placeholder={t(FORM_PAGE_TRANSLATIONS.guestsPlaceholder)}
-              value={numberOfGuests}
-              onChange={(value) => {
-                if (typeof value === 'number' || value === '') {
-                  setNumberOfGuests(value);
-                }
-              }}
-              min={0}
-              withAsterisk
-              style={{ maxWidth: 200 }}
-            />
-
-            <Divider
+            <FormDivider
               label={
                 <>
                   {t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}{' '}
@@ -668,12 +659,6 @@ const FormPage = (): React.JSX.Element => {
                   </Text>
                 </>
               }
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
             />
 
             <Grid gutter="md" p={isMobile ? 0 : 'xl'}>
@@ -698,15 +683,7 @@ const FormPage = (): React.JSX.Element => {
               })}
             </Grid>
 
-            <Divider
-              label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)}
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
-            />
+            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)} />
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" p={isMobile ? 0 : 'xl'}>
               {extraServices.map((service) => {
@@ -723,15 +700,7 @@ const FormPage = (): React.JSX.Element => {
               })}
             </SimpleGrid>
 
-            <Divider
-              label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
-            />
+            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)} />
 
             <Textarea
               label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
@@ -742,15 +711,7 @@ const FormPage = (): React.JSX.Element => {
               onChange={(event) => setNotes(event.currentTarget.value)}
             />
 
-            <Divider
-              label={t(FORM_PAGE_TRANSLATIONS.contactTitle)}
-              labelPosition="center"
-              styles={{
-                label: {
-                  fontSize: '1rem',
-                },
-              }}
-            />
+            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} />
 
             <TextInput
               label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
