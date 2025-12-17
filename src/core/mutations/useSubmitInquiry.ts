@@ -20,7 +20,7 @@ export interface InquiryPayload {
 export const useSubmitInquiry = () => {
   return useMutation({
     mutationFn: async (payload: InquiryPayload) => {
-      const response = await fetch(env.netlify.functions.submitInquiry, {
+      const response = await fetch(env.api.submitInquiry, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

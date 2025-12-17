@@ -36,7 +36,7 @@ const PriceSummaryBar = ({
       style={{
         background: '#fff',
         borderTop: '1px solid #e9ecef',
-        zIndex: 1000,
+        zIndex: 300,
       }}
     >
       <Flex justify="space-between" align="flex-start" gap="lg">

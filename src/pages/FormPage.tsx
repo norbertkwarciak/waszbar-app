@@ -178,7 +178,7 @@ const FormPage = (): React.JSX.Element => {
     }
 
     try {
-      const response = await fetch(env.netlify.functions.calculateTravelCost, {
+      const response = await fetch(env.api.calculateTravelCost, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -377,7 +377,7 @@ const FormPage = (): React.JSX.Element => {
             const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
             const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
 
-            await fetch(env.netlify.functions.sendInquiryEmail, {
+            await fetch(env.api.sendInquiryEmail, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

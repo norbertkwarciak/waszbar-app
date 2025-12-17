@@ -7,7 +7,7 @@ export type AvailabilityResponse = {
 };
 
 const fetchAvailability = async (): Promise<AvailabilityResponse> => {
-  const res = await fetch(env.netlify.functions.getAvailability);
+  const res = await fetch(env.api.getAvailability);
 
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);

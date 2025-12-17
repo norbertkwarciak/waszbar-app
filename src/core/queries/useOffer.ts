@@ -60,7 +60,7 @@ const isExtraService = (s: unknown): s is ExtraService => {
 };
 
 const fetchOffer = async (): Promise<OfferResponse> => {
-  const res = await fetch(env.netlify.functions.getOffer);
+  const res = await fetch(env.api.getOffer);
 
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
