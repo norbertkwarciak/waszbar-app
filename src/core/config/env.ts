@@ -1,13 +1,13 @@
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+
 type Env = {
   cookiesConsentKey: string;
-  netlify: {
-    functions: {
-      calculateTravelCost: string;
-      getAvailability: string;
-      getOffer: string;
-      sendInquiryEmail: string;
-      submitInquiry: string;
-    };
+  api: {
+    calculateTravelCost: string;
+    getAvailability: string;
+    getOffer: string;
+    sendInquiryEmail: string;
+    submitInquiry: string;
   };
   ownerEmail: string;
   phoneNumber: string;
@@ -22,14 +22,12 @@ type Env = {
 
 export const env: Env = {
   cookiesConsentKey: 'WaszBarApp__cookieConsent',
-  netlify: {
-    functions: {
-      calculateTravelCost: '/.netlify/functions/calculate-travel-cost',
-      getAvailability: '/.netlify/functions/get-availability',
-      getOffer: '/.netlify/functions/get-offer',
-      sendInquiryEmail: '/.netlify/functions/send-inquiry-email',
-      submitInquiry: '/.netlify/functions/submit-inquiry',
-    },
+  api: {
+    calculateTravelCost: `${API_BASE}/calculate-travel-cost`,
+    getAvailability: `${API_BASE}/get-availability`,
+    getOffer: `${API_BASE}/get-offer`,
+    sendInquiryEmail: `${API_BASE}/send-inquiry-email`,
+    submitInquiry: `${API_BASE}/submit-inquiry`,
   },
   ownerEmail: 'biuro@waszbar.pl',
   phoneNumber: '+48698836034',

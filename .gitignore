@@ -8,6 +8,5 @@ out
 /playwright/.cache/
 .env
 .terraform
-
-# Local Netlify folder
-.netlify
+.wrangler/
+.pages-dev/
