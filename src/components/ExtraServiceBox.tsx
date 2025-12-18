@@ -52,7 +52,7 @@ export default function ExtraServiceBox({
 
         <Box
           style={{
-            minHeight: isDesktop ? 180 : undefined,
+            minHeight: isDesktop ? 200 : undefined,
           }}
         >
           <Text fw={600} size="lg">
