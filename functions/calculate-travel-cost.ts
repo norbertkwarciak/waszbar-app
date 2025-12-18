@@ -26,7 +26,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const START_COORDS = { lat: 52.1565984, lon: 21.0356576 };
   const ROUNDING_UNIT = 10;
-  const PRICE_PER_KM = 0.9;
+  const PRICE_PER_KM = 0.8;
   const FREE_DISTANCE_KM = 30;
 
   const postalCode = body.postalCode?.trim() ?? '';
