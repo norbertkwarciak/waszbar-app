@@ -7,6 +7,7 @@ export const IMAGES = {
   blackGlamour: `${env.public.assets}/FOTO_BAR_CZARNY_GLAMOUR.jpeg`,
   rustic: `${env.public.assets}/FOTO_BAR_RUSTYKALNY.jpg`,
   smoke: `${env.public.assets}/FOTO_TANIEC_W_CHMURACH.png`,
+  hoshizaki: `${env.public.assets}/FOTO_HOSHIZAKI_ICE.png`,
   jager: `${env.public.assets}/FOTO_JAGERMEISTER_TAP.jpg`,
   jack: `${env.public.assets}/FOTO_JACK_DANIELS_TAP.jpeg`,
   granitor: `${env.public.assets}/FOTO_GRANITOR.png`,

@@ -1,4 +1,5 @@
 import { Box, Button, Image, Paper, Stack, Text } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
@@ -23,6 +24,7 @@ export default function ExtraServiceBox({
   onToggle,
 }: ExtraServiceBoxProps): React.JSX.Element {
   const { t } = useTranslation();
+  const isDesktop = useMediaQuery('(min-width: 768px)');
 
   return (
     <Paper
@@ -48,7 +50,11 @@ export default function ExtraServiceBox({
           style={{ pointerEvents: 'none' }}
         />
 
-        <Box>
+        <Box
+          style={{
+            minHeight: isDesktop ? 180 : undefined,
+          }}
+        >
           <Text fw={600} size="lg">
             {service.label}
           </Text>

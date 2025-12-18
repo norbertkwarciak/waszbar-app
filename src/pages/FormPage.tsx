@@ -5,7 +5,6 @@ import Turnstile from 'react-turnstile';
 import {
   Button,
   Container,
-  Grid,
   Group,
   Loader,
   NumberInput,
@@ -29,6 +28,7 @@ import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
 import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
 import BarOptionBox from '@/components/BarOptionBox';
+import CenteredGrid from '@/components/CenteredGrid';
 import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
@@ -662,44 +662,34 @@ const FormPage = (): React.JSX.Element => {
               }
             />
 
-            <Grid gutter="md" p={isMobile ? 0 : 'xl'}>
-              {menuPackages.map((pkg, i) => {
-                const isLastItem = i === menuPackages.length - 1;
-                const isOdd = menuPackages.length % 2 === 1;
-
-                return (
-                  <Grid.Col
-                    key={pkg.value}
-                    span={{ base: 12, sm: 6 }}
-                    offset={isLastItem && isOdd ? { base: 0, sm: 3 } : 0}
-                  >
-                    <MenuPackageBox
-                      pkg={pkg}
-                      isSelected={selectedPackage?.value === pkg.value}
-                      onSelect={() => handlePackageSelect(pkg)}
-                      onOpenModal={() => openPackageModal(pkg)}
-                    />
-                  </Grid.Col>
-                );
-              })}
-            </Grid>
+            <CenteredGrid
+              items={menuPackages}
+              getKey={(pkg) => pkg.value}
+              isMobile={isMobile}
+              renderItem={(pkg) => (
+                <MenuPackageBox
+                  pkg={pkg}
+                  isSelected={selectedPackage?.value === pkg.value}
+                  onSelect={() => handlePackageSelect(pkg)}
+                  onOpenModal={() => openPackageModal(pkg)}
+                />
+              )}
+            />
 
             <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)} />
 
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" p={isMobile ? 0 : 'xl'}>
-              {extraServices.map((service) => {
-                const isSelected = selectedServices.includes(service.label);
-
-                return (
-                  <ExtraServiceBox
-                    key={service.id}
-                    service={service}
-                    isSelected={isSelected}
-                    onToggle={() => toggleServiceSelection(service.label)}
-                  />
-                );
-              })}
-            </SimpleGrid>
+            <CenteredGrid
+              items={extraServices}
+              getKey={(service) => service.id}
+              isMobile={isMobile}
+              renderItem={(service) => (
+                <ExtraServiceBox
+                  service={service}
+                  isSelected={selectedServices.includes(service.label)}
+                  onToggle={() => toggleServiceSelection(service.label)}
+                />
+              )}
+            />
 
             <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)} />
 
