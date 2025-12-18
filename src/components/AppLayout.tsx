@@ -42,7 +42,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
                   ))}
                 </Group>
 
-                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color="white" />
               </Group>
             </Container>
           </Box>
