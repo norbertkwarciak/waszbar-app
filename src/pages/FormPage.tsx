@@ -23,7 +23,7 @@ import { showNotification } from '@mantine/notifications';
 import { barOptions, menuPackages } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { COMMON, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
 import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
@@ -65,6 +65,7 @@ const FormPage = (): React.JSX.Element => {
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
 
   const extraServices = offerData?.extraServices ?? [];
+  console.log('🚀 ~ FormPage ~ extraServices:', extraServices);
   const rangesMap = offerData ? buildAvailableRanges(offerData.menuPackages) : null;
 
   const takenDates = data?.takenDates ?? [];
@@ -89,6 +90,7 @@ const FormPage = (): React.JSX.Element => {
 
   const [selectedPackage, setSelectedPackage] = useState<MenuPackage | null>(null);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [serviceCounts, setServiceCounts] = useState<Record<string, number>>({});
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
 
@@ -239,10 +241,30 @@ const FormPage = (): React.JSX.Element => {
     setIsIndividualOffer(guests > maxRange);
   }, [numberOfGuests, selectedPackage, rangesMap]);
 
-  const toggleServiceSelection = (value: string): void => {
-    setSelectedServices((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
-    );
+  const toggleServiceSelection = (value: string, count?: number): void => {
+    if (count !== undefined) {
+      setServiceCounts((prevCounts) => ({ ...prevCounts, [value]: count }));
+
+      setSelectedServices((prev) => {
+        const filtered = prev.filter((v) => v !== value && !v.includes(` x ${value}`));
+
+        if (count > 0) {
+          return [...filtered, `${count} x ${value}`];
+        } else {
+          return filtered;
+        }
+      });
+    } else {
+      setSelectedServices((prev) => {
+        const isCurrentlySelected = prev.includes(value);
+
+        if (isCurrentlySelected) {
+          return prev.filter((v) => v !== value);
+        } else {
+          return [...prev, value];
+        }
+      });
+    }
   };
 
   const resetForm = (): void => {
@@ -262,6 +284,7 @@ const FormPage = (): React.JSX.Element => {
     setSelectedBar(null);
     setSelectedPackage(null);
     setSelectedServices([]);
+    setServiceCounts({});
     setModalPackage(null);
     setPackagePdfUrl(null);
     setExceedsMaxRange(null);
@@ -352,9 +375,21 @@ const FormPage = (): React.JSX.Element => {
       guests,
     );
 
-    const selectedExtraServiceObjects = extraServices.filter((s) =>
-      selectedServices.includes(s.label),
-    );
+    const selectedExtraServiceObjects = extraServices
+      .filter((s) => {
+        return selectedServices.some(
+          (selected) => selected === s.label || selected.includes(` x ${s.label}`),
+        );
+      })
+      .map((s) => {
+        const count = serviceCounts[s.label] || 1;
+        const formattedLabel = count > 1 ? `${count} x ${s.label}` : s.label;
+        return {
+          ...s,
+          label: formattedLabel,
+          price: s.price * count,
+        };
+      });
 
     submitInquiry(
       {
@@ -484,7 +519,21 @@ const FormPage = (): React.JSX.Element => {
     : null;
 
   const selectedExtraServices =
-    offerData?.extraServices.filter((s) => selectedServices.includes(s.label)) ?? [];
+    offerData?.extraServices
+      .filter((s) =>
+        selectedServices.some(
+          (selected) => selected === s.label || selected.includes(` x ${s.label}`),
+        ),
+      )
+      .map((s) => {
+        const count = serviceCounts[s.label] || 1;
+        const formattedLabel = count > 1 ? `${count} x ${s.label}` : s.label;
+        return {
+          ...s,
+          label: formattedLabel,
+          price: s.price * count,
+        };
+      }) ?? [];
 
   return (
     <Container
@@ -624,7 +673,7 @@ const FormPage = (): React.JSX.Element => {
                     {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
                     {travelCost === 0
                       ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
-                      : `${travelCost} PLN`}
+                      : `${travelCost} ${t(COMMON.pln)}`}
                   </Text>
                 )}
               </Group>
@@ -685,8 +734,12 @@ const FormPage = (): React.JSX.Element => {
               renderItem={(service) => (
                 <ExtraServiceBox
                   service={service}
-                  isSelected={selectedServices.includes(service.label)}
-                  onToggle={() => toggleServiceSelection(service.label)}
+                  isSelected={selectedServices.some(
+                    (s) => s === service.label || s.includes(` x ${service.label}`),
+                  )}
+                  onToggle={(count) => toggleServiceSelection(service.label, count)}
+                  hasCalculator={service.id === 'hoshizaki'}
+                  initialCount={serviceCounts[service.label] || 0}
                 />
               )}
             />

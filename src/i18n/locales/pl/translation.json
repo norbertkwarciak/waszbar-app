@@ -127,7 +127,8 @@
     "section8Text": "W razie pytań dotyczących ochrony danych osobowych – napisz do nas:\n📧 {{email}}"
   },
   "common": {
-    "back": "← Powrót do strony głównej"
+    "back": "← Powrót do strony głównej",
+    "pln": "PLN"
   },
   "components": {
     "cookiesBar": {
@@ -135,6 +136,10 @@
       "learnMore": "Dowiedz się więcej",
       "decline": "Odrzuć",
       "accept": "Akceptuj"
+    },
+    "extraServiceBox": {
+      "bag": "worek",
+      "bagCount": "Liczba worków"
     },
     "priceSummaryBar": {
       "packageLabel": "Pakiet:",

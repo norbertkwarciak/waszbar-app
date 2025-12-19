@@ -129,6 +129,7 @@ export interface PageTranslations {
   };
   common: {
     back: string;
+    pln: string;
   };
   components: {
     cookiesBar: {
@@ -136,6 +137,10 @@ export interface PageTranslations {
       learnMore: string;
       decline: string;
       accept: string;
+    };
+    extraServiceBox: {
+      bag: string;
+      bagCount: string;
     };
     priceSummaryBar: {
       packageLabel: string;
@@ -177,6 +182,11 @@ export const COMMON = createTranslationKeys<PageTranslations['common']>('common'
 // Type-safe keys for `components.cookiesBar`
 export const COOKIES_BAR_TRANSLATIONS =
   createTranslationKeys<PageTranslations['components']['cookiesBar']>('components.cookiesBar');
+
+// Type-safe keys for `components.extraServiceBox`
+export const EXTRA_SERVICE_BOX_TRANSLATIONS = createTranslationKeys<
+  PageTranslations['components']['extraServiceBox']
+>('components.extraServiceBox');
 
 // Type-safe keys for `components.priceSummaryBar`
 export const PRICE_SUMMARY_BAR_TRANSLATIONS = createTranslationKeys<
