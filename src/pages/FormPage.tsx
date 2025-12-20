@@ -39,6 +39,7 @@ import PageHeader from '@/components/PageHeader';
 import PriceSummaryBar from '@/components/PriceSummaryBar';
 import FormDivider from '@/components/FormDivider';
 import type { MenuPackage } from '@/types';
+import '@mantine/dates/styles.css';
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
@@ -563,7 +564,7 @@ const FormPage = (): React.JSX.Element => {
               onChange={handleDateChange}
               valueFormat="YYYY-MM-DD"
               locale="pl"
-              disabled={availabilityLoading}
+              disabled={availabilityLoading || !!availabilityError || !!offerError}
               minDate={minSelectableDate}
               maxDate={lastCheckedDateObj ?? undefined}
               leftSection={<IconCalendar size={18} />}

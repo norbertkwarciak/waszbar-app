@@ -32,6 +32,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    cssCodeSplit: true,
+  },
   css: {
     modules: {
       generateScopedName: '[name]_[local]_[hash:base64:5]',

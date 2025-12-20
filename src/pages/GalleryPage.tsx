@@ -4,6 +4,7 @@ import { Carousel } from '@mantine/carousel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GALLERY_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import '@mantine/carousel/styles.css';
 
 const IMAGES: string[] = [
   '/Galeria_1.png',

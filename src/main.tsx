@@ -4,8 +4,6 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import ReactDOM from 'react-dom/client';
 import '@mantine/core/styles.css';
-import '@mantine/carousel/styles.css';
-import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { MantineProvider, createTheme } from '@mantine/core';
