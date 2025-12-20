@@ -132,6 +132,12 @@ export interface PageTranslations {
     pln: string;
   };
   components: {
+    appLayout: {
+      a11y: {
+        navToggleOpen: string;
+        navToggleClose: string;
+      };
+    };
     cookiesBar: {
       description: string;
       learnMore: string;
@@ -177,7 +183,11 @@ export const PRIVACY_POLICY_TRANSLATIONS =
   createTranslationKeys<PageTranslations['privacyPolicyPage']>('privacyPolicyPage');
 
 // Type-safe keys for `common`
-export const COMMON = createTranslationKeys<PageTranslations['common']>('common');
+export const COMMON_TRANSLATIONS = createTranslationKeys<PageTranslations['common']>('common');
+
+// Type-safe keys for `components.appLayout`
+export const APP_LAYOUT_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['components']['appLayout']>('components.appLayout');
 
 // Type-safe keys for `components.cookiesBar`
 export const COOKIES_BAR_TRANSLATIONS =

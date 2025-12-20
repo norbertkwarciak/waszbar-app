@@ -23,7 +23,7 @@ import { showNotification } from '@mantine/notifications';
 import { barOptions, menuPackages } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { COMMON, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { COMMON_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
 import ExtraServiceBox from '@/components/ExtraServiceBox';
 import MenuPackageBox from '@/components/MenuPackageBox';
@@ -672,7 +672,7 @@ const FormPage = (): React.JSX.Element => {
                     {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
                     {travelCost === 0
                       ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
-                      : `${travelCost} ${t(COMMON.pln)}`}
+                      : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
                   </Text>
                 )}
               </Group>

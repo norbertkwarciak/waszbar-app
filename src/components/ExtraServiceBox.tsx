@@ -1,7 +1,11 @@
 import { Box, Button, Image, NumberInput, Paper, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
-import { COMMON, EXTRA_SERVICE_BOX_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import {
+  COMMON_TRANSLATIONS,
+  EXTRA_SERVICE_BOX_TRANSLATIONS,
+  FORM_PAGE_TRANSLATIONS,
+} from '@/i18n/tKeys';
 import React, { useState, useEffect } from 'react';
 import { IMAGES } from '@/core/config/assets';
 
@@ -84,11 +88,12 @@ export default function ExtraServiceBox({
           <Text size="xs" c="dimmed">
             {hasCalculator ? (
               <>
-                1 {t(EXTRA_SERVICE_BOX_TRANSLATIONS.bag)} = {service.price} {t(COMMON.pln)}
+                1 {t(EXTRA_SERVICE_BOX_TRANSLATIONS.bag)} = {service.price}{' '}
+                {t(COMMON_TRANSLATIONS.pln)}
               </>
             ) : (
               <>
-                {service.price} {t(COMMON.pln)}
+                {service.price} {t(COMMON_TRANSLATIONS.pln)}
               </>
             )}
           </Text>

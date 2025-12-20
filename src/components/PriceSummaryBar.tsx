@@ -1,6 +1,6 @@
 import { Flex, Paper, Stack, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { COMMON, PRICE_SUMMARY_BAR_TRANSLATIONS } from '@/i18n/tKeys';
+import { COMMON_TRANSLATIONS, PRICE_SUMMARY_BAR_TRANSLATIONS } from '@/i18n/tKeys';
 import { useMediaQuery } from '@mantine/hooks';
 
 interface PriceSummaryBarProps {
@@ -52,7 +52,7 @@ const PriceSummaryBar = ({
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
               </Text>{' '}
-              {packageLabel} – {packagePrice} {t(COMMON.pln)}
+              {packageLabel} – {packagePrice} {t(COMMON_TRANSLATIONS.pln)}
             </Text>
           )}
 
@@ -61,7 +61,9 @@ const PriceSummaryBar = ({
               <Text span fw={600}>
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.extrasLabel)}
               </Text>{' '}
-              {extraServices.map((s) => `${s.label}: ${s.price} ${t(COMMON.pln)}`).join(', ')}
+              {extraServices
+                .map((s) => `${s.label}: ${s.price} ${t(COMMON_TRANSLATIONS.pln)}`)
+                .join(', ')}
             </Text>
           )}
 
@@ -72,7 +74,7 @@ const PriceSummaryBar = ({
               </Text>{' '}
               {travelCost === 0
                 ? t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostFree)
-                : `${travelCost} ${t(COMMON.pln)}`}
+                : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
             </Text>
           )}
         </Stack>
@@ -103,7 +105,7 @@ const PriceSummaryBar = ({
             </Text>
           ) : (
             <Text size="lg" fw={700} c="primary">
-              {total} {t(COMMON.pln)}
+              {total} {t(COMMON_TRANSLATIONS.pln)}
             </Text>
           )}
         </Stack>

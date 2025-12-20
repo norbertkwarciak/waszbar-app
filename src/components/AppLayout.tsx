@@ -2,6 +2,8 @@ import { AppShell, Burger, Image, Group, Container, Box, Drawer, Stack } from '@
 import { useDisclosure } from '@mantine/hooks';
 import { IMAGES } from '@/core/config/assets';
 import { Link, NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { APP_LAYOUT_TRANSLATIONS } from '@/i18n/tKeys';
 
 const HEADER_HEIGHT = 60;
 
@@ -13,6 +15,7 @@ const LINKS = [
 ];
 
 function AppLayout({ children }: { children: React.ReactNode }): React.ReactElement {
+  const { t } = useTranslation();
   const [opened, { toggle, close }] = useDisclosure();
 
   return (
@@ -42,7 +45,18 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
                   ))}
                 </Group>
 
-                <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color="white" />
+                <Burger
+                  opened={opened}
+                  onClick={toggle}
+                  hiddenFrom="sm"
+                  size="sm"
+                  color="white"
+                  aria-label={
+                    opened
+                      ? t(APP_LAYOUT_TRANSLATIONS.a11y.navToggleClose)
+                      : t(APP_LAYOUT_TRANSLATIONS.a11y.navToggleOpen)
+                  }
+                />
               </Group>
             </Container>
           </Box>

@@ -131,6 +131,12 @@
     "pln": "PLN"
   },
   "components": {
+    "appLayout": {
+      "a11y": {
+        "navToggleOpen": "Otwórz menu nawigacyjne",
+        "navToggleClose": "Zamknij menu nawigacyjne"
+      }
+    },
     "cookiesBar": {
       "description": "Używamy tylko niezbędnych plików cookies wymaganych do działania strony.",
       "learnMore": "Dowiedz się więcej",
