@@ -108,6 +108,7 @@ export default function ExtraServiceBox({
             value={count}
             onChange={handleCountChange}
             min={0}
+            max={100}
             step={1}
             allowDecimal={false}
             allowNegative={false}
