@@ -95,7 +95,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
             left: 0,
             width: '100vw',
             height: '100vh',
-            backgroundImage: 'url(/background.png)',
+            backgroundImage: `image-set( url('/background.avif') type('image/avif'), url('/background.webp') type('image/webp') )`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundAttachment: 'fixed',
