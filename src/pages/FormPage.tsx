@@ -750,7 +750,7 @@ const FormPage = (): React.JSX.Element => {
               label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
               placeholder={t(FORM_PAGE_TRANSLATIONS.additionalInfoPlaceholder)}
               autosize
-              minRows={3}
+              minRows={6}
               value={notes}
               onChange={(event) => setNotes(event.currentTarget.value)}
             />
