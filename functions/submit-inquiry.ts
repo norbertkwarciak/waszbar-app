@@ -5,6 +5,7 @@ interface Env {
   GOOGLE_CLIENT_EMAIL: string;
   GOOGLE_PRIVATE_KEY: string;
   TURNSTILE_SECRET_KEY: string;
+  BREVO_API_KEY: string;
 }
 
 export const onRequestPost: PagesFunction<Env> = async (context) => {
@@ -87,6 +88,67 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       }),
       { status: 500 },
     );
+  }
+
+  // Send emails after successful submission
+  try {
+    const { createAdminNotificationEmail } = await import('../emailTemplates/admin-notification');
+    const { createUserConfirmationEmail } = await import('../emailTemplates/user-confirmation');
+
+    const ADMIN_EMAIL = 'biuro@waszbar.pl';
+    const ADMIN_SENDER_NAME = 'Waszbar.pl';
+    const SECONDARY_ADMIN_EMAIL = 'norbert.kwarciak@gmail.com';
+
+    const sendEmail = async (payload: unknown): Promise<void> => {
+      await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': context.env.BREVO_API_KEY,
+        },
+        body: JSON.stringify(payload),
+      });
+    };
+
+    // Prepare email data with proper structure
+    const emailData = {
+      date: requestData.date,
+      fullName: requestData.fullName,
+      email: requestData.email,
+      phone: requestData.phone,
+      numberOfGuests: requestData.numberOfGuests,
+      venueLocation: requestData.venueLocation,
+      selectedPackage: requestData.selectedPackage,
+      selectedBar: requestData.selectedBar,
+      selectedServices: requestData.selectedServicesObjects || [], // Use the objects array for emails
+      notes: requestData.notes,
+      isIndividualOffer: requestData.isIndividualOffer,
+      packagePrice: requestData.packagePrice || 0,
+      travelCost: requestData.travelCost || 0,
+      totalCost: requestData.totalCost || 0,
+    };
+
+    const userEmail = createUserConfirmationEmail({
+      ...emailData,
+      senderEmail: ADMIN_EMAIL,
+      senderName: ADMIN_SENDER_NAME,
+    });
+
+    const adminNotification = createAdminNotificationEmail({
+      ...emailData,
+      senderEmail: ADMIN_EMAIL,
+      senderName: ADMIN_SENDER_NAME,
+      adminEmails: [
+        { email: ADMIN_EMAIL, name: 'Biuro Waszbar' },
+        { email: SECONDARY_ADMIN_EMAIL, name: 'Norbert' },
+      ],
+    });
+
+    await sendEmail(userEmail);
+    await sendEmail(adminNotification);
+  } catch (emailError) {
+    // Log email error but don't fail the entire request
+    console.error('Email send failed:', emailError);
   }
 
   return new Response(JSON.stringify({ message: 'Form submitted successfully' }), { status: 200 });

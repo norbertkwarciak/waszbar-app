@@ -14,6 +14,15 @@ export interface InquiryPayload {
   notes: string;
   isIndividualOffer: boolean;
   turnstileToken: string | null;
+  packagePrice?: number;
+  travelCost?: number;
+  totalCost?: number;
+  selectedServicesObjects?: Array<{
+    id: string;
+    label: string;
+    price: number;
+    description: string;
+  }>;
 }
 
 // eslint-disable-next-line

@@ -391,6 +391,9 @@ const FormPage = (): React.JSX.Element => {
         };
       });
 
+    const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
+    const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
+
     submitInquiry(
       {
         date: dateString ?? '',
@@ -405,52 +408,22 @@ const FormPage = (): React.JSX.Element => {
         notes,
         isIndividualOffer,
         turnstileToken: captchaToken,
+        packagePrice,
+        travelCost: travelCost ?? 0,
+        totalCost,
+        selectedServicesObjects: selectedExtraServiceObjects,
       },
       {
-        onSuccess: async () => {
-          try {
-            const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
-            const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
+        onSuccess: () => {
+          showNotification({
+            title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
+            message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
+            color: 'green',
+            icon: <IconCheck size={18} />,
+          });
 
-            await fetch(env.api.sendInquiryEmail, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                fullName,
-                email,
-                phone,
-                venueLocation: `${postalCode.trim()} ${city.trim()}`,
-                selectedPackage: selectedPackage?.value ?? '',
-                selectedBar,
-                selectedServices: selectedExtraServiceObjects,
-                notes,
-                numberOfGuests,
-                date: dateString,
-                packagePrice,
-                travelCost,
-                totalCost,
-                isIndividualOffer,
-              }),
-            });
-
-            showNotification({
-              title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
-              message: t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg),
-              color: 'green',
-              icon: <IconCheck size={18} />,
-            });
-
-            navigate('/');
-            resetForm();
-          } catch (emailError) {
-            console.error('Email send failed', emailError);
-            showNotification({
-              title: t(FORM_PAGE_TRANSLATIONS.submitSuccessTitle),
-              message: `${t(FORM_PAGE_TRANSLATIONS.submitSuccessMsg)} (but email failed)`,
-              color: 'orange',
-              icon: <IconX size={18} />,
-            });
-          }
+          navigate('/');
+          resetForm();
         },
         onError: (error: Error) => {
           showNotification({
