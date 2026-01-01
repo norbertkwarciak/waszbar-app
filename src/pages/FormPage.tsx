@@ -776,9 +776,13 @@ const FormPage = (): React.JSX.Element => {
               onVerify={(token) => setCaptchaToken(token)}
             />
 
+            <Text size="sm" mt="md" style={{ whiteSpace: 'pre-line', textAlign: 'center' }}>
+              {t(FORM_PAGE_TRANSLATIONS.submitDisclaimer)}
+            </Text>
+
             <Button
               size="lg"
-              mt="xl"
+              mt="md"
               fullWidth
               onClick={handleSubmit}
               loading={isSubmitting}

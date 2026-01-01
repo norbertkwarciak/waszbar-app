@@ -61,6 +61,7 @@ export interface PageTranslations {
     phoneValidationInvalid: string;
     phoneValidationLength: string;
     submit: string;
+    submitDisclaimer: string;
     submitSuccessTitle: string;
     submitSuccessMsg: string;
     submitErrorTitle: string;

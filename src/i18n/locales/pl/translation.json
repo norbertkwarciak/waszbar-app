@@ -60,6 +60,7 @@
     "phoneValidationInvalid": "Podaj poprawny numer telefonu.",
     "phoneValidationLength": "Numer telefonu powinien mieć od 9 do 15 cyfr.",
     "submit": "Wyślij formularz",
+    "submitDisclaimer": "Kalkulacja drinkbara to oferta wstępna, która wymaga konsultacji.\nWyślij formularz. Skontaktujemy się z Tobą i potwierdzimy ofertę.",
     "submitSuccessTitle": "Formularz wysłany!",
     "submitSuccessMsg": "Dziękujemy za złożenie zamówienia wstępnego. Niebawem skontaktujemy się z Państwem.",
     "submitErrorTitle": "Błąd",
