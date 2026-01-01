@@ -34,7 +34,7 @@
     "cityRequiredError": "Miejscowość jest wymagana.",
     "calculateTravelCostButtonText": "Sprawdź koszt dojazdu",
     "travelCostLabel": "Koszt dojazdu w obie strony:",
-    "freeTravelCostLabel": "Gratis (do 30 km)",
+    "freeTravelCostLabel": "Gratis (do 50 km)",
     "dataTravelCostFetchErrorMsg": "Nie udało się obliczyć kosztu dojazdu. Sprawdź, czy kod pocztowy i miejscowość są poprawne.",
 
     "guestsLabel": "Planowana liczba gości",
@@ -151,7 +151,7 @@
       "packageLabel": "Pakiet:",
       "extrasLabel": "Usługi dodatkowe:",
       "travelCostLabel": "Koszt dojazdu:",
-      "travelCostFree": "Gratis (do 30 km)",
+      "travelCostFree": "Gratis (do 50 km)",
       "totalLabel": "Suma:",
       "individualOfferLabel": "Oferta indywidualna"
     }
