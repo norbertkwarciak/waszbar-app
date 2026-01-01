@@ -190,6 +190,10 @@ const FormPage = (): React.JSX.Element => {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.error && errorData.error.includes('Obsługujemy tylko lokalizacje w Polsce')) {
+          throw new Error(t(FORM_PAGE_TRANSLATIONS.locationOutsidePolandError));
+        }
         throw new Error(t(FORM_PAGE_TRANSLATIONS.dataTravelCostFetchErrorMsg));
       }
 

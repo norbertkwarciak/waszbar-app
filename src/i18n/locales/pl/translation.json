@@ -32,6 +32,7 @@
     "cityInputLabel": "Miejscowość",
     "cityPlaceholder": "Np. Kraków",
     "cityRequiredError": "Miejscowość jest wymagana.",
+    "locationOutsidePolandError": "Obsługujemy tylko lokalizacje w Polsce. Proszę wprowadzić prawidłową miejscowość w Polsce.",
     "calculateTravelCostButtonText": "Sprawdź koszt dojazdu",
     "travelCostLabel": "Koszt dojazdu w obie strony:",
     "freeTravelCostLabel": "Gratis (do 50 km)",

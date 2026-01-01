@@ -67,9 +67,15 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const first = geoJson[0];
   if (!first?.lat || !first?.lon) {
-    return new Response(JSON.stringify({ error: 'Nie znaleziono lokalizacji.' }), {
-      status: 404,
-    });
+    return new Response(
+      JSON.stringify({
+        error:
+          'Obsługujemy tylko lokalizacje w Polsce. Proszę wprowadzić prawidłową miejscowość w Polsce.',
+      }),
+      {
+        status: 404,
+      },
+    );
   }
 
   const lat = parseFloat(first.lat);

@@ -33,6 +33,7 @@ export interface PageTranslations {
     cityInputLabel: string;
     cityPlaceholder: string;
     cityRequiredError: string;
+    locationOutsidePolandError: string;
     calculateTravelCostButtonText: string;
     travelCostLabel: string;
     freeTravelCostLabel: string;
