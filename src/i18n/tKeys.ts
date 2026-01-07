@@ -6,8 +6,10 @@ export interface PageTranslations {
     descriptionText: string;
     weddingButton: string;
     eventButton: string;
+    occasionalEventsButton: string;
     weddingImageAlt: string;
     eventImageAlt: string;
+    occasionalEventsImageAlt: string;
     eventModalTitle: string;
     eventModalText: string;
     eventModalLocation: string;
@@ -15,6 +17,14 @@ export interface PageTranslations {
     eventModalGuests: string;
     eventModalEmail: string;
     eventModalGuidelines: string;
+    occasionalEventsModalTitle: string;
+    occasionalEventsModalText: string;
+    occasionalEventsModalSubtitle: string;
+    occasionalEventsModalBirthdays: string;
+    occasionalEventsModal18th: string;
+    occasionalEventsModalAnniversaries: string;
+    occasionalEventsModalBaptisms: string;
+    occasionalEventsModalHouseParties: string;
     faqLink: string;
   };
   formPage: {
