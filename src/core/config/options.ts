@@ -66,7 +66,7 @@ export const menuPackages = [
     value: MenuPackageType.KLASYCZNY,
     thumbnail: '/PAKIET_KLASYCZNY.png',
     features: [
-      'koktajle KLASYCZNE (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
+      'koktajle klasyczne (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
       'drinki 0%',
       'drinki dla dzieci',
     ],
@@ -89,7 +89,7 @@ export const menuPackages = [
     label: 'DEGUSTACYJNY',
     value: MenuPackageType.DEGUSTACYJNY,
     thumbnail: '/PAKIET_DEGUSTACYJNY.png',
-    features: [],
+    features: ['bar degustacyjny', 'wysoko gatunkowa whisky/burbon', 'koktajle klasyczne'],
     description: 'formPage.menuPackagesDescriptions.tasting',
   },
 ];
