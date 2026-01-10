@@ -16,6 +16,43 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const rawBody = await context.request.text();
   const requestData = JSON.parse(rawBody || '{}');
 
+  const {
+    date,
+    fullName,
+    email,
+    phone,
+    numberOfGuests,
+    venueLocation,
+    selectedPackage,
+    selectedBar,
+    selectedServices,
+    notes,
+    isIndividualOffer,
+    honeypot,
+  } = requestData;
+
+  // Honeypot check: if filled, it's likely a bot.
+  // Return 200 to avoid training bots; do not append to Sheets or send emails.
+  if (honeypot && typeof honeypot === 'string' && honeypot.trim() !== '') {
+    return new Response(JSON.stringify({ message: 'Form submitted successfully' }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Length validation
+  const tooLong = (v: unknown, max: number): boolean => typeof v === 'string' && v.length > max;
+
+  if (
+    tooLong(fullName, 80) ||
+    tooLong(email, 254) ||
+    tooLong(phone, 30) ||
+    tooLong(notes, 2000) ||
+    tooLong(venueLocation, 120)
+  ) {
+    return new Response(JSON.stringify({ error: 'Invalid submission' }), { status: 400 });
+  }
+
   const verification = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -36,20 +73,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const token = await getGoogleAccessToken(context.env, [
     'https://www.googleapis.com/auth/spreadsheets',
   ]);
-
-  const {
-    date,
-    fullName,
-    email,
-    phone,
-    numberOfGuests,
-    venueLocation,
-    selectedPackage,
-    selectedBar,
-    selectedServices,
-    notes,
-    isIndividualOffer,
-  } = requestData;
 
   const row = [
     dayjs().format('YYYY-MM-DD HH:mm'),
@@ -120,7 +143,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       venueLocation: requestData.venueLocation,
       selectedPackage: requestData.selectedPackage,
       selectedBar: requestData.selectedBar,
-      selectedServices: requestData.selectedServicesObjects || [], // Use the objects array for emails
+      selectedServices: requestData.selectedServicesObjects || [],
       notes: requestData.notes,
       isIndividualOffer: requestData.isIndividualOffer,
       packagePrice: requestData.packagePrice || 0,

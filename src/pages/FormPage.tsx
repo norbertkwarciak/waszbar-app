@@ -64,7 +64,6 @@ const FormPage = (): React.JSX.Element => {
 
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
-  console.log('🚀 ~ FormPage ~ offerData:', offerData);
 
   const extraServices = offerData?.extraServices ?? [];
   const rangesMap = offerData ? buildAvailableRanges(offerData.menuPackages) : null;
@@ -74,7 +73,7 @@ const FormPage = (): React.JSX.Element => {
   const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
   const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
-  const [notes, setNotes] = useState<string>('');
+  const [notes, setNotes] = useState('');
   const [selectedBar, setSelectedBar] = useState<string | null>(null);
 
   const [travelCost, setTravelCost] = useState<number | null>(null);
@@ -95,15 +94,16 @@ const FormPage = (): React.JSX.Element => {
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
 
-  const [fullName, setFullName] = useState<string>('');
+  const [fullName, setFullName] = useState('');
   const [fullNameError, setFullNameError] = useState<string | null>(null);
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState<string | null>(null);
-  const [phone, setPhone] = useState<string>('');
+  const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | null>(null);
   const [isIndividualOffer, setIsIndividualOffer] = useState(false);
 
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [hpCompany, setHpCompany] = useState('');
 
   const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
   const dateStatus: 'available' | 'unavailable' | null = !dateString
@@ -296,6 +296,7 @@ const FormPage = (): React.JSX.Element => {
     setSearchParams(new URLSearchParams());
     setEmailError(null);
     setPhoneError(null);
+    setHpCompany('');
   };
 
   const validateForm = (): boolean => {
@@ -417,6 +418,7 @@ const FormPage = (): React.JSX.Element => {
         travelCost: travelCost ?? 0,
         totalCost,
         selectedServicesObjects: selectedExtraServiceObjects,
+        honeypot: hpCompany,
       },
       {
         onSuccess: () => {
@@ -616,6 +618,7 @@ const FormPage = (): React.JSX.Element => {
                   }
                   error={postalCodeError || undefined}
                   withAsterisk
+                  maxLength={10}
                   style={{
                     flex: 1,
                     width: isMobile ? '100%' : 'auto',
@@ -629,6 +632,7 @@ const FormPage = (): React.JSX.Element => {
                   onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
                   error={cityError || undefined}
                   withAsterisk
+                  maxLength={110}
                   style={{
                     flex: 1,
                     width: isMobile ? '100%' : 'auto',
@@ -731,6 +735,7 @@ const FormPage = (): React.JSX.Element => {
               minRows={6}
               value={notes}
               onChange={(event) => setNotes(event.currentTarget.value)}
+              maxLength={2000}
             />
 
             <FormDivider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} />
@@ -744,6 +749,7 @@ const FormPage = (): React.JSX.Element => {
               onChange={(e) =>
                 handleFieldChange(setFullName, setFullNameError)(e.currentTarget.value)
               }
+              maxLength={80}
             />
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
@@ -757,6 +763,7 @@ const FormPage = (): React.JSX.Element => {
                   handleFieldChange(setEmail, setEmailError, validateEmail)(e.currentTarget.value)
                 }
                 error={emailError || undefined}
+                maxLength={254}
               />
 
               <TextInput
@@ -769,12 +776,31 @@ const FormPage = (): React.JSX.Element => {
                   handleFieldChange(setPhone, setPhoneError, validatePhone)(e.currentTarget.value)
                 }
                 error={phoneError || undefined}
+                maxLength={30}
               />
             </SimpleGrid>
 
             <Turnstile
               sitekey={env.turnstile.siteKey}
               onVerify={(token) => setCaptchaToken(token)}
+            />
+
+            {/* Honeypot (anti-bot) */}
+            <TextInput
+              name="website"
+              value={hpCompany}
+              onChange={(e) => setHpCompany(e.currentTarget.value)}
+              autoComplete="off"
+              tabIndex={-1}
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                left: '-9999px',
+                top: '0',
+                width: '1px',
+                height: '1px',
+                overflow: 'hidden',
+              }}
             />
 
             <Text size="sm" mt="md" style={{ whiteSpace: 'pre-line', textAlign: 'center' }}>

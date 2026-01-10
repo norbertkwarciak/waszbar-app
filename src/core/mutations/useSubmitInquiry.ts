@@ -14,6 +14,7 @@ export interface InquiryPayload {
   notes: string;
   isIndividualOffer: boolean;
   turnstileToken: string | null;
+  honeypot?: string;
   packagePrice?: number;
   travelCost?: number;
   totalCost?: number;
