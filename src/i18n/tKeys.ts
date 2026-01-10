@@ -96,6 +96,7 @@ export interface PageTranslations {
       max: string;
       classic: string;
       excellent: string;
+      tasting: string;
     };
     failedToLoadDocumentError: string;
     failedToLoadDocumentMessage: string;

@@ -32,6 +32,7 @@ function CenteredGrid<T>({
             key={getKey(item, i)}
             span={{ base: 12, sm: 6 }}
             offset={isLastItem && isOdd ? { base: 0, sm: 3 } : 0}
+            style={{ display: 'flex' }}
           >
             {renderItem(item, i)}
           </Grid.Col>

@@ -85,6 +85,13 @@ export const menuPackages = [
     ],
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
+  {
+    label: 'DEGUSTACYJNY',
+    value: MenuPackageType.DEGUSTACYJNY,
+    thumbnail: '/PAKIET_DEGUSTACYJNY.png',
+    features: [],
+    description: 'formPage.menuPackagesDescriptions.tasting',
+  },
 ];
 
 export const faqs = [

@@ -15,6 +15,7 @@ export enum MenuPackageType {
   MAX = 'max',
   KLASYCZNY = 'klasyczny',
   EXCELLENT = 'excellent',
+  DEGUSTACYJNY = 'degustacyjny',
 }
 
 export type MenuPackage = {

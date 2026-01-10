@@ -7,6 +7,7 @@ const PACKAGE_FILE_TOKEN: Record<MenuPackageType, string> = {
   [MenuPackageType.MAX]: 'MAX',
   [MenuPackageType.KLASYCZNY]: 'KLASYCZNA',
   [MenuPackageType.EXCELLENT]: 'EXCELLENT',
+  [MenuPackageType.DEGUSTACYJNY]: 'DEGUSTACYJNY',
 };
 
 // Build the canonical filename

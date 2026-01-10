@@ -28,8 +28,12 @@ export default function MenuPackageBox({
           ? {
               display: 'flex',
               justifyContent: 'center',
+              width: '100%',
             }
-          : undefined
+          : {
+              display: 'flex',
+              width: '100%',
+            }
       }
     >
       <Paper
@@ -39,7 +43,7 @@ export default function MenuPackageBox({
         p="md"
         withBorder
         style={{
-          display: 'block',
+          display: 'flex',
           width: '100%',
           textAlign: 'center',
           cursor: 'pointer',
@@ -54,7 +58,7 @@ export default function MenuPackageBox({
           e.currentTarget.style.boxShadow = 'var(--mantine-shadow-md)';
         }}
       >
-        <Stack gap="md">
+        <Stack gap="md" style={{ flex: 1, justifyContent: 'space-between' }}>
           <Image
             component="img"
             data-src={pkg.thumbnail}

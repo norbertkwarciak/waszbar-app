@@ -64,6 +64,7 @@ const FormPage = (): React.JSX.Element => {
 
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
+  console.log('🚀 ~ FormPage ~ offerData:', offerData);
 
   const extraServices = offerData?.extraServices ?? [];
   const rangesMap = offerData ? buildAvailableRanges(offerData.menuPackages) : null;
