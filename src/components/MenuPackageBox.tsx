@@ -65,9 +65,9 @@ export default function MenuPackageBox({
             className="lazyload blur-on-load"
             alt={pkg.label}
             height={300}
-            fit="cover"
+            fit="contain"
             radius="md"
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: 'none', backgroundColor: 'black' }}
           />
 
           <Text size="xl" pt="xs" fw={700}>
