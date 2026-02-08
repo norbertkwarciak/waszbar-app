@@ -3,7 +3,7 @@ import { env } from '@/core/config/env';
 export const IMAGES = {
   drinkBarWedding: `${env.public.assets}/FOTO_DRINKBAR_NA_WESELE.jpg`,
   drinkBarEvent: `${env.public.assets}/FOTO_DRINKBAR_NA_EVENT.jpeg`,
-  drinkBarParty: `${env.public.assets}/FOTO_DRINKBAR_NA_IMPREZE.jpeg`,
+  drinkBarParty: `${env.public.assets}/FOTO_DRINKBAR_NA_IMPREZE.jpg`,
   whiteClassicWedding: `${env.public.assets}/FOTO_BAR_BIAŁY_KLASYCZNY_WESELNY.jpg`,
   blackGlamour: `${env.public.assets}/FOTO_BAR_CZARNY_GLAMOUR.jpeg`,
   rustic: `${env.public.assets}/FOTO_BAR_RUSTYKALNY.jpg`,
