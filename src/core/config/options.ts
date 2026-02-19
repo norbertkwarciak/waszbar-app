@@ -18,6 +18,11 @@ export const barOptions = [
     value: 'rustykalny',
   },
   {
+    label: 'BIAŁY ANGIELSKI SZTUKATERIA',
+    image: IMAGES.whiteEnglishStucco,
+    value: 'biały angielski sztukateria',
+  },
+  {
     label: 'Nie potrzebujemy baru. Na sali będzie bar, z którego będzie można skorzystać.',
     image: '',
     value: 'bez baru',

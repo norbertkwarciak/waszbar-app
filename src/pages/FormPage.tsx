@@ -573,29 +573,27 @@ const FormPage = (): React.JSX.Element => {
           <>
             <FormDivider
               label={
-                <>
+                <div style={{ maxWidth: '100%', whiteSpace: 'wrap', textAlign: 'center' }}>
                   {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
                   <Text component="span" c="red" ml={4}>
                     *
                   </Text>
-                </>
+                </div>
               }
             />
 
-            <SimpleGrid
-              cols={{ base: isMobile ? 1 : 2, sm: 2 }}
-              spacing="md"
-              p={isMobile ? 0 : 'xl'}
-            >
-              {barOptions.map((bar) => (
+            <CenteredGrid
+              items={barOptions}
+              getKey={(bar) => bar.value}
+              isMobile={isMobile}
+              renderItem={(bar) => (
                 <BarOptionBox
-                  key={bar.value}
                   option={bar}
                   isSelected={selectedBar === bar.value}
                   onSelect={() => handleBarSelect(bar.value)}
                 />
-              ))}
-            </SimpleGrid>
+              )}
+            />
 
             <FormDivider label={t(FORM_PAGE_TRANSLATIONS.locationLabel)} />
 

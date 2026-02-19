@@ -2,6 +2,7 @@ import { Box, Button, Image, Paper, Text } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import React from 'react';
+import { useMediaQuery } from '@mantine/hooks';
 
 type BarOption = {
   label: string;
@@ -21,6 +22,9 @@ export default function BarOptionBox({
   onSelect,
 }: BarOptionBoxProps): React.JSX.Element {
   const { t } = useTranslation();
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const textFontSize = isMobile ? '0.875rem' : '1rem';
 
   return (
     <Paper
@@ -31,6 +35,7 @@ export default function BarOptionBox({
       style={{
         textAlign: 'center',
         display: 'flex',
+        flex: 1,
         flexDirection: 'column',
         transition: 'transform 0.15s ease, box-shadow 0.15s ease',
         height: '100%',
@@ -55,7 +60,7 @@ export default function BarOptionBox({
             padding: '0 12px',
           }}
         >
-          <Text size="md" fw={600} style={{ margin: '24px 0' }}>
+          <Text size="md" fw={600} style={{ margin: '48px 0', fontSize: textFontSize }}>
             {option.label}
           </Text>
         </Box>
@@ -83,7 +88,7 @@ export default function BarOptionBox({
               textAlign: 'center',
             }}
           >
-            <Text size="lg" fw={700} style={{ margin: 0 }}>
+            <Text size="lg" fw={700} style={{ margin: 0, fontSize: textFontSize }}>
               {option.label}
             </Text>
           </Box>
