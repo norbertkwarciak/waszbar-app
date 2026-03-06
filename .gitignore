@@ -10,3 +10,4 @@ out
 .terraform
 .wrangler/
 .pages-dev/
+.agents/

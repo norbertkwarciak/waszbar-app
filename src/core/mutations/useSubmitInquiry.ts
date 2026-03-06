@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import { env } from '@/core/config/env';
 
 export interface InquiryPayload {
@@ -26,8 +26,7 @@ export interface InquiryPayload {
   }>;
 }
 
-// eslint-disable-next-line
-export const useSubmitInquiry = () => {
+export const useSubmitInquiry = (): UseMutationResult<unknown, Error, InquiryPayload> => {
   return useMutation({
     mutationFn: async (payload: InquiryPayload) => {
       const response = await fetch(env.api.submitInquiry, {

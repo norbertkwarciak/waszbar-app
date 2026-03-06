@@ -6,7 +6,7 @@ import {
   EXTRA_SERVICE_BOX_TRANSLATIONS,
   FORM_PAGE_TRANSLATIONS,
 } from '@/i18n/tKeys';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { IMAGES } from '@/core/config/assets';
 
 type ExtraService = {
@@ -21,7 +21,7 @@ interface ExtraServiceBoxProps {
   isSelected: boolean;
   onToggle: (count?: number) => void;
   hasCalculator?: boolean;
-  initialCount?: number;
+  count?: number;
 }
 
 export default function ExtraServiceBox({
@@ -29,19 +29,13 @@ export default function ExtraServiceBox({
   isSelected,
   onToggle,
   hasCalculator = false,
-  initialCount = 0,
+  count = 0,
 }: ExtraServiceBoxProps): React.JSX.Element {
   const { t } = useTranslation();
   const isDesktop = useMediaQuery('(min-width: 768px)');
-  const [count, setCount] = useState<number>(initialCount);
-
-  useEffect(() => {
-    setCount(initialCount);
-  }, [initialCount]);
 
   const handleCountChange = (value: number | string): void => {
     const newCount = Number(value) || 0;
-    setCount(newCount);
     onToggle(newCount);
   };
 

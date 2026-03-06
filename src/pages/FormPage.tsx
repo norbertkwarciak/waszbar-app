@@ -200,9 +200,9 @@ const FormPage = (): React.JSX.Element => {
 
       const data = await response.json();
       setTravelCost(data.cost ?? 0);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setTravelError(error.message || 'Wystąpił błąd');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Wystąpił błąd';
+      setTravelError(message);
     } finally {
       setTravelLoading(false);
     }
@@ -719,7 +719,7 @@ const FormPage = (): React.JSX.Element => {
                   )}
                   onToggle={(count) => toggleServiceSelection(service.label, count)}
                   hasCalculator={service.id === 'hoshizaki'}
-                  initialCount={serviceCounts[service.label] || 0}
+                  count={serviceCounts[service.label] || 0}
                 />
               )}
             />
