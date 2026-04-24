@@ -13,6 +13,11 @@ export const barOptions = [
     value: 'czarny glamour',
   },
   {
+    label: 'CZARNY GLAMOUR SZTUKATERIA',
+    image: IMAGES.blackGlamourStucco,
+    value: 'czarny glamour sztukateria',
+  },
+  {
     label: 'RUSTYKALNY',
     image: IMAGES.rustic,
     value: 'rustykalny',

@@ -6,6 +6,7 @@ export const IMAGES = {
   drinkBarParty: `${env.public.assets}/FOTO_DRINKBAR_NA_IMPREZE.jpg`,
   whiteClassicWedding: `${env.public.assets}/FOTO_BAR_BIAŁY_KLASYCZNY_WESELNY.jpg`,
   blackGlamour: `${env.public.assets}/FOTO_BAR_CZARNY_GLAMOUR.jpeg`,
+  blackGlamourStucco: `${env.public.assets}/FOTO_BAR_CZARNY_GLAMOUR_SZTUKATERIA.jpg`,
   rustic: `${env.public.assets}/FOTO_BAR_RUSTYKALNY.jpg`,
   whiteEnglishStucco: `${env.public.assets}/FOTO_BAR_BIAŁY_ANGIELSKI_SZTUKATERIA.jpeg`,
   smoke: `${env.public.assets}/FOTO_TANIEC_W_CHMURACH.png`,
