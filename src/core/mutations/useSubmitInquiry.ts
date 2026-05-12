@@ -8,6 +8,7 @@ export interface InquiryPayload {
   phone: string;
   numberOfGuests: number;
   venueLocation: string;
+  foundLocation?: string;
   selectedPackage: string | null;
   selectedBar: string | null;
   selectedServices: string[];

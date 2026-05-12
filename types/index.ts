@@ -21,6 +21,7 @@ export interface EmailParams {
   totalCost: number;
   travelCost: number;
   venueLocation: string;
+  foundLocation?: string;
   isIndividualOffer: boolean;
 }
 

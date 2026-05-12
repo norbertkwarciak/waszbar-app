@@ -22,6 +22,7 @@ export function createAdminNotificationEmail({
   totalCost,
   travelCost,
   venueLocation,
+  foundLocation,
   isIndividualOffer,
 }: AdminEmailParams): EmailData {
   const extraServicesHtml = selectedServices.length
@@ -54,6 +55,14 @@ export function createAdminNotificationEmail({
           <td style="padding: 8px 0;"><strong>Lokalizacja imprezy:</strong></td>
           <td style="padding: 8px 0;">${venueLocation}</td>
         </tr>
+        ${
+          foundLocation
+            ? `<tr>
+          <td style="padding: 8px 0;"><strong>Znaleziona lokalizacja:</strong></td>
+          <td style="padding: 8px 0;">${foundLocation}</td>
+        </tr>`
+            : ''
+        }
         <tr>
           <td style="padding: 8px 0;"><strong>Wybrany pakiet:</strong></td>
           <td style="padding: 8px 0;">${selectedPackage.toUpperCase()}</td>

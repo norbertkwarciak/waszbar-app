@@ -419,6 +419,7 @@ const FormPage = (): React.JSX.Element => {
         phone,
         numberOfGuests: Number(numberOfGuests),
         venueLocation: `${postalCode.trim()} ${city.trim()}`,
+        foundLocation: travelLocationName ?? undefined,
         selectedPackage: selectedPackage?.value ?? '',
         selectedBar,
         selectedServices,
