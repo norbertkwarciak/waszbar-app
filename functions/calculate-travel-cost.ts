@@ -171,7 +171,31 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     distances?: number[][];
   };
 
-  const distanceMeters = matrixJson.distances?.[0]?.[1] ?? 0;
+  const distanceMeters = matrixJson.distances?.[0]?.[1];
+  if (distanceMeters == null) {
+    console.error('[calculate-travel-cost] ORS returned no distance:', matrixJson);
+
+    await logTravelCostToSupabase(context.env, {
+      request_data: {
+        postal_code: postalCode,
+        city,
+        full_address: fullAddress,
+      },
+      geocoding_result: {
+        lat,
+        lon,
+        display_name: first.display_name ?? '',
+      },
+      client_location: clientLocation,
+      error: 'ORS returned no distance',
+      status: 'error',
+    });
+
+    return new Response(
+      JSON.stringify({ error: 'Nie udało się obliczyć odległości. Spróbuj ponownie.' }),
+      { status: 502 },
+    );
+  }
   const distanceKm = distanceMeters / 1000;
 
   let cost = 0;
