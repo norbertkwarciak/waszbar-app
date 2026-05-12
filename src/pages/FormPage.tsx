@@ -79,6 +79,7 @@ const FormPage = (): React.JSX.Element => {
   const [travelCost, setTravelCost] = useState<number | null>(null);
   const [travelLoading, setTravelLoading] = useState<boolean>(false);
   const [travelError, setTravelError] = useState<string | null>(null);
+  const [travelLocationName, setTravelLocationName] = useState<string | null>(null);
 
   const [postalCode, setPostalCode] = useState('');
   const [city, setCity] = useState('');
@@ -162,6 +163,7 @@ const FormPage = (): React.JSX.Element => {
     setTravelLoading(true);
     setTravelError(null);
     setTravelCost(null);
+    setTravelLocationName(null);
 
     let hasValidationError = false;
 
@@ -200,6 +202,15 @@ const FormPage = (): React.JSX.Element => {
 
       const data = await response.json();
       setTravelCost(data.cost ?? 0);
+      setTravelLocationName(data.location?.displayName ?? null);
+
+      // Log dla debugging
+      console.log('[FormPage] Travel cost calculated:', {
+        cost: data.cost,
+        distanceKm: data.distanceKm,
+        location: data.location,
+        input: { postalCode, city },
+      });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Wystąpił błąd';
       setTravelError(message);
@@ -649,12 +660,21 @@ const FormPage = (): React.JSX.Element => {
                 </Button>
 
                 {travelCost !== null && !travelLoading && (
-                  <Text size="sm">
-                    {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
-                    {travelCost === 0
-                      ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
-                      : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
-                  </Text>
+                  <Stack gap={4}>
+                    <Text size="sm" fw={600}>
+                      {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
+                      {travelCost === 0
+                        ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
+                        : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
+                    </Text>
+                    {travelLocationName && (
+                      <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
+                        {t(FORM_PAGE_TRANSLATIONS.foundLocationLabel, {
+                          locationName: travelLocationName,
+                        })}
+                      </Text>
+                    )}
+                  </Stack>
                 )}
               </Group>
 

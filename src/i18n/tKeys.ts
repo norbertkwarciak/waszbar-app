@@ -47,6 +47,7 @@ export interface PageTranslations {
     calculateTravelCostButtonText: string;
     travelCostLabel: string;
     freeTravelCostLabel: string;
+    foundLocationLabel: string;
     dataTravelCostFetchErrorMsg: string;
 
     guestsLabel: string;

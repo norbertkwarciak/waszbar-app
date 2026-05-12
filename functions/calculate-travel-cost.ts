@@ -33,17 +33,27 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const city = body.city?.trim() ?? '';
   const fullAddress = `${postalCode} ${city}`;
 
-  const geoRes = await fetch(
-    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-      fullAddress,
-    )}&countrycodes=pl&limit=1`,
-    {
-      headers: {
-        'User-Agent': 'waszbar-app (norbert.kwarciak@gmail.com)',
-        'Accept-Language': 'pl',
-      },
+  // Log incoming request
+  console.log('[calculate-travel-cost] Request:', {
+    postalCode,
+    city,
+    fullAddress,
+    userAgent: context.request.headers.get('User-Agent'),
+    cfCountry: context.request.headers.get('CF-IPCountry'),
+  });
+
+  const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    fullAddress,
+  )}&countrycodes=pl&limit=1`;
+
+  console.log('[calculate-travel-cost] Nominatim query URL:', nominatimUrl);
+
+  const geoRes = await fetch(nominatimUrl, {
+    headers: {
+      'User-Agent': 'waszbar-app (norbert.kwarciak@gmail.com)',
+      'Accept-Language': 'pl',
     },
-  );
+  });
 
   const geoContentType = geoRes.headers.get('content-type') ?? '';
   if (!geoContentType.includes('application/json')) {
@@ -65,8 +75,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     display_name?: string;
   }>;
 
+  console.log('[calculate-travel-cost] Nominatim results:', {
+    count: geoJson.length,
+    first: geoJson[0],
+  });
+
   const first = geoJson[0];
   if (!first?.lat || !first?.lon) {
+    console.log('[calculate-travel-cost] No results from Nominatim');
     return new Response(
       JSON.stringify({
         error:
@@ -80,6 +96,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const lat = parseFloat(first.lat);
   const lon = parseFloat(first.lon);
+
+  console.log('[calculate-travel-cost] Geocoded location:', {
+    lat,
+    lon,
+    display_name: first.display_name,
+  });
 
   const matrixReq = {
     locations: [
@@ -124,6 +146,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const raw = 2 * distanceKm * PRICE_PER_KM;
     cost = Math.floor(raw / ROUNDING_UNIT) * ROUNDING_UNIT;
   }
+
+  console.log('[calculate-travel-cost] Calculation result:', {
+    distanceMeters,
+    distanceKm,
+    cost,
+    freeDistanceKm: FREE_DISTANCE_KM,
+    pricePerKm: PRICE_PER_KM,
+  });
 
   return new Response(
     JSON.stringify({

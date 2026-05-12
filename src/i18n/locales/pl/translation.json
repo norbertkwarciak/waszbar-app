@@ -46,6 +46,7 @@
     "calculateTravelCostButtonText": "Sprawdź koszt dojazdu",
     "travelCostLabel": "Koszt dojazdu w obie strony:",
     "freeTravelCostLabel": "Gratis (do 50 km)",
+    "foundLocationLabel": "Znaleziona lokalizacja: {{locationName}}",
     "dataTravelCostFetchErrorMsg": "Nie udało się obliczyć kosztu dojazdu. Sprawdź, czy kod pocztowy i miejscowość są poprawne.",
 
     "guestsLabel": "Planowana liczba gości",
