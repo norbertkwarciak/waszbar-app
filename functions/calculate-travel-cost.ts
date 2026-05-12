@@ -22,6 +22,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
   const body = (await context.request.json().catch(() => null)) as CalculateTravelCostBody | null;
 
+  const cf = context.request.cf as { country?: string } | undefined;
+  const clientLocation = {
+    country: cf?.country ?? context.request.headers.get('CF-IPCountry') ?? undefined,
+  };
+
   if (!body) {
     await logTravelCostToSupabase(context.env, {
       request_data: {
@@ -29,6 +34,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         city: '',
         full_address: '',
       },
+      client_location: clientLocation,
       error: 'Invalid JSON body',
       status: 'error',
     });
@@ -53,7 +59,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     city,
     fullAddress,
     userAgent: context.request.headers.get('User-Agent'),
-    cfCountry: context.request.headers.get('CF-IPCountry'),
+    clientLocation,
   });
 
   const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -105,6 +111,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         city,
         full_address: fullAddress,
       },
+      client_location: clientLocation,
       error: 'No geocoding results found',
       status: 'error',
     });
@@ -198,6 +205,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       distance_km: distanceKm,
       cost,
     },
+    client_location: clientLocation,
     status: 'success',
   });
 

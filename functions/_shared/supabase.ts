@@ -42,6 +42,9 @@ export const logTravelCostToSupabase = async (
       distance_km: number;
       cost: number;
     };
+    client_location?: {
+      country?: string;
+    };
     error?: string;
     status: 'success' | 'error';
   },
@@ -64,6 +67,7 @@ export const logTravelCostToSupabase = async (
       distance_meters: data.calculation_result?.distance_meters,
       distance_km: data.calculation_result?.distance_km,
       cost: data.calculation_result?.cost,
+      client_country: data.client_location?.country,
       status: data.status,
       error_message: data.error,
       created_at: new Date().toISOString(),

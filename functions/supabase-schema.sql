@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS travel_cost_logs (
     distance_km DOUBLE PRECISION,
     cost DOUBLE PRECISION,
 
+    -- Client location (from Cloudflare request.cf)
+    client_country TEXT,
+
     -- Status and errors
     status TEXT NOT NULL CHECK (status IN ('success', 'error')),
     error_message TEXT,
