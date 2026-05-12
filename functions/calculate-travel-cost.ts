@@ -1,5 +1,9 @@
+import { logTravelCostToSupabase } from './_shared/supabase';
+
 interface Env {
   OPENROUTESERVICE_API_KEY: string;
+  SUPABASE_URL?: string;
+  SUPABASE_KEY?: string;
 }
 
 type CalculateTravelCostBody = {
@@ -19,6 +23,16 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const body = (await context.request.json().catch(() => null)) as CalculateTravelCostBody | null;
 
   if (!body) {
+    await logTravelCostToSupabase(context.env, {
+      request_data: {
+        postal_code: '',
+        city: '',
+        full_address: '',
+      },
+      error: 'Invalid JSON body',
+      status: 'error',
+    });
+
     return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
       status: 400,
     });
@@ -83,6 +97,18 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const first = geoJson[0];
   if (!first?.lat || !first?.lon) {
     console.log('[calculate-travel-cost] No results from Nominatim');
+
+    // Log error to Supabase
+    await logTravelCostToSupabase(context.env, {
+      request_data: {
+        postal_code: postalCode,
+        city,
+        full_address: fullAddress,
+      },
+      error: 'No geocoding results found',
+      status: 'error',
+    });
+
     return new Response(
       JSON.stringify({
         error:
@@ -153,6 +179,26 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     cost,
     freeDistanceKm: FREE_DISTANCE_KM,
     pricePerKm: PRICE_PER_KM,
+  });
+
+  // Log successful result to Supabase
+  await logTravelCostToSupabase(context.env, {
+    request_data: {
+      postal_code: postalCode,
+      city,
+      full_address: fullAddress,
+    },
+    geocoding_result: {
+      lat,
+      lon,
+      display_name: first.display_name ?? '',
+    },
+    calculation_result: {
+      distance_meters: distanceMeters,
+      distance_km: distanceKm,
+      cost,
+    },
+    status: 'success',
   });
 
   return new Response(
