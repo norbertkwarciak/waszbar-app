@@ -629,6 +629,10 @@ const FormPage = (): React.JSX.Element => {
                   error={postalCodeError || undefined}
                   withAsterisk
                   maxLength={10}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   style={{
                     flex: 1,
                     width: isMobile ? '100%' : 'auto',
@@ -643,6 +647,10 @@ const FormPage = (): React.JSX.Element => {
                   error={cityError || undefined}
                   withAsterisk
                   maxLength={110}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
                   style={{
                     flex: 1,
                     width: isMobile ? '100%' : 'auto',
