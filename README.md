@@ -1,6 +1,6 @@
 # waszbar-app
 
-A React application for estimating bartender services for [waszbar.pl](https://waszbar.pl) — mobile cocktail bar for weddings and events in Poland. Customers configure a package, pick a bar style, add extras, choose a date, and submit an inquiry. The app calculates travel cost based on the venue address and shows real-time availability.
+A React application for estimating bartender services for [waszbar.app](https://waszbar.app) — mobile cocktail bar for weddings and events in Poland. Customers configure a package, pick a bar style, add extras, choose a date, and submit an inquiry. The app calculates travel cost based on the venue address and shows real-time availability.
 
 The frontend is a Vite + React 19 SPA. The backend is a set of Cloudflare Pages Functions that integrate with Google Sheets (availability, offer pricing, inquiry log), Brevo (transactional email), OpenRouteService + Nominatim (geocoding & distance), Supabase (request logging), and Cloudflare Turnstile (bot protection).
 
