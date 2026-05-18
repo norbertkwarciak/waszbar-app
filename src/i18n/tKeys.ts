@@ -141,6 +141,11 @@ export interface PageTranslations {
     section8Title: string;
     section8Text: string;
   };
+  notFoundPage: {
+    title: string;
+    description: string;
+    backToHome: string;
+  };
   common: {
     back: string;
     pln: string;
@@ -195,6 +200,10 @@ export const CONTACT_PAGE_TRANSLATIONS =
 // Type-safe keys for `privacyPolicyPage`
 export const PRIVACY_POLICY_TRANSLATIONS =
   createTranslationKeys<PageTranslations['privacyPolicyPage']>('privacyPolicyPage');
+
+// Type-safe keys for `notFoundPage`
+export const NOT_FOUND_PAGE_TRANSLATIONS =
+  createTranslationKeys<PageTranslations['notFoundPage']>('notFoundPage');
 
 // Type-safe keys for `common`
 export const COMMON_TRANSLATIONS = createTranslationKeys<PageTranslations['common']>('common');

@@ -62,6 +62,13 @@ const FormPage = (): React.JSX.Element => {
   const dateFromUrl = searchParams.get('date');
   const minSelectableDate = dayjs().add(7, 'day').startOf('day').toDate();
 
+  const today = dayjs();
+  const minSelectableDay = dayjs(minSelectableDate);
+  const defaultCalendarMonth =
+    minSelectableDay.month() !== today.month() || minSelectableDay.year() !== today.year()
+      ? minSelectableDay.startOf('month').toDate()
+      : undefined;
+
   const { data, isLoading: availabilityLoading, error: availabilityError } = useAvailability();
   const { data: offerData, isLoading: offerLoading, error: offerError } = useOffer();
 
@@ -559,6 +566,7 @@ const FormPage = (): React.JSX.Element => {
               disabled={availabilityLoading || !!availabilityError || !!offerError}
               minDate={minSelectableDate}
               maxDate={lastCheckedDateObj ?? undefined}
+              defaultDate={defaultCalendarMonth}
               leftSection={<IconCalendar size={18} />}
               style={{ maxWidth: 250 }}
               inputMode="none"

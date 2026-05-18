@@ -4,6 +4,7 @@ import { IMAGES } from '@/core/config/assets';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { APP_LAYOUT_TRANSLATIONS } from '@/i18n/tKeys';
+import BackgroundImage from './BackgroundImage';
 
 const HEADER_HEIGHT = 60;
 
@@ -88,24 +89,7 @@ function AppLayout({ children }: { children: React.ReactNode }): React.ReactElem
           overflow: 'hidden',
         }}
       >
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            backgroundImage: `image-set( url('/background.avif') type('image/avif'), url('/background.webp') type('image/webp') )`,
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed',
-            opacity: 0.3,
-            filter: 'blur(1px)',
-            zIndex: -1,
-            pointerEvents: 'none',
-          }}
-        />
-
+        <BackgroundImage />
         {children}
       </AppShell.Main>
     </AppShell>

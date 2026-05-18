@@ -140,6 +140,11 @@
     "section8Title": "8. Kontakt",
     "section8Text": "W razie pytań dotyczących ochrony danych osobowych – napisz do nas:\n📧 {{email}}"
   },
+  "notFoundPage": {
+    "title": "Strona nie znaleziona",
+    "description": "Przepraszamy, ale strona, której szukasz, nie istnieje.",
+    "backToHome": "Powrót do strony głównej"
+  },
   "common": {
     "back": "← Powrót do strony głównej",
     "pln": "PLN"

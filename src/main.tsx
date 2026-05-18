@@ -39,6 +39,7 @@ const FaqPage = lazy(() => import('./pages/FaqPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const flatColor = (
   hex: string,
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
         element: <PrivacyPolicyPage />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);
 
