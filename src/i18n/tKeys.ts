@@ -109,6 +109,7 @@ export interface PageTranslations {
   };
   faqPage: {
     title: string;
+    items: { question: string; answer: string }[];
   };
   contactPage: {
     title: string;

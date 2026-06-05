@@ -33,9 +33,9 @@ const FaqPage = (): React.JSX.Element => {
         {faqs.map((faq, index) => (
           <Accordion.Item value={`item-${index}`} key={faq.question}>
             <Accordion.Control>
-              <Text fw={700}>{faq.question}</Text>
+              <Text fw={700}>{t(faq.question)}</Text>
             </Accordion.Control>
-            <Accordion.Panel>{faq.answer}</Accordion.Panel>
+            <Accordion.Panel>{t(faq.answer)}</Accordion.Panel>
           </Accordion.Item>
         ))}
       </Accordion>
