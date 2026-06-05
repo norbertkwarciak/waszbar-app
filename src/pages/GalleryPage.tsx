@@ -6,24 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { GALLERY_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import '@mantine/carousel/styles.css';
 
-const IMAGES: string[] = [
-  '/Galeria_1.png',
-  '/Galeria_2.png',
-  '/Galeria_3.png',
-  '/Galeria_4.png',
-  '/Galeria_5.png',
-  '/Galeria_6.png',
-  '/Galeria_7.png',
-  '/Galeria_8.png',
-  '/Galeria_9.png',
-  '/Galeria_10.png',
-  '/Galeria_11.png',
-  '/Galeria_12.png',
-  '/Galeria_13.png',
-  '/Galeria_14.png',
-  '/Galeria_15.png',
-  '/Galeria_16.png',
-];
+const LAST_IMAGE = 20;
+const IMAGES: string[] = Array.from({ length: LAST_IMAGE }, (_, i) => `/Galeria_${i + 1}.png`);
 
 function GalleryPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
