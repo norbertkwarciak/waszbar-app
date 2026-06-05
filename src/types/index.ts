@@ -9,6 +9,11 @@ export type ExtraService = {
   description: string;
 };
 
+export type SelectedService = {
+  id: string;
+  count: number;
+};
+
 export enum MenuPackageType {
   BASIC = 'basic',
   MEDIUM = 'medium',

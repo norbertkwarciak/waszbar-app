@@ -233,22 +233,55 @@ const PriceSummaryBar = ({
 
   return (
     <>
-      <Drawer
+      <Drawer.Root
         opened={desktopDrawerOpen}
         onClose={() => setDesktopDrawerOpen(false)}
         position="left"
         size="sm"
-        title={<Text fw={600}>{t(PRICE_SUMMARY_BAR_TRANSLATIONS.detailsTitle)}</Text>}
-        overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
+        styles={{
+          inner: { height: '100%', alignItems: 'stretch' },
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          },
+        }}
       >
-        {hasAnyItems ? (
-          itemsList
-        ) : (
-          <Text size="sm" c="dimmed">
-            {t(PRICE_SUMMARY_BAR_TRANSLATIONS.noSelectionsLabel)}
-          </Text>
-        )}
-      </Drawer>
+        <Drawer.Overlay backgroundOpacity={0.35} blur={1} />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.Title>
+              <Text fw={600}>{t(PRICE_SUMMARY_BAR_TRANSLATIONS.detailsTitle)}</Text>
+            </Drawer.Title>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+
+          <Drawer.Body style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            {hasAnyItems ? (
+              itemsList
+            ) : (
+              <Text size="sm" c="dimmed">
+                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.noSelectionsLabel)}
+              </Text>
+            )}
+          </Drawer.Body>
+
+          <Box
+            style={{
+              padding: 'var(--mantine-spacing-md)',
+              borderTop: '1px solid var(--mantine-color-gray-3)',
+              flexShrink: 0,
+            }}
+          >
+            <Group justify="space-between" align="baseline" wrap="nowrap">
+              <Text size="sm" fw={600}>
+                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.totalLabel)}
+              </Text>
+              {totalDisplay}
+            </Group>
+          </Box>
+        </Drawer.Content>
+      </Drawer.Root>
 
       <Paper
         withBorder

@@ -118,6 +118,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     return new Response(
       JSON.stringify({
+        code: 'OUT_OF_COUNTRY',
         error:
           'Obsługujemy tylko lokalizacje w Polsce. Proszę wprowadzić prawidłową miejscowość w Polsce.',
       }),

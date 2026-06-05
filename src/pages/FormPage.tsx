@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
 import Turnstile from 'react-turnstile';
@@ -16,6 +16,7 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
@@ -33,13 +34,37 @@ import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
 import { env } from '@/core/config/env';
-import { countDigits, pickAvailableOrMaxRange, buildAvailableRanges } from '@/core/utils/helpers';
+import {
+  buildAvailableRanges,
+  buildSelectedExtraServices,
+  countDigits,
+  getPackagePrice,
+  pickAvailableOrMaxRange,
+} from '@/core/utils/helpers';
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
 import PriceSummaryBar from '@/components/PriceSummaryBar';
 import FormDivider from '@/components/FormDivider';
-import type { MenuPackage } from '@/types';
+import type { MenuPackage, SelectedService } from '@/types';
 import '@mantine/dates/styles.css';
+
+const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
+
+type FormValues = {
+  date: string | null;
+  postalCode: string;
+  city: string;
+  numberOfGuests: number | '';
+  selectedBar: BarOption | null;
+  selectedPackage: MenuPackage | null;
+  selectedServices: SelectedService[];
+  notes: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  captchaToken: string | null;
+  hpCompany: string;
+};
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
@@ -48,6 +73,7 @@ const FormPage = (): React.JSX.Element => {
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const fieldLabels: Record<string, string> = {
+    date: t(FORM_PAGE_TRANSLATIONS.checkDateLabel),
     selectedBar: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.selectedBar),
     postalCode: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.postalCode),
     city: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.city),
@@ -56,6 +82,22 @@ const FormPage = (): React.JSX.Element => {
     fullName: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.fullName),
     email: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.email),
     phone: t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.phone),
+  };
+
+  const validateEmail = (value: string): string | null => {
+    const v = value.trim();
+    if (!v) return t(FORM_PAGE_TRANSLATIONS.emailValidationRequired);
+    if (!regex.email.test(v)) return t(FORM_PAGE_TRANSLATIONS.emailValidationInvalid);
+    return null;
+  };
+
+  const validatePhone = (value: string): string | null => {
+    const v = value.trim();
+    if (!v) return t(FORM_PAGE_TRANSLATIONS.phoneValidationRequired);
+    if (!regex.phone.test(v)) return t(FORM_PAGE_TRANSLATIONS.phoneValidationInvalid);
+    const digits = countDigits(v);
+    if (digits < 9 || digits > 15) return t(FORM_PAGE_TRANSLATIONS.phoneValidationLength);
+    return null;
   };
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -79,39 +121,66 @@ const FormPage = (): React.JSX.Element => {
   const lastCheckedDate = data?.lastCheckedDate ?? null;
   const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
 
-  const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
-  const [notes, setNotes] = useState('');
-  const [selectedBar, setSelectedBar] = useState<BarOption | null>(null);
+  const form = useForm<FormValues>({
+    initialValues: {
+      date: dateFromUrl || null,
+      postalCode: '',
+      city: '',
+      numberOfGuests: 100,
+      selectedBar: null,
+      selectedPackage: null,
+      selectedServices: [],
+      notes: '',
+      fullName: '',
+      email: '',
+      phone: '',
+      captchaToken: null,
+      hpCompany: '',
+    },
+    validateInputOnChange: ['email', 'phone'],
+    validate: {
+      date: (v) => (v ? null : 'required'),
+      postalCode: (v) =>
+        !v
+          ? t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.postalCode)
+          : !POSTAL_CODE_REGEX.test(v)
+            ? t(FORM_PAGE_TRANSLATIONS.postalCodeInvalidError)
+            : null,
+      city: (v) => (v.trim() ? null : t(FORM_PAGE_TRANSLATIONS.cityRequiredError)),
+      numberOfGuests: (v) => (typeof v === 'number' && v > 0 ? null : 'required'),
+      selectedBar: (v) => (v ? null : 'required'),
+      selectedPackage: (v) => (v ? null : 'required'),
+      fullName: (v) => (v ? null : t(FORM_PAGE_TRANSLATIONS.nameValidationRequired)),
+      email: validateEmail,
+      phone: validatePhone,
+    },
+  });
+
+  const {
+    date: dateString,
+    postalCode,
+    city,
+    numberOfGuests,
+    selectedBar,
+    selectedPackage,
+    selectedServices,
+  } = form.values;
 
   const [travelCost, setTravelCost] = useState<number | null>(null);
   const [travelLoading, setTravelLoading] = useState<boolean>(false);
   const [travelError, setTravelError] = useState<string | null>(null);
   const [travelLocationName, setTravelLocationName] = useState<string | null>(null);
 
-  const [postalCode, setPostalCode] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCodeError, setPostalCodeError] = useState<string | null>(null);
-  const [cityError, setCityError] = useState<string | null>(null);
-
-  const [numberOfGuests, setNumberOfGuests] = useState<number | ''>(100);
   const [exceedsMaxRange, setExceedsMaxRange] = useState<number | null>(null);
-
-  const [selectedPackage, setSelectedPackage] = useState<MenuPackage | null>(null);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [serviceCounts, setServiceCounts] = useState<Record<string, number>>({});
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
 
-  const [fullName, setFullName] = useState('');
-  const [fullNameError, setFullNameError] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState<string | null>(null);
-  const [isIndividualOffer, setIsIndividualOffer] = useState(false);
-
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [hpCompany, setHpCompany] = useState('');
+  const isIndividualOffer = useMemo(() => {
+    if (!selectedPackage || !rangesMap) return false;
+    const availableRanges = rangesMap[selectedPackage.value];
+    if (!availableRanges?.length) return false;
+    return Number(numberOfGuests) > Math.max(...availableRanges);
+  }, [selectedPackage, rangesMap, numberOfGuests]);
 
   const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
   const dateStatus: 'available' | 'unavailable' | null = !dateString
@@ -119,27 +188,6 @@ const FormPage = (): React.JSX.Element => {
     : takenDates?.includes(normalizedDate ?? '')
       ? 'unavailable'
       : 'available';
-
-  const validateEmail = (value: string): string | null => {
-    const v = value.trim();
-
-    if (!v) return t(FORM_PAGE_TRANSLATIONS.emailValidationRequired);
-    if (!regex.email.test(v)) return t(FORM_PAGE_TRANSLATIONS.emailValidationInvalid);
-
-    return null;
-  };
-
-  const validatePhone = (value: string): string | null => {
-    const v = value.trim();
-
-    if (!v) return t(FORM_PAGE_TRANSLATIONS.phoneValidationRequired);
-    if (!regex.phone.test(v)) return t(FORM_PAGE_TRANSLATIONS.phoneValidationInvalid);
-
-    const digits = countDigits(v);
-    if (digits < 9 || digits > 15) return t(FORM_PAGE_TRANSLATIONS.phoneValidationLength);
-
-    return null;
-  };
 
   useEffect(() => {
     if (availabilityError || offerError) {
@@ -153,7 +201,7 @@ const FormPage = (): React.JSX.Element => {
   }, [availabilityError, offerError, t]);
 
   const handleDateChange = (value: string | null): void => {
-    setDateString(value);
+    form.setFieldValue('date', value);
 
     const newParams = new URLSearchParams(searchParams);
     if (value) newParams.set('date', value);
@@ -162,29 +210,16 @@ const FormPage = (): React.JSX.Element => {
     setSearchParams(newParams);
   };
 
-  const handleBarSelect = (bar: BarOption): void => {
-    setSelectedBar(bar);
-  };
-
   const handleFetchTravelCost = async (): Promise<void> => {
     setTravelLoading(true);
     setTravelError(null);
     setTravelCost(null);
     setTravelLocationName(null);
 
-    let hasValidationError = false;
+    const postalErr = form.validateField('postalCode').error;
+    const cityErr = form.validateField('city').error;
 
-    if (!postalCode.match(/^\d{2}-\d{3}$/)) {
-      setPostalCodeError(t(FORM_PAGE_TRANSLATIONS.postalCodeInvalidError));
-      hasValidationError = true;
-    }
-
-    if (!city.trim()) {
-      setCityError(t(FORM_PAGE_TRANSLATIONS.cityRequiredError));
-      hasValidationError = true;
-    }
-
-    if (hasValidationError) {
+    if (postalErr || cityErr) {
       setTravelLoading(false);
       return;
     }
@@ -193,31 +228,20 @@ const FormPage = (): React.JSX.Element => {
       const response = await fetch(env.api.calculateTravelCost, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          postalCode,
-          city,
-        }),
+        body: JSON.stringify({ postalCode, city }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.error && errorData.error.includes('Obsługujemy tylko lokalizacje w Polsce')) {
+        const errorData = await response.json().catch(() => ({}));
+        if (errorData.code === 'OUT_OF_COUNTRY') {
           throw new Error(t(FORM_PAGE_TRANSLATIONS.locationOutsidePolandError));
         }
         throw new Error(t(FORM_PAGE_TRANSLATIONS.dataTravelCostFetchErrorMsg));
       }
 
-      const data = await response.json();
-      setTravelCost(data.cost ?? 0);
-      setTravelLocationName(data.location?.displayName ?? null);
-
-      // Log dla debugging
-      console.log('[FormPage] Travel cost calculated:', {
-        cost: data.cost,
-        distanceKm: data.distanceKm,
-        location: data.location,
-        input: { postalCode, city },
-      });
+      const result = await response.json();
+      setTravelCost(result.cost ?? 0);
+      setTravelLocationName(result.location?.displayName ?? null);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Wystąpił błąd';
       setTravelError(message);
@@ -226,136 +250,55 @@ const FormPage = (): React.JSX.Element => {
     }
   };
 
-  const handlePackageSelect = (pkg: MenuPackage | null): void => {
-    setSelectedPackage(pkg);
-
-    if (!pkg || !rangesMap) {
-      setIsIndividualOffer(false);
-      return;
-    }
-
-    const availableRanges = rangesMap[pkg.value];
-    if (!availableRanges?.length) {
-      setIsIndividualOffer(false);
-      return;
-    }
-
-    const maxRange = Math.max(...availableRanges);
-    const guests = Number(numberOfGuests);
-
-    setIsIndividualOffer(guests > maxRange);
-  };
-
-  useEffect(() => {
-    if (!selectedPackage || !rangesMap) {
-      setIsIndividualOffer(false);
-      return;
-    }
-
-    const availableRanges = rangesMap[selectedPackage.value];
-    if (!availableRanges?.length) {
-      setIsIndividualOffer(false);
-      return;
-    }
-
-    const maxRange = Math.max(...availableRanges);
-    const guests = Number(numberOfGuests);
-
-    setIsIndividualOffer(guests > maxRange);
-  }, [numberOfGuests, selectedPackage, rangesMap]);
-
-  const toggleServiceSelection = (value: string, count?: number): void => {
+  const toggleServiceSelection = (id: string, count?: number): void => {
     if (count !== undefined) {
-      setServiceCounts((prevCounts) => ({ ...prevCounts, [value]: count }));
-
-      setSelectedServices((prev) => {
-        const filtered = prev.filter((v) => v !== value && !v.includes(` x ${value}`));
-
-        if (count > 0) {
-          return [...filtered, `${count} x ${value}`];
-        } else {
-          return filtered;
-        }
-      });
+      const filtered = selectedServices.filter((s) => s.id !== id);
+      form.setFieldValue('selectedServices', count > 0 ? [...filtered, { id, count }] : filtered);
     } else {
-      setSelectedServices((prev) => {
-        const isCurrentlySelected = prev.includes(value);
-
-        if (isCurrentlySelected) {
-          return prev.filter((v) => v !== value);
-        } else {
-          return [...prev, value];
-        }
-      });
+      const exists = selectedServices.some((s) => s.id === id);
+      form.setFieldValue(
+        'selectedServices',
+        exists
+          ? selectedServices.filter((s) => s.id !== id)
+          : [...selectedServices, { id, count: 1 }],
+      );
     }
   };
 
   const resetForm = (): void => {
-    setDateString(null);
-    setFullName('');
-    setEmail('');
-    setPhone('');
-    setNotes('');
-    setPostalCode('');
-    setCity('');
-    setPostalCodeError(null);
-    setCityError(null);
+    form.reset();
     setTravelCost(null);
     setTravelError(null);
     setTravelLoading(false);
-    setNumberOfGuests(100);
-    setSelectedBar(null);
-    setSelectedPackage(null);
-    setSelectedServices([]);
-    setServiceCounts({});
     setModalPackage(null);
     setPackagePdfUrl(null);
     setExceedsMaxRange(null);
     setSearchParams(new URLSearchParams());
-    setEmailError(null);
-    setPhoneError(null);
-    setHpCompany('');
   };
 
-  const validateForm = (): boolean => {
-    const missingFields: string[] = [];
-    let isValid = true;
+  const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
 
-    if (!dateString) missingFields.push('dateString');
-    if (!postalCode) missingFields.push('postalCode');
-    if (!city) missingFields.push('city');
-    if (!numberOfGuests) missingFields.push('numberOfGuests');
-    if (!selectedBar) missingFields.push('selectedBar');
-    if (!selectedPackage) missingFields.push('selectedPackage');
-    if (!fullName) missingFields.push('fullName');
-    if (!email) missingFields.push('email');
-    if (!phone) missingFields.push('phone');
+  const selectedExtraServiceObjects = useMemo(
+    () => buildSelectedExtraServices(extraServices, selectedServices),
+    [extraServices, selectedServices],
+  );
 
-    const missingLabels = missingFields.map((key) => fieldLabels[key] || key).filter(Boolean);
+  const currentPackagePrice = useMemo(
+    () =>
+      selectedPackage
+        ? getPackagePrice(
+            offerData?.menuPackages ?? [],
+            selectedPackage.value,
+            Number(numberOfGuests),
+          )
+        : null,
+    [selectedPackage, offerData?.menuPackages, numberOfGuests],
+  );
 
-    const emailErr = validateEmail(email);
-    const phoneErr = validatePhone(phone);
-
-    setEmailError(emailErr);
-    setPhoneError(phoneErr);
-
-    if (emailErr) {
-      missingFields.push(t(FORM_PAGE_TRANSLATIONS.emailLabel));
-      isValid = false;
-    }
-    if (phoneErr) {
-      missingFields.push(t(FORM_PAGE_TRANSLATIONS.phoneLabel));
-      isValid = false;
-    }
-
-    setFullNameError(null);
-
-    if (!fullName) {
-      setFullNameError(t(FORM_PAGE_TRANSLATIONS.nameValidationRequired));
-      isValid = false;
-    }
-
-    if (missingFields.length > 0) {
+  const handleSubmit = async (): Promise<void> => {
+    const { hasErrors, errors } = form.validate();
+    if (hasErrors) {
+      const missingLabels = Object.keys(errors).map((key) => fieldLabels[key] || key);
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.submitErrorTitle),
         message: `${t(FORM_PAGE_TRANSLATIONS.submitErrorMsg)} ${missingLabels.join(', ')}.`,
@@ -363,61 +306,14 @@ const FormPage = (): React.JSX.Element => {
         icon: <IconX size={18} />,
         autoClose: false,
       });
-      isValid = false;
+      return;
     }
 
-    return isValid;
-  };
-
-  const { mutate: submitInquiry, isPending: isSubmitting } = useSubmitInquiry();
-
-  function getPackagePrice(
-    menuPackages: { name: string; prices: { people: number; price: number }[] }[],
-    selectedPackageValue: string,
-    numberOfGuests: number,
-  ): number {
-    const pkg = menuPackages.find(
-      (p) => p.name.toUpperCase() === selectedPackageValue.toUpperCase(),
-    );
-    if (!pkg) return 0;
-
-    const sortedPrices = [...pkg.prices].sort((a, b) => a.people - b.people);
-    const selected = sortedPrices.find((p) => numberOfGuests <= p.people) ?? sortedPrices.at(-1);
-
-    return selected?.price ?? 0;
-  }
-
-  const handleSubmit = async (): Promise<void> => {
-    const isValid = validateForm();
-    if (!isValid) return;
-
-    const guests = Number(numberOfGuests);
-
-    const packagePrice = getPackagePrice(
-      offerData?.menuPackages ?? [],
-      selectedPackage?.value ?? '',
-      guests,
-    );
-
-    const selectedExtraServiceObjects = extraServices
-      .filter((s) => {
-        return selectedServices.some(
-          (selected) => selected === s.label || selected.includes(` x ${s.label}`),
-        );
-      })
-      .map((s) => {
-        const count = serviceCounts[s.label] || 1;
-        const formattedLabel = count > 1 ? `${count} x ${s.label}` : s.label;
-        return {
-          ...s,
-          label: formattedLabel,
-          price: s.price * count,
-        };
-      });
-
+    const { fullName, email, phone, notes, captchaToken, hpCompany } = form.values;
+    const packagePrice = currentPackagePrice ?? 0;
     const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
     const barPrice = selectedBar?.price ?? 0;
-    const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + barPrice;
+    const totalCost = packagePrice + (travelCost ?? 0) + extrasTotal + barPrice;
 
     submitInquiry(
       {
@@ -430,14 +326,19 @@ const FormPage = (): React.JSX.Element => {
         foundLocation: travelLocationName ?? undefined,
         selectedPackage: selectedPackage?.value ?? '',
         selectedBar: selectedBar?.value ?? null,
-        selectedServices,
+        selectedServices: selectedExtraServiceObjects.map((s) => s.formattedLabel),
         notes,
         isIndividualOffer,
         turnstileToken: captchaToken,
         packagePrice,
         travelCost: travelCost ?? 0,
         totalCost,
-        selectedServicesObjects: selectedExtraServiceObjects,
+        selectedServicesObjects: selectedExtraServiceObjects.map((s) => ({
+          id: s.id,
+          label: s.formattedLabel,
+          price: s.price,
+          description: s.description,
+        })),
         honeypot: hpCompany,
       },
       {
@@ -495,57 +396,20 @@ const FormPage = (): React.JSX.Element => {
     setPackagePdfUrl(url ?? null);
   };
 
-  const handleFieldChange =
-    (
-      setter: (v: string) => void,
-      errorSetter: (e: string | null) => void,
-      validator?: (v: string) => string | null,
-    ) =>
-    (value: string) => {
-      setter(value);
-      if (validator) {
-        errorSetter(validator(value));
-      } else if (value.trim() !== '') {
-        errorSetter(null);
-      }
-    };
-
-  const currentPackagePrice = selectedPackage
-    ? getPackagePrice(
-        offerData?.menuPackages ?? [],
-        selectedPackage?.value ?? '',
-        Number(numberOfGuests),
-      )
-    : null;
-
   const selectedBarPrice =
     typeof selectedBar?.price === 'number' && selectedBar.price > 0 ? selectedBar.price : null;
 
-  const selectedExtraServices =
-    offerData?.extraServices
-      .filter((s) =>
-        selectedServices.some(
-          (selected) => selected === s.label || selected.includes(` x ${s.label}`),
-        ),
-      )
-      .map((s) => {
-        const count = serviceCounts[s.label] || 1;
-        const formattedLabel = count > 1 ? `${count} x ${s.label}` : s.label;
-        return {
-          key: s.label,
-          label: formattedLabel,
-          price: s.price * count,
-        };
-      }) ?? [];
+  const selectedExtraServices = selectedExtraServiceObjects.map((s) => ({
+    key: s.id,
+    label: s.formattedLabel,
+    price: s.price,
+  }));
 
-  const handleRemoveExtraService = (key: string): void => {
-    setSelectedServices((prev) => prev.filter((v) => v !== key && !v.includes(` x ${key}`)));
-    setServiceCounts((prev) => {
-      if (!(key in prev)) return prev;
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
+  const handleRemoveExtraService = (id: string): void => {
+    form.setFieldValue(
+      'selectedServices',
+      selectedServices.filter((s) => s.id !== id),
+    );
   };
 
   return (
@@ -624,7 +488,7 @@ const FormPage = (): React.JSX.Element => {
                 <BarOptionBox
                   option={bar}
                   isSelected={selectedBar?.value === bar.value}
-                  onSelect={() => handleBarSelect(bar)}
+                  onSelect={() => form.setFieldValue('selectedBar', bar)}
                 />
               )}
             />
@@ -644,39 +508,27 @@ const FormPage = (): React.JSX.Element => {
                 <TextInput
                   label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
                   placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
-                  value={postalCode}
-                  onChange={(e) =>
-                    handleFieldChange(setPostalCode, setPostalCodeError)(e.currentTarget.value)
-                  }
-                  error={postalCodeError || undefined}
                   withAsterisk
                   maxLength={10}
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck={false}
-                  style={{
-                    flex: 1,
-                    width: isMobile ? '100%' : 'auto',
-                  }}
+                  style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}
+                  {...form.getInputProps('postalCode')}
                 />
 
                 <TextInput
                   label={t(FORM_PAGE_TRANSLATIONS.cityInputLabel)}
                   placeholder={t(FORM_PAGE_TRANSLATIONS.cityPlaceholder)}
-                  value={city}
-                  onChange={(e) => handleFieldChange(setCity, setCityError)(e.currentTarget.value)}
-                  error={cityError || undefined}
                   withAsterisk
                   maxLength={110}
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck={false}
-                  style={{
-                    flex: 1,
-                    width: isMobile ? '100%' : 'auto',
-                  }}
+                  style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}
+                  {...form.getInputProps('city')}
                 />
               </Group>
 
@@ -722,7 +574,7 @@ const FormPage = (): React.JSX.Element => {
                 value={numberOfGuests}
                 onChange={(value) => {
                   if (typeof value === 'number' || value === '') {
-                    setNumberOfGuests(value);
+                    form.setFieldValue('numberOfGuests', value);
                   }
                 }}
                 min={0}
@@ -750,7 +602,7 @@ const FormPage = (): React.JSX.Element => {
                 <MenuPackageBox
                   pkg={pkg}
                   isSelected={selectedPackage?.value === pkg.value}
-                  onSelect={() => handlePackageSelect(pkg)}
+                  onSelect={() => form.setFieldValue('selectedPackage', pkg)}
                   onOpenModal={() => openPackageModal(pkg)}
                 />
               )}
@@ -765,12 +617,10 @@ const FormPage = (): React.JSX.Element => {
               renderItem={(service) => (
                 <ExtraServiceBox
                   service={service}
-                  isSelected={selectedServices.some(
-                    (s) => s === service.label || s.includes(` x ${service.label}`),
-                  )}
-                  onToggle={(count) => toggleServiceSelection(service.label, count)}
+                  isSelected={selectedServices.some((s) => s.id === service.id)}
+                  onToggle={(count) => toggleServiceSelection(service.id, count)}
                   hasCalculator={service.id === 'hoshizaki'}
-                  count={serviceCounts[service.label] || 0}
+                  count={selectedServices.find((s) => s.id === service.id)?.count ?? 0}
                 />
               )}
             />
@@ -782,9 +632,8 @@ const FormPage = (): React.JSX.Element => {
               placeholder={t(FORM_PAGE_TRANSLATIONS.additionalInfoPlaceholder)}
               autosize
               minRows={6}
-              value={notes}
-              onChange={(event) => setNotes(event.currentTarget.value)}
               maxLength={2000}
+              {...form.getInputProps('notes')}
             />
 
             <FormDivider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} />
@@ -793,12 +642,8 @@ const FormPage = (): React.JSX.Element => {
               label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
               placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
               required
-              value={fullName}
-              error={fullNameError || undefined}
-              onChange={(e) =>
-                handleFieldChange(setFullName, setFullNameError)(e.currentTarget.value)
-              }
               maxLength={80}
+              {...form.getInputProps('fullName')}
             />
 
             <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
@@ -807,12 +652,8 @@ const FormPage = (): React.JSX.Element => {
                 placeholder={t(FORM_PAGE_TRANSLATIONS.emailPlaceholder)}
                 type="email"
                 required
-                value={email}
-                onChange={(e) =>
-                  handleFieldChange(setEmail, setEmailError, validateEmail)(e.currentTarget.value)
-                }
-                error={emailError || undefined}
                 maxLength={254}
+                {...form.getInputProps('email')}
               />
 
               <TextInput
@@ -820,25 +661,19 @@ const FormPage = (): React.JSX.Element => {
                 placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
                 type="tel"
                 required
-                value={phone}
-                onChange={(e) =>
-                  handleFieldChange(setPhone, setPhoneError, validatePhone)(e.currentTarget.value)
-                }
-                error={phoneError || undefined}
                 maxLength={30}
+                {...form.getInputProps('phone')}
               />
             </SimpleGrid>
 
             <Turnstile
               sitekey={env.turnstile.siteKey}
-              onVerify={(token) => setCaptchaToken(token)}
+              onVerify={(token) => form.setFieldValue('captchaToken', token)}
             />
 
             {/* Honeypot (anti-bot) */}
             <TextInput
               name="website"
-              value={hpCompany}
-              onChange={(e) => setHpCompany(e.currentTarget.value)}
               autoComplete="off"
               tabIndex={-1}
               aria-hidden="true"
@@ -850,6 +685,7 @@ const FormPage = (): React.JSX.Element => {
                 height: '1px',
                 overflow: 'hidden',
               }}
+              {...form.getInputProps('hpCompany')}
             />
           </>
         )}
@@ -879,11 +715,8 @@ const FormPage = (): React.JSX.Element => {
         barLabel={selectedBar?.label ?? null}
         barPrice={selectedBarPrice}
         isIndividualOffer={isIndividualOffer}
-        onRemoveBar={() => setSelectedBar(null)}
-        onRemovePackage={() => {
-          setSelectedPackage(null);
-          setIsIndividualOffer(false);
-        }}
+        onRemoveBar={() => form.setFieldValue('selectedBar', null)}
+        onRemovePackage={() => form.setFieldValue('selectedPackage', null)}
         onRemoveExtraService={handleRemoveExtraService}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
