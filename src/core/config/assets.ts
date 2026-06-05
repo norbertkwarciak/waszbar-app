@@ -9,6 +9,8 @@ export const IMAGES = {
   blackGlamourStucco: `${env.public.assets}/FOTO_BAR_CZARNY_GLAMOUR_SZTUKATERIA.jpg`,
   rustic: `${env.public.assets}/FOTO_BAR_RUSTYKALNY.jpg`,
   whiteEnglishStucco: `${env.public.assets}/FOTO_BAR_BIAŁY_ANGIELSKI_SZTUKATERIA.jpeg`,
+  goldMirror: `${env.public.assets}/FOTO_BAR_ZŁOTY_LUSTRO.jpg`,
+  outdoorTent: `${env.public.assets}/FOTO_BAR_PLENEROWY_NAMIOT.png`,
   smoke: `${env.public.assets}/FOTO_TANIEC_W_CHMURACH.png`,
   hoshizaki: `${env.public.assets}/FOTO_HOSHIZAKI_ICE.png`,
   jager: `${env.public.assets}/FOTO_JAGERMEISTER_TAP.jpg`,

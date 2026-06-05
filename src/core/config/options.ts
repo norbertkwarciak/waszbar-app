@@ -2,7 +2,15 @@ import { IMAGES } from './assets';
 import translationPL from '@/i18n/locales/pl/translation.json';
 import { MenuPackageType } from '@/types';
 
-export const barOptions = [
+export interface BarOption {
+  label: string;
+  image: string;
+  value: string;
+  price?: number;
+  tooltipKey?: string;
+}
+
+export const barOptions: BarOption[] = [
   {
     label: 'BIAŁY KLASYCZNY WESELNY',
     image: IMAGES.whiteClassicWedding,
@@ -27,6 +35,18 @@ export const barOptions = [
     label: 'BIAŁY ANGIELSKI SZTUKATERIA',
     image: IMAGES.whiteEnglishStucco,
     value: 'biały angielski sztukateria',
+  },
+  {
+    label: 'BAR ZŁOTY LUSTRO',
+    image: IMAGES.goldMirror,
+    value: 'bar złoty lustro',
+  },
+  {
+    label: 'BAR PLENEROWY - NAMIOT (4mx3m)',
+    image: IMAGES.outdoorTent,
+    value: 'bar plenerowy - namiot (4mx3m)',
+    price: 250,
+    tooltipKey: 'formPage.barTooltips.outdoorTent',
   },
   {
     label: 'Nie potrzebujemy baru. Na sali będzie bar, z którego będzie można skorzystać.',

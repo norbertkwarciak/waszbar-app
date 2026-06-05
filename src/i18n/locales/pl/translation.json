@@ -101,7 +101,10 @@
     "failedToLoadDocumentError": "Błąd ładowania dokumentu",
     "failedToLoadDocumentMessage": "Nie udało się załadować dokumentu. Prosimy spróbować ponownie później.",
     "loadingDocument": "Ładowanie dokumentu...",
-    "unsupportedFileType": "Nieobsługiwany typ pliku"
+    "unsupportedFileType": "Nieobsługiwany typ pliku",
+    "barTooltips": {
+      "outdoorTent": "Duży, elegancki namiot 12m2 na bar plenerowy. Zapewni komfort Twoim gościom spędzającym czas przy barze."
+    }
   },
   "galleryPage": {
     "title": "Jak pracujemy"
@@ -254,6 +257,7 @@
     },
     "priceSummaryBar": {
       "packageLabel": "Pakiet:",
+      "barLabel": "Bar:",
       "extrasLabel": "Usługi dodatkowe:",
       "travelCostLabel": "Koszt dojazdu:",
       "travelCostFree": "Gratis (do 50 km)",

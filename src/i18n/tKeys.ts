@@ -103,6 +103,9 @@ export interface PageTranslations {
     failedToLoadDocumentMessage: string;
     loadingDocument: string;
     unsupportedFileType: string;
+    barTooltips: {
+      outdoorTent: string;
+    };
   };
   galleryPage: {
     title: string;
@@ -170,6 +173,7 @@ export interface PageTranslations {
     };
     priceSummaryBar: {
       packageLabel: string;
+      barLabel: string;
       extrasLabel: string;
       travelCostLabel: string;
       travelCostFree: string;

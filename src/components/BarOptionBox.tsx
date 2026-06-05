@@ -1,14 +1,10 @@
-import { Box, Button, Image, Paper, Text } from '@mantine/core';
+import { Box, Button, Group, Image, Paper, Text, Tooltip, ActionIcon } from '@mantine/core';
 import { useTranslation } from 'react-i18next';
-import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { COMMON_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { IconInfoCircle } from '@tabler/icons-react';
 import React from 'react';
 import { useMediaQuery } from '@mantine/hooks';
-
-type BarOption = {
-  label: string;
-  value: string;
-  image: string;
-};
+import type { BarOption } from '@/core/config/options';
 
 interface BarOptionBoxProps {
   option: BarOption;
@@ -25,6 +21,35 @@ export default function BarOptionBox({
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const textFontSize = isMobile ? '0.875rem' : '1rem';
+
+  const tooltipText = option.tooltipKey ? t(option.tooltipKey) : null;
+
+  const labelWithInfo = (
+    <Group gap={4} justify="center" wrap="nowrap" align="center">
+      <Text size="lg" fw={700} style={{ margin: 0, fontSize: textFontSize }}>
+        {option.label}
+      </Text>
+      {tooltipText && (
+        <Tooltip
+          label={tooltipText}
+          multiline
+          w={260}
+          withArrow
+          events={{ hover: true, focus: true, touch: true }}
+        >
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="sm"
+            aria-label={tooltipText}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <IconInfoCircle size={18} />
+          </ActionIcon>
+        </Tooltip>
+      )}
+    </Group>
+  );
 
   return (
     <Paper
@@ -78,19 +103,23 @@ export default function BarOptionBox({
           />
 
           <Box
-            h={40}
             mb="sm"
             style={{
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               padding: '0 8px',
               textAlign: 'center',
+              minHeight: 40,
             }}
           >
-            <Text size="lg" fw={700} style={{ margin: 0, fontSize: textFontSize }}>
-              {option.label}
-            </Text>
+            {labelWithInfo}
+            {typeof option.price === 'number' && option.price > 0 && (
+              <Text size="sm" fw={600} c="dimmed" mt={4}>
+                +{option.price} {t(COMMON_TRANSLATIONS.pln)}
+              </Text>
+            )}
           </Box>
         </>
       )}

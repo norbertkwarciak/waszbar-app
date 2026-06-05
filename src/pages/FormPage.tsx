@@ -20,7 +20,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { barOptions, menuPackages } from '@/core/config/options';
+import { barOptions, menuPackages, type BarOption } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { COMMON_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
@@ -81,7 +81,7 @@ const FormPage = (): React.JSX.Element => {
 
   const [dateString, setDateString] = useState<string | null>(dateFromUrl || null);
   const [notes, setNotes] = useState('');
-  const [selectedBar, setSelectedBar] = useState<string | null>(null);
+  const [selectedBar, setSelectedBar] = useState<BarOption | null>(null);
 
   const [travelCost, setTravelCost] = useState<number | null>(null);
   const [travelLoading, setTravelLoading] = useState<boolean>(false);
@@ -162,8 +162,8 @@ const FormPage = (): React.JSX.Element => {
     setSearchParams(newParams);
   };
 
-  const handleBarSelect = (barType: string): void => {
-    setSelectedBar(barType);
+  const handleBarSelect = (bar: BarOption): void => {
+    setSelectedBar(bar);
   };
 
   const handleFetchTravelCost = async (): Promise<void> => {
@@ -416,7 +416,8 @@ const FormPage = (): React.JSX.Element => {
       });
 
     const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
-    const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
+    const barPrice = selectedBar?.price ?? 0;
+    const totalCost = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + barPrice;
 
     submitInquiry(
       {
@@ -428,7 +429,7 @@ const FormPage = (): React.JSX.Element => {
         venueLocation: `${postalCode.trim()} ${city.trim()}`,
         foundLocation: travelLocationName ?? undefined,
         selectedPackage: selectedPackage?.value ?? '',
-        selectedBar,
+        selectedBar: selectedBar?.value ?? null,
         selectedServices,
         notes,
         isIndividualOffer,
@@ -516,6 +517,9 @@ const FormPage = (): React.JSX.Element => {
         Number(numberOfGuests),
       )
     : null;
+
+  const selectedBarPrice =
+    typeof selectedBar?.price === 'number' && selectedBar.price > 0 ? selectedBar.price : null;
 
   const selectedExtraServices =
     offerData?.extraServices
@@ -609,8 +613,8 @@ const FormPage = (): React.JSX.Element => {
               renderItem={(bar) => (
                 <BarOptionBox
                   option={bar}
-                  isSelected={selectedBar === bar.value}
-                  onSelect={() => handleBarSelect(bar.value)}
+                  isSelected={selectedBar?.value === bar.value}
+                  onSelect={() => handleBarSelect(bar)}
                 />
               )}
             />
@@ -877,6 +881,8 @@ const FormPage = (): React.JSX.Element => {
         packagePrice={currentPackagePrice}
         extraServices={selectedExtraServices}
         travelCost={travelCost}
+        barLabel={selectedBar?.label ?? null}
+        barPrice={selectedBarPrice}
         isIndividualOffer={isIndividualOffer}
       />
     </Container>

@@ -8,6 +8,8 @@ interface PriceSummaryBarProps {
   packagePrice: number | null;
   extraServices: { label: string; price: number }[];
   travelCost: number | null;
+  barLabel?: string | null;
+  barPrice?: number | null;
   isIndividualOffer?: boolean;
 }
 
@@ -16,13 +18,15 @@ const PriceSummaryBar = ({
   packagePrice,
   extraServices,
   travelCost,
+  barLabel = null,
+  barPrice = null,
   isIndividualOffer = false,
 }: PriceSummaryBarProps): React.JSX.Element => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
   const extrasTotal = extraServices.reduce((sum, s) => sum + s.price, 0);
-  const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal;
+  const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + (barPrice ?? 0);
 
   return (
     <Paper
@@ -53,6 +57,15 @@ const PriceSummaryBar = ({
                 {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
               </Text>{' '}
               {packageLabel} – {packagePrice} {t(COMMON_TRANSLATIONS.pln)}
+            </Text>
+          )}
+
+          {barLabel && barPrice !== null && (
+            <Text size={isMobile ? 'xs' : 'sm'}>
+              <Text span fw={600}>
+                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.barLabel)}
+              </Text>{' '}
+              {barLabel} – {barPrice} {t(COMMON_TRANSLATIONS.pln)}
             </Text>
           )}
 
