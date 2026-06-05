@@ -31,10 +31,10 @@ interface PriceSummaryBarProps {
   packagePrice: number | null;
   extraServices: SelectedExtra[];
   travelCost: number | null;
-  barLabel?: string | null;
-  barPrice?: number | null;
+  outdoorTentLabel?: string | null;
+  outdoorTentPrice?: number | null;
   isIndividualOffer?: boolean;
-  onRemoveBar: () => void;
+  onRemoveOutdoorTent: () => void;
   onRemovePackage: () => void;
   onRemoveExtraService: (key: string) => void;
   onSubmit: () => void;
@@ -46,10 +46,10 @@ const PriceSummaryBar = ({
   packagePrice,
   extraServices,
   travelCost,
-  barLabel = null,
-  barPrice = null,
+  outdoorTentLabel = null,
+  outdoorTentPrice = null,
   isIndividualOffer = false,
-  onRemoveBar,
+  onRemoveOutdoorTent,
   onRemovePackage,
   onRemoveExtraService,
   onSubmit,
@@ -61,13 +61,13 @@ const PriceSummaryBar = ({
   const [desktopDrawerOpen, setDesktopDrawerOpen] = useState(false);
 
   const showPackageRow = packageLabel !== null && packagePrice !== null && !isIndividualOffer;
-  const showBarRow = barLabel !== null && barPrice !== null;
+  const showOutdoorTentRow = outdoorTentLabel !== null && outdoorTentPrice !== null;
   const showExtrasRows = extraServices.length > 0;
   const showTravelRow = travelCost !== null;
-  const hasAnyItems = showPackageRow || showBarRow || showExtrasRows || showTravelRow;
+  const hasAnyItems = showPackageRow || showOutdoorTentRow || showExtrasRows || showTravelRow;
 
   const extrasTotal = extraServices.reduce((sum, s) => sum + s.price, 0);
-  const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + (barPrice ?? 0);
+  const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + (outdoorTentPrice ?? 0);
 
   const renderRow = (
     content: React.ReactNode,
@@ -105,15 +105,15 @@ const PriceSummaryBar = ({
           onRemovePackage,
         )}
 
-      {showBarRow &&
+      {showOutdoorTentRow &&
         renderRow(
           <>
             <Text span fw={600}>
-              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.barLabel)}
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.outdoorTentLabel)}
             </Text>{' '}
-            {barLabel} – {barPrice} {t(COMMON_TRANSLATIONS.pln)}
+            {outdoorTentLabel} – {outdoorTentPrice} {t(COMMON_TRANSLATIONS.pln)}
           </>,
-          onRemoveBar,
+          onRemoveOutdoorTent,
         )}
 
       {extraServices.map((s) =>

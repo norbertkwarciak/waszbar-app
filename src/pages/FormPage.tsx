@@ -21,7 +21,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { DateInput } from '@mantine/dates';
 import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { barOptions, menuPackages, type BarOption } from '@/core/config/options';
+import { barOptions, menuPackages, outdoorTentOption, type BarOption } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { COMMON_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
@@ -56,6 +56,7 @@ type FormValues = {
   city: string;
   numberOfGuests: number | '';
   selectedBar: BarOption | null;
+  outdoorTent: BarOption | null;
   selectedPackage: MenuPackage | null;
   selectedServices: SelectedService[];
   notes: string;
@@ -128,6 +129,7 @@ const FormPage = (): React.JSX.Element => {
       city: '',
       numberOfGuests: 100,
       selectedBar: null,
+      outdoorTent: null,
       selectedPackage: null,
       selectedServices: [],
       notes: '',
@@ -162,6 +164,7 @@ const FormPage = (): React.JSX.Element => {
     city,
     numberOfGuests,
     selectedBar,
+    outdoorTent,
     selectedPackage,
     selectedServices,
   } = form.values;
@@ -312,8 +315,8 @@ const FormPage = (): React.JSX.Element => {
     const { fullName, email, phone, notes, captchaToken, hpCompany } = form.values;
     const packagePrice = currentPackagePrice ?? 0;
     const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
-    const barPrice = selectedBar?.price ?? 0;
-    const totalCost = packagePrice + (travelCost ?? 0) + extrasTotal + barPrice;
+    const outdoorTentPrice = outdoorTent?.price ?? 0;
+    const totalCost = packagePrice + (travelCost ?? 0) + extrasTotal + outdoorTentPrice;
 
     submitInquiry(
       {
@@ -396,8 +399,8 @@ const FormPage = (): React.JSX.Element => {
     setPackagePdfUrl(url ?? null);
   };
 
-  const selectedBarPrice =
-    typeof selectedBar?.price === 'number' && selectedBar.price > 0 ? selectedBar.price : null;
+  const outdoorTentPrice =
+    typeof outdoorTent?.price === 'number' && outdoorTent.price > 0 ? outdoorTent.price : null;
 
   const selectedExtraServices = selectedExtraServiceObjects.map((s) => ({
     key: s.id,
@@ -489,6 +492,26 @@ const FormPage = (): React.JSX.Element => {
                   option={bar}
                   isSelected={selectedBar?.value === bar.value}
                   onSelect={() => form.setFieldValue('selectedBar', bar)}
+                />
+              )}
+            />
+
+            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.outdoorTentSectionTitle)} />
+
+            <CenteredGrid
+              items={[outdoorTentOption]}
+              getKey={(item) => item.value}
+              isMobile={isMobile}
+              renderItem={(item) => (
+                <BarOptionBox
+                  option={item}
+                  isSelected={outdoorTent?.value === item.value}
+                  onSelect={() =>
+                    form.setFieldValue(
+                      'outdoorTent',
+                      outdoorTent?.value === item.value ? null : item,
+                    )
+                  }
                 />
               )}
             />
@@ -712,10 +735,10 @@ const FormPage = (): React.JSX.Element => {
         packagePrice={currentPackagePrice}
         extraServices={selectedExtraServices}
         travelCost={travelCost}
-        barLabel={selectedBar?.label ?? null}
-        barPrice={selectedBarPrice}
+        outdoorTentLabel={outdoorTent?.label ?? null}
+        outdoorTentPrice={outdoorTentPrice}
         isIndividualOffer={isIndividualOffer}
-        onRemoveBar={() => form.setFieldValue('selectedBar', null)}
+        onRemoveOutdoorTent={() => form.setFieldValue('outdoorTent', null)}
         onRemovePackage={() => form.setFieldValue('selectedPackage', null)}
         onRemoveExtraService={handleRemoveExtraService}
         onSubmit={handleSubmit}

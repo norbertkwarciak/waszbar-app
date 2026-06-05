@@ -32,7 +32,7 @@
     "loadingAvailability": "Ładowanie dostępnych terminów...",
     "checkingAvailability": "Sprawdzanie dostępności terminu...",
     "dateUnavailable": "Termin zajęty, wybierz inny termin.",
-    "barSelectionTitle": "Oferujemy 3 aranżacje baru do wyboru",
+    "barSelectionTitle": "Oferujemy 6 aranżacji baru do wyboru",
     "select": "WYBIERAM",
 
     "locationLabel": "Lokalizacja imprezy",
@@ -102,9 +102,8 @@
     "failedToLoadDocumentMessage": "Nie udało się załadować dokumentu. Prosimy spróbować ponownie później.",
     "loadingDocument": "Ładowanie dokumentu...",
     "unsupportedFileType": "Nieobsługiwany typ pliku",
-    "barTooltips": {
-      "outdoorTent": "Duży, elegancki namiot 12m2 na bar plenerowy. Zapewni komfort Twoim gościom spędzającym czas przy barze."
-    }
+    "outdoorTentSectionTitle": "Bar plenerowy / namiot",
+    "outdoorTentTooltip": "Duży, elegancki namiot 12m2 na bar plenerowy. Zapewni komfort Twoim gościom spędzającym czas przy barze."
   },
   "galleryPage": {
     "title": "Jak pracujemy"
@@ -257,7 +256,7 @@
     },
     "priceSummaryBar": {
       "packageLabel": "Pakiet:",
-      "barLabel": "Bar:",
+      "outdoorTentLabel": "Bar plenerowy:",
       "extrasLabel": "Usługi dodatkowe:",
       "extraItemLabel": "Dodatek:",
       "travelCostLabel": "Koszt dojazdu:",

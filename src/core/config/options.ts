@@ -42,18 +42,19 @@ export const barOptions: BarOption[] = [
     value: 'bar złoty lustro',
   },
   {
-    label: 'BAR PLENEROWY - NAMIOT (4m x 3m)',
-    image: IMAGES.outdoorTent,
-    value: 'bar plenerowy - namiot (4m x 3m)',
-    price: 250,
-    tooltipKey: 'formPage.barTooltips.outdoorTent',
-  },
-  {
     label: 'Nie potrzebujemy baru. Na sali będzie bar, z którego będzie można skorzystać.',
     image: '',
     value: 'bez baru',
   },
 ];
+
+export const outdoorTentOption: BarOption = {
+  label: 'BAR PLENEROWY - NAMIOT (4m x 3m)',
+  image: IMAGES.outdoorTent,
+  value: 'bar plenerowy - namiot (4m x 3m)',
+  price: 250,
+  tooltipKey: 'formPage.outdoorTentTooltip',
+};
 
 export const menuPackages = [
   {
