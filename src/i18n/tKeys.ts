@@ -175,10 +175,17 @@ export interface PageTranslations {
       packageLabel: string;
       barLabel: string;
       extrasLabel: string;
+      extraItemLabel: string;
       travelCostLabel: string;
       travelCostFree: string;
       totalLabel: string;
       individualOfferLabel: string;
+      removeAria: string;
+      expandDetailsAria: string;
+      collapseDetailsAria: string;
+      showDetails: string;
+      detailsTitle: string;
+      noSelectionsLabel: string;
     };
   };
 }

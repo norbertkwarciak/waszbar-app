@@ -532,11 +532,21 @@ const FormPage = (): React.JSX.Element => {
         const count = serviceCounts[s.label] || 1;
         const formattedLabel = count > 1 ? `${count} x ${s.label}` : s.label;
         return {
-          ...s,
+          key: s.label,
           label: formattedLabel,
           price: s.price * count,
         };
       }) ?? [];
+
+  const handleRemoveExtraService = (key: string): void => {
+    setSelectedServices((prev) => prev.filter((v) => v !== key && !v.includes(` x ${key}`)));
+    setServiceCounts((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
 
   return (
     <Container
@@ -841,25 +851,10 @@ const FormPage = (): React.JSX.Element => {
                 overflow: 'hidden',
               }}
             />
-
-            <Text size="sm" mt="md" style={{ whiteSpace: 'pre-line', textAlign: 'center' }}>
-              {t(FORM_PAGE_TRANSLATIONS.submitDisclaimer)}
-            </Text>
-
-            <Button
-              size="lg"
-              mt="md"
-              fullWidth
-              onClick={handleSubmit}
-              loading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              {t(FORM_PAGE_TRANSLATIONS.submit)}
-            </Button>
           </>
         )}
 
-        <Space h={100} />
+        <Space h={isMobile ? 220 : 110} />
       </Stack>
 
       <MenuPackageModal
@@ -884,6 +879,14 @@ const FormPage = (): React.JSX.Element => {
         barLabel={selectedBar?.label ?? null}
         barPrice={selectedBarPrice}
         isIndividualOffer={isIndividualOffer}
+        onRemoveBar={() => setSelectedBar(null)}
+        onRemovePackage={() => {
+          setSelectedPackage(null);
+          setIsIndividualOffer(false);
+        }}
+        onRemoveExtraService={handleRemoveExtraService}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     </Container>
   );

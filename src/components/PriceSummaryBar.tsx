@@ -1,16 +1,44 @@
-import { Flex, Paper, Stack, Text } from '@mantine/core';
-import { useTranslation } from 'react-i18next';
-import { COMMON_TRANSLATIONS, PRICE_SUMMARY_BAR_TRANSLATIONS } from '@/i18n/tKeys';
+import { useState } from 'react';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Collapse,
+  Drawer,
+  Flex,
+  Group,
+  Paper,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { IconChevronDown, IconChevronUp, IconListDetails, IconX } from '@tabler/icons-react';
+import { useTranslation } from 'react-i18next';
+import {
+  COMMON_TRANSLATIONS,
+  FORM_PAGE_TRANSLATIONS,
+  PRICE_SUMMARY_BAR_TRANSLATIONS,
+} from '@/i18n/tKeys';
+
+interface SelectedExtra {
+  key: string;
+  label: string;
+  price: number;
+}
 
 interface PriceSummaryBarProps {
   packageLabel: string | null;
   packagePrice: number | null;
-  extraServices: { label: string; price: number }[];
+  extraServices: SelectedExtra[];
   travelCost: number | null;
   barLabel?: string | null;
   barPrice?: number | null;
   isIndividualOffer?: boolean;
+  onRemoveBar: () => void;
+  onRemovePackage: () => void;
+  onRemoveExtraService: (key: string) => void;
+  onSubmit: () => void;
+  isSubmitting?: boolean;
 }
 
 const PriceSummaryBar = ({
@@ -21,109 +49,259 @@ const PriceSummaryBar = ({
   barLabel = null,
   barPrice = null,
   isIndividualOffer = false,
+  onRemoveBar,
+  onRemovePackage,
+  onRemoveExtraService,
+  onSubmit,
+  isSubmitting = false,
 }: PriceSummaryBarProps): React.JSX.Element => {
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopDrawerOpen, setDesktopDrawerOpen] = useState(false);
+
+  const showPackageRow = packageLabel !== null && packagePrice !== null && !isIndividualOffer;
+  const showBarRow = barLabel !== null && barPrice !== null;
+  const showExtrasRows = extraServices.length > 0;
+  const showTravelRow = travelCost !== null;
+  const hasAnyItems = showPackageRow || showBarRow || showExtrasRows || showTravelRow;
 
   const extrasTotal = extraServices.reduce((sum, s) => sum + s.price, 0);
   const total = (packagePrice ?? 0) + (travelCost ?? 0) + extrasTotal + (barPrice ?? 0);
 
-  return (
-    <Paper
-      withBorder
-      shadow="sm"
-      p="md"
-      pos="fixed"
-      bottom={0}
-      left={0}
-      right={0}
-      style={{
-        background: '#fff',
-        borderTop: '1px solid #e9ecef',
-        zIndex: 199,
-      }}
+  const renderRow = (
+    content: React.ReactNode,
+    onRemove?: () => void,
+    key?: string,
+  ): React.JSX.Element => (
+    <Group key={key} gap="xs" wrap="nowrap" align="center">
+      <Text size={isMobile ? 'xs' : 'sm'} style={{ flex: 1, minWidth: 0 }}>
+        {content}
+      </Text>
+      {onRemove && (
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          size="sm"
+          onClick={onRemove}
+          aria-label={t(PRICE_SUMMARY_BAR_TRANSLATIONS.removeAria)}
+        >
+          <IconX size={14} />
+        </ActionIcon>
+      )}
+    </Group>
+  );
+
+  const itemsList = (
+    <Stack gap={4}>
+      {showPackageRow &&
+        renderRow(
+          <>
+            <Text span fw={600}>
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
+            </Text>{' '}
+            {packageLabel} – {packagePrice} {t(COMMON_TRANSLATIONS.pln)}
+          </>,
+          onRemovePackage,
+        )}
+
+      {showBarRow &&
+        renderRow(
+          <>
+            <Text span fw={600}>
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.barLabel)}
+            </Text>{' '}
+            {barLabel} – {barPrice} {t(COMMON_TRANSLATIONS.pln)}
+          </>,
+          onRemoveBar,
+        )}
+
+      {extraServices.map((s) =>
+        renderRow(
+          <>
+            <Text span fw={600}>
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.extraItemLabel)}
+            </Text>{' '}
+            {s.label} – {s.price} {t(COMMON_TRANSLATIONS.pln)}
+          </>,
+          () => onRemoveExtraService(s.key),
+          s.key,
+        ),
+      )}
+
+      {showTravelRow &&
+        renderRow(
+          <>
+            <Text span fw={600}>
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostLabel)}
+            </Text>{' '}
+            {travelCost === 0
+              ? t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostFree)
+              : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
+          </>,
+        )}
+    </Stack>
+  );
+
+  const totalDisplay = isIndividualOffer ? (
+    <Text size={isMobile ? 'md' : 'lg'} fw={700} c="red" style={{ wordBreak: 'break-word' }}>
+      {t(PRICE_SUMMARY_BAR_TRANSLATIONS.individualOfferLabel)}
+    </Text>
+  ) : (
+    <Text size={isMobile ? 'md' : 'lg'} fw={700} c="primary">
+      {total} {t(COMMON_TRANSLATIONS.pln)}
+    </Text>
+  );
+
+  const submitButton = (
+    <Button
+      size={isMobile ? 'md' : 'lg'}
+      onClick={onSubmit}
+      loading={isSubmitting}
+      disabled={isSubmitting}
+      fullWidth
     >
-      <Flex justify="space-between" align="flex-start" gap="lg">
-        <Stack
-          gap={4}
-          style={{
-            flex: 1,
-            minWidth: 0,
-          }}
-        >
-          {packageLabel && packagePrice !== null && !isIndividualOffer && (
-            <Text size={isMobile ? 'xs' : 'sm'}>
-              <Text span fw={600}>
-                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.packageLabel)}
-              </Text>{' '}
-              {packageLabel} – {packagePrice} {t(COMMON_TRANSLATIONS.pln)}
+      {t(FORM_PAGE_TRANSLATIONS.submit)}
+    </Button>
+  );
+
+  const disclaimer = (
+    <Text
+      size="xs"
+      c="dimmed"
+      style={{ whiteSpace: 'pre-line', textAlign: 'center', lineHeight: 1.3 }}
+    >
+      {t(FORM_PAGE_TRANSLATIONS.submitDisclaimer)}
+    </Text>
+  );
+
+  if (isMobile) {
+    return (
+      <Paper
+        withBorder
+        shadow="sm"
+        p="md"
+        pos="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        style={{
+          background: '#fff',
+          borderTop: '1px solid #e9ecef',
+          zIndex: 199,
+        }}
+      >
+        {hasAnyItems && (
+          <Collapse in={mobileOpen}>
+            <Box pb="sm" style={{ maxHeight: '40vh', overflowY: 'auto' }}>
+              {itemsList}
+            </Box>
+          </Collapse>
+        )}
+
+        <Flex justify="space-between" align="center" gap="sm" mb="xs">
+          <Group gap={6} align="baseline" wrap="nowrap">
+            <Text size="xs" fw={600}>
+              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.totalLabel)}
             </Text>
-          )}
+            {totalDisplay}
+          </Group>
 
-          {barLabel && barPrice !== null && (
-            <Text size={isMobile ? 'xs' : 'sm'}>
-              <Text span fw={600}>
-                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.barLabel)}
-              </Text>{' '}
-              {barLabel} – {barPrice} {t(COMMON_TRANSLATIONS.pln)}
-            </Text>
-          )}
-
-          {extraServices.length > 0 && (
-            <Text size={isMobile ? 'xs' : 'sm'}>
-              <Text span fw={600}>
-                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.extrasLabel)}
-              </Text>{' '}
-              {extraServices
-                .map((s) => `${s.label}: ${s.price} ${t(COMMON_TRANSLATIONS.pln)}`)
-                .join(', ')}
-            </Text>
-          )}
-
-          {travelCost !== null && (
-            <Text size={isMobile ? 'xs' : 'sm'}>
-              <Text span fw={600}>
-                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostLabel)}
-              </Text>{' '}
-              {travelCost === 0
-                ? t(PRICE_SUMMARY_BAR_TRANSLATIONS.travelCostFree)
-                : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
-            </Text>
-          )}
-        </Stack>
-
-        <Stack
-          gap={2}
-          style={{
-            flex: 1,
-            minWidth: 0,
-            textAlign: 'right',
-            whiteSpace: 'normal',
-          }}
-        >
-          <Text size="sm" fw={600}>
-            {t(PRICE_SUMMARY_BAR_TRANSLATIONS.totalLabel)}
-          </Text>
-
-          {isIndividualOffer ? (
-            <Text
-              size="lg"
-              fw={700}
-              c="red"
-              style={{
-                wordBreak: 'break-word',
-              }}
+          {hasAnyItems && (
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="md"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label={t(
+                mobileOpen
+                  ? PRICE_SUMMARY_BAR_TRANSLATIONS.collapseDetailsAria
+                  : PRICE_SUMMARY_BAR_TRANSLATIONS.expandDetailsAria,
+              )}
             >
-              {t(PRICE_SUMMARY_BAR_TRANSLATIONS.individualOfferLabel)}
-            </Text>
-          ) : (
-            <Text size="lg" fw={700} c="primary">
-              {total} {t(COMMON_TRANSLATIONS.pln)}
-            </Text>
+              {mobileOpen ? <IconChevronDown size={20} /> : <IconChevronUp size={20} />}
+            </ActionIcon>
           )}
-        </Stack>
-      </Flex>
-    </Paper>
+        </Flex>
+
+        <Box mb="xs">{disclaimer}</Box>
+
+        {submitButton}
+      </Paper>
+    );
+  }
+
+  return (
+    <>
+      <Drawer
+        opened={desktopDrawerOpen}
+        onClose={() => setDesktopDrawerOpen(false)}
+        position="left"
+        size="sm"
+        title={<Text fw={600}>{t(PRICE_SUMMARY_BAR_TRANSLATIONS.detailsTitle)}</Text>}
+        overlayProps={{ backgroundOpacity: 0.35, blur: 1 }}
+      >
+        {hasAnyItems ? (
+          itemsList
+        ) : (
+          <Text size="sm" c="dimmed">
+            {t(PRICE_SUMMARY_BAR_TRANSLATIONS.noSelectionsLabel)}
+          </Text>
+        )}
+      </Drawer>
+
+      <Paper
+        withBorder
+        shadow="sm"
+        p="md"
+        pos="fixed"
+        bottom={0}
+        left={0}
+        right={0}
+        style={{
+          background: '#fff',
+          borderTop: '1px solid #e9ecef',
+          zIndex: 199,
+        }}
+      >
+        <Flex justify="space-between" align="center" gap="lg">
+          <Box style={{ flexShrink: 0 }}>
+            {hasAnyItems && (
+              <Button
+                variant="subtle"
+                color="gray"
+                size="sm"
+                leftSection={<IconListDetails size={16} />}
+                onClick={() => setDesktopDrawerOpen(true)}
+              >
+                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.showDetails)}
+              </Button>
+            )}
+          </Box>
+
+          <Group gap="md" align="center" wrap="nowrap" style={{ flexShrink: 0 }}>
+            <Box style={{ maxWidth: 360, textAlign: 'right' }}>
+              <Text
+                size="xs"
+                c="dimmed"
+                style={{ whiteSpace: 'pre-line', lineHeight: 1.3, textAlign: 'center' }}
+              >
+                {t(FORM_PAGE_TRANSLATIONS.submitDisclaimer)}
+              </Text>
+            </Box>
+            <Group gap={6} align="baseline" wrap="nowrap">
+              <Text size="sm" fw={600}>
+                {t(PRICE_SUMMARY_BAR_TRANSLATIONS.totalLabel)}
+              </Text>
+              {totalDisplay}
+            </Group>
+            <Button size="lg" onClick={onSubmit} loading={isSubmitting} disabled={isSubmitting}>
+              {t(FORM_PAGE_TRANSLATIONS.submit)}
+            </Button>
+          </Group>
+        </Flex>
+      </Paper>
+    </>
   );
 };
 
