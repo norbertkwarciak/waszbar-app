@@ -49,9 +49,9 @@ export const barOptions: BarOption[] = [
 ];
 
 export const outdoorTentOption: BarOption = {
-  label: 'BAR PLENEROWY - NAMIOT (4m x 3m)',
+  label: 'BAR PLENEROWY - NAMIOT (12m²)',
   image: IMAGES.outdoorTent,
-  value: 'bar plenerowy - namiot (4m x 3m)',
+  value: 'bar plenerowy - namiot (12m²)',
   price: 250,
   tooltipKey: 'formPage.outdoorTentTooltip',
 };
