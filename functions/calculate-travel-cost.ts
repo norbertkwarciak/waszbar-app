@@ -1,9 +1,8 @@
-import { logTravelCostToSupabase } from './_shared/supabase';
+import { logTravelCost } from './_shared/db';
 
 interface Env {
   OPENROUTESERVICE_API_KEY: string;
-  SUPABASE_URL?: string;
-  SUPABASE_KEY?: string;
+  DB?: D1Database;
 }
 
 type CalculateTravelCostBody = {
@@ -28,7 +27,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   };
 
   if (!body) {
-    await logTravelCostToSupabase(context.env, {
+    await logTravelCost(context.env, {
       request_data: {
         postal_code: '',
         city: '',
@@ -104,8 +103,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (!first?.lat || !first?.lon) {
     console.log('[calculate-travel-cost] No results from Nominatim');
 
-    // Log error to Supabase
-    await logTravelCostToSupabase(context.env, {
+    // Log error to D1
+    await logTravelCost(context.env, {
       request_data: {
         postal_code: postalCode,
         city,
@@ -176,7 +175,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   if (distanceMeters == null) {
     console.error('[calculate-travel-cost] ORS returned no distance:', matrixJson);
 
-    await logTravelCostToSupabase(context.env, {
+    await logTravelCost(context.env, {
       request_data: {
         postal_code: postalCode,
         city,
@@ -213,8 +212,8 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     pricePerKm: PRICE_PER_KM,
   });
 
-  // Log successful result to Supabase
-  await logTravelCostToSupabase(context.env, {
+  // Log successful result to D1
+  await logTravelCost(context.env, {
     request_data: {
       postal_code: postalCode,
       city,

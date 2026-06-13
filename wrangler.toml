@@ -1,3 +1,9 @@
 name = "waszbar-app"
 compatibility_date = "2024-09-01"
 pages_build_output_dir = "./dist"
+
+# Cloudflare D1 binding for travel_cost_logs.
+[[d1_databases]]
+binding = "DB"
+database_name = "waszbar-travel-cost-logs"
+database_id = "1753b776-d308-4bb4-9d11-c4d33e21384e"
