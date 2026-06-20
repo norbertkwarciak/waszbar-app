@@ -235,7 +235,9 @@
   },
   "common": {
     "back": "← Powrót do strony głównej",
-    "pln": "PLN"
+    "pln": "PLN",
+    "connectionLost": "Brak połączenia z internetem",
+    "connectionRestored": "Połączenie z internetem przywrócone"
   },
   "components": {
     "appLayout": {
