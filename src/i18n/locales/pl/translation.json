@@ -48,6 +48,7 @@
     "freeTravelCostLabel": "Gratis (do 50 km)",
     "foundLocationLabel": "Znaleziona lokalizacja: {{locationName}}",
     "dataTravelCostFetchErrorMsg": "Nie udało się obliczyć kosztu dojazdu. Sprawdź, czy kod pocztowy i miejscowość są poprawne.",
+    "travelCostRequiredError": "Najpierw sprawdź koszt dojazdu, klikając „Sprawdź koszt dojazdu”.",
 
     "guestsLabel": "Planowana liczba gości",
     "guestsPlaceholder": "np. 120",
@@ -88,7 +89,9 @@
       "selectedPackage": "pakiet menu",
       "fullName": "imię i nazwisko",
       "email": "adres e-mail",
-      "phone": "numer telefonu"
+      "phone": "numer telefonu",
+      "travelCost": "obliczenie kosztu dojazdu (kliknij „Sprawdź koszt dojazdu”)",
+      "captcha": "potwierdzenie, że nie jesteś robotem"
     },
     "menuPackagesDescriptions": {
       "basic": "Nasze podstawowe menu, oparte na wódce, ginie i zestawie wermutów. Jeżeli nie chcą Państwo, aby goście mieszali alkohole, to pakiet właśnie dla Was. Koktajle na suchym lodzie w cenie, koktajle bezalkoholowe również w cenie (Mojito Virgin, koktajle owocowe).",

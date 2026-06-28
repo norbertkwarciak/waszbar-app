@@ -49,6 +49,7 @@ export interface PageTranslations {
     freeTravelCostLabel: string;
     foundLocationLabel: string;
     dataTravelCostFetchErrorMsg: string;
+    travelCostRequiredError: string;
 
     guestsLabel: string;
     guestsPlaceholder: string;
@@ -90,6 +91,8 @@ export interface PageTranslations {
       fullName: string;
       email: string;
       phone: string;
+      travelCost: string;
+      captcha: string;
     };
     menuPackagesDescriptions: {
       basic: string;

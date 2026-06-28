@@ -67,6 +67,20 @@ type FormValues = {
   hpCompany: string;
 };
 
+const FIELD_ORDER = [
+  'date',
+  'selectedBar',
+  'postalCode',
+  'city',
+  'travelCost',
+  'numberOfGuests',
+  'selectedPackage',
+  'fullName',
+  'email',
+  'phone',
+  'captcha',
+] as const;
+
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -203,6 +217,12 @@ const FormPage = (): React.JSX.Element => {
     }
   }, [availabilityError, offerError, t]);
 
+  useEffect(() => {
+    setTravelCost(null);
+    setTravelLocationName(null);
+    setTravelError(null);
+  }, [postalCode, city]);
+
   const handleDateChange = (value: string | null): void => {
     form.setFieldValue('date', value);
 
@@ -299,20 +319,62 @@ const FormPage = (): React.JSX.Element => {
   );
 
   const handleSubmit = async (): Promise<void> => {
-    const { hasErrors, errors } = form.validate();
-    if (hasErrors) {
-      const missingLabels = Object.keys(errors).map((key) => fieldLabels[key] || key);
+    const { errors } = form.validate();
+    const { fullName, email, phone, notes, captchaToken, hpCompany } = form.values;
+
+    if (travelCost === null) {
+      setTravelError(t(FORM_PAGE_TRANSLATIONS.travelCostRequiredError));
+    }
+
+    const isMissing = (key: (typeof FIELD_ORDER)[number]): boolean => {
+      if (key === 'travelCost') return travelCost === null;
+      if (key === 'captcha') return !captchaToken;
+
+      return key in errors;
+    };
+
+    const labelFor = (key: (typeof FIELD_ORDER)[number]): string => {
+      if (key === 'travelCost')
+        return t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.travelCost);
+      if (key === 'captcha') return t(FORM_PAGE_TRANSLATIONS.fieldValidationMessageLabel.captcha);
+
+      return fieldLabels[key] || key;
+    };
+
+    const missingLabels = FIELD_ORDER.filter(isMissing).map(labelFor);
+
+    if (missingLabels.length > 0) {
       showNotification({
         title: t(FORM_PAGE_TRANSLATIONS.submitErrorTitle),
-        message: `${t(FORM_PAGE_TRANSLATIONS.submitErrorMsg)} ${missingLabels.join(', ')}.`,
+        message: (
+          <Stack gap={4} py={4}>
+            <Text size="sm">{t(FORM_PAGE_TRANSLATIONS.submitErrorMsg)}</Text>
+            <ul
+              style={{
+                margin: 0,
+                paddingLeft: '1.25rem',
+                listStyleType: 'disc',
+                listStylePosition: 'outside',
+              }}
+            >
+              {missingLabels.map((label) => (
+                <li key={label} style={{ marginBottom: 2 }}>
+                  <Text span size="sm">
+                    {label}
+                  </Text>
+                </li>
+              ))}
+            </ul>
+          </Stack>
+        ),
         color: 'red',
         icon: <IconX size={18} />,
         autoClose: false,
       });
+
       return;
     }
 
-    const { fullName, email, phone, notes, captchaToken, hpCompany } = form.values;
     const packagePrice = currentPackagePrice ?? 0;
     const extrasTotal = selectedExtraServiceObjects.reduce((sum, s) => sum + s.price, 0);
     const outdoorTentPrice = outdoorTent?.price ?? 0;
