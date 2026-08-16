@@ -7,9 +7,47 @@ export function renderBaseEmailLayout({
   bodyContent: string;
   headerTextColor?: string;
 }): string {
-  return `
-    <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; background-color: #f5f5f5; padding: 40px 0;">
-      <div style="max-width: 700px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 5px rgba(0,0,0,0.1);">
+  return `<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>${title}</title>
+    <style type="text/css">
+      /* Mobile only – stack the value under its label. */
+      @media only screen and (max-width: 600px) {
+        .wb-wrapper {
+          padding: 0 !important;
+        }
+        .wb-card {
+          border-radius: 0 !important;
+        }
+        .wb-content {
+          padding: 20px !important;
+        }
+        .wb-table {
+          table-layout: auto !important;
+        }
+        .wb-label,
+        .wb-value {
+          display: block !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
+        .wb-label {
+          padding: 12px 0 2px 0 !important;
+        }
+        .wb-value {
+          padding: 0 0 4px 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0;">
+    <div class="wb-wrapper" style="font-family: Arial, sans-serif; font-size: 16px; color: #333; background-color: #f5f5f5; padding: 40px 0;">
+      <div class="wb-card" style="max-width: 700px; margin: 0 auto; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 5px rgba(0,0,0,0.1);">
 
         <!-- Header -->
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1D1E24; height: 100px;">
@@ -21,7 +59,7 @@ export function renderBaseEmailLayout({
         </table>
 
         <!-- Content -->
-        <div style="padding: 30px;">
+        <div class="wb-content" style="padding: 30px;">
           <h2 style="margin-top: 0; color: ${headerTextColor};">${title}</h2>
           ${bodyContent}
         </div>
@@ -37,5 +75,6 @@ export function renderBaseEmailLayout({
 
       </div>
     </div>
-  `;
+  </body>
+</html>`;
 }

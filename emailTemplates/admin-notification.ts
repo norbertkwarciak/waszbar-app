@@ -26,7 +26,7 @@ export function createAdminNotificationEmail({
   isIndividualOffer,
 }: AdminEmailParams): EmailData {
   const extraServicesHtml = selectedServices.length
-    ? `<ul style="margin: 0; padding-left: 0px;">${selectedServices
+    ? `<ul style="margin: 0; padding-left: 0; list-style-position: inside;">${selectedServices
         .map(
           (s) =>
             `<li style="margin-bottom: 6px;">${s.label} – <strong>${s.price.toLocaleString(
@@ -37,71 +37,63 @@ export function createAdminNotificationEmail({
     : 'Brak';
 
   const bodyContent = `
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; table-layout: fixed;">
+    <table class="wb-table" width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; table-layout: fixed;">
       <tbody>
         <tr>
-          <td style="padding: 8px 0; width: 200px;"><strong>Imię i nazwisko:</strong></td>
-          <td style="padding: 8px 0;">${fullName}</td>
+          <td class="wb-label" style="padding: 8px 0; width: 200px;"><strong>Imię i nazwisko:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${fullName}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Email:</strong></td>
-          <td style="padding: 8px 0;">${email}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Email:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${email}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Telefon:</strong></td>
-          <td style="padding: 8px 0;">${phone}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Telefon:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${phone}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Lokalizacja imprezy:</strong></td>
-          <td style="padding: 8px 0;">${venueLocation}</td>
-        </tr>
-        ${
-          foundLocation
-            ? `<tr>
-          <td style="padding: 8px 0;"><strong>Znaleziona lokalizacja:</strong></td>
-          <td style="padding: 8px 0;">${foundLocation}</td>
-        </tr>`
-            : ''
-        }
-        <tr>
-          <td style="padding: 8px 0;"><strong>Wybrany pakiet:</strong></td>
-          <td style="padding: 8px 0;">${selectedPackage.toUpperCase()}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Lokalizacja:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${foundLocation || venueLocation}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Cena pakietu:</strong></td>
-          <td style="padding: 8px 0;">${packagePrice.toLocaleString('pl-PL')} zł</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Wybrany pakiet:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${selectedPackage.toUpperCase()}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Wybrany bar:</strong></td>
-          <td style="padding: 8px 0;">${selectedBar}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Cena pakietu:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${packagePrice.toLocaleString('pl-PL')} zł</td>
+        </tr>
+        <tr>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Wybrany bar:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${selectedBar}</td>
         </tr>
         <tr valign="top">
-          <td style="padding: 8px 0;"><strong>Usługi dodatkowe:</strong></td>
-          <td style="padding: 8px 0;">${extraServicesHtml}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Usługi dodatkowe:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${extraServicesHtml}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Koszt dojazdu:</strong></td>
-          <td style="padding: 8px 0;">${travelCost ? `${travelCost.toLocaleString('pl-PL')} zł` : '0 zł (w cenie)'}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Koszt dojazdu:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${travelCost ? `${travelCost.toLocaleString('pl-PL')} zł` : '0 zł (w cenie)'}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Łączny koszt:</strong></td>
-          <td style="padding: 8px 0;"><strong>${isIndividualOffer ? '-' : totalCost.toLocaleString('pl-PL') + ' zł'}</strong></td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Łączny koszt:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;"><strong>${isIndividualOffer ? '-' : totalCost.toLocaleString('pl-PL') + ' zł'}</strong></td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Liczba gości:</strong></td>
-          <td style="padding: 8px 0;">${numberOfGuests}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Liczba gości:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${numberOfGuests}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Oferta indywidualna:</strong></td>
-          <td style="padding: 8px 0;">${isIndividualOffer ? 'TAK' : 'NIE'}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Oferta indywidualna:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${isIndividualOffer ? 'TAK' : 'NIE'}</td>
         </tr>
         <tr>
-          <td style="padding: 8px 0;"><strong>Data imprezy:</strong></td>
-          <td style="padding: 8px 0;">${date}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Data imprezy:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${date}</td>
         </tr>
         <tr valign="top">
-          <td style="padding: 8px 0;"><strong>Dodatkowe uwagi:</strong></td>
-          <td style="padding: 8px 0;">${notes || 'Brak'}</td>
+          <td class="wb-label" style="padding: 8px 0;"><strong>Dodatkowe uwagi:</strong></td>
+          <td class="wb-value" style="padding: 8px 0;">${notes || 'Brak'}</td>
         </tr>
       </tbody>
     </table>
