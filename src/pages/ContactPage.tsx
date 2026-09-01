@@ -19,17 +19,26 @@ function ContactPage(): React.JSX.Element {
           </Text>
 
           <Text>
-            <Anchor href="https://www.waszbar.pl" target="_blank" rel="noopener noreferrer">
+            <Anchor
+              href="https://www.waszbar.pl"
+              target="_blank"
+              rel="noopener noreferrer"
+              c="blue.6"
+            >
               {t(CONTACT_PAGE_TRANSLATIONS.website)}
             </Anchor>
           </Text>
 
           <Text>
-            <Anchor href={`mailto:${env.ownerEmail}`}>{t(CONTACT_PAGE_TRANSLATIONS.email)}</Anchor>
+            <Anchor href={`mailto:${env.ownerEmail}`} c="blue.6">
+              {t(CONTACT_PAGE_TRANSLATIONS.email)}
+            </Anchor>
           </Text>
 
           <Text>
-            <Anchor href={`tel:${env.phoneNumber}`}>{t(CONTACT_PAGE_TRANSLATIONS.phone)}</Anchor>
+            <Anchor href={`tel:${env.phoneNumber}`} c="blue.6">
+              {t(CONTACT_PAGE_TRANSLATIONS.phone)}
+            </Anchor>
           </Text>
 
           <Text>
@@ -37,6 +46,7 @@ function ContactPage(): React.JSX.Element {
               href="https://www.facebook.com/barmani.eventy/"
               target="_blank"
               rel="noopener noreferrer"
+              c="blue.6"
             >
               {t(CONTACT_PAGE_TRANSLATIONS.fbLink)}
             </Anchor>
