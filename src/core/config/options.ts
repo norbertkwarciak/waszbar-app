@@ -61,12 +61,7 @@ export const menuPackages = [
     label: 'BASIC',
     value: MenuPackageType.BASIC,
     thumbnail: '/PAKIET__BASIC.png',
-    features: [
-      'koktajle na wódce i ginie',
-      'drinki 0%',
-      'drinki na suchym lodzie',
-      'drinki dla dzieci',
-    ],
+    features: ['koktajle na wódce i ginie', 'drinki 0%', 'drinki na suchym lodzie'],
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
@@ -77,7 +72,6 @@ export const menuPackages = [
       'koktajle na wódce, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
       'drinki na suchym lodzie',
-      'drinki dla dzieci',
     ],
     description: 'formPage.menuPackagesDescriptions.medium',
   },
@@ -89,7 +83,6 @@ export const menuPackages = [
       'koktajle na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
       'drinki na suchym lodzie',
-      'drinki dla dzieci',
     ],
     description: 'formPage.menuPackagesDescriptions.max',
   },
@@ -100,7 +93,6 @@ export const menuPackages = [
     features: [
       'koktajle klasyczne (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
       'drinki 0%',
-      'drinki dla dzieci',
     ],
     description: 'formPage.menuPackagesDescriptions.classic',
   },
@@ -108,13 +100,7 @@ export const menuPackages = [
     label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
     thumbnail: '/PAKIET__EXCELLENT.png',
-    features: [
-      'koktajle autorskie',
-      'wliczone pakiety (MAX, KLASYCZNY)',
-      'drinki 0%',
-      'drinki dla dzieci',
-      'GRANITA',
-    ],
+    features: ['koktajle autorskie', 'wliczone pakiety (MAX, KLASYCZNY)', 'drinki 0%', 'GRANITA'],
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
   {
