@@ -1,35 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
-import Turnstile from 'react-turnstile';
-import {
-  Button,
-  Container,
-  Group,
-  Loader,
-  NumberInput,
-  Paper,
-  SimpleGrid,
-  Space,
-  Stack,
-  Text,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Container, Space, Stack, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useMediaQuery } from '@mantine/hooks';
-import { DateInput } from '@mantine/dates';
-import { IconCheck, IconX, IconCalendar } from '@tabler/icons-react';
 import { showNotification } from '@mantine/notifications';
-import { barOptions, menuPackages, outdoorTentOption, type BarOption } from '@/core/config/options';
+import { IconCheck, IconX } from '@tabler/icons-react';
+import { menuPackages, type BarOption } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-import { COMMON_TRANSLATIONS, FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { buildPdfFileName, getPdfUrl } from '@/core/utils/helpers';
-import ExtraServiceBox from '@/components/ExtraServiceBox';
-import MenuPackageBox from '@/components/MenuPackageBox';
-import BarOptionBox from '@/components/BarOptionBox';
-import CenteredGrid from '@/components/CenteredGrid';
 import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
@@ -44,8 +25,11 @@ import {
 import { regex } from '@/core/utils/regex';
 import PageHeader from '@/components/PageHeader';
 import PriceSummaryBar from '@/components/PriceSummaryBar';
-import FormDivider from '@/components/FormDivider';
 import type { MenuPackage, SelectedService } from '@/types';
+import DateAndBarSection from '@/components/form/DateAndBarSection';
+import LocationAndGuestsSection from '@/components/form/LocationAndGuestsSection';
+import PackageAndServicesSection from '@/components/form/PackageAndServicesSection';
+import ContactDetailsSection from '@/components/form/ContactDetailsSection';
 import '@mantine/dates/styles.css';
 
 const POSTAL_CODE_REGEX = /^\d{2}-\d{3}$/;
@@ -491,290 +475,60 @@ const FormPage = (): React.JSX.Element => {
       <Stack gap="xl">
         <PageHeader title={t(FORM_PAGE_TRANSLATIONS.title)} />
 
-        <Stack gap={4}>
-          <Text size="sm" fw={500}>
-            {t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
-            <Text span c="red" ml={4}>
-              *
-            </Text>
-          </Text>
-
-          <Group align="center" gap="sm" wrap="nowrap">
-            <DateInput
-              placeholder={t(FORM_PAGE_TRANSLATIONS.checkDateLabel)}
-              value={dateString}
-              onChange={handleDateChange}
-              valueFormat="YYYY-MM-DD"
-              locale="pl"
-              disabled={availabilityLoading || !!availabilityError || !!offerError}
-              minDate={minSelectableDate}
-              maxDate={lastCheckedDateObj ?? undefined}
-              defaultDate={defaultCalendarMonth}
-              leftSection={<IconCalendar size={18} />}
-              style={{ maxWidth: 250 }}
-              inputMode="none"
-            />
-
-            {availabilityLoading && offerLoading && (
-              <>
-                <Loader size="xs" />
-                <Text size="sm" c="dimmed">
-                  {t(FORM_PAGE_TRANSLATIONS.loadingAvailability)}
-                </Text>
-              </>
-            )}
-          </Group>
-        </Stack>
-
-        {dateStatus === 'unavailable' && (
-          <Text c="red" size="sm">
-            {t(FORM_PAGE_TRANSLATIONS.dateUnavailable)}
-          </Text>
-        )}
+        <DateAndBarSection
+          date={dateString}
+          dateStatus={dateStatus}
+          isMobile={isMobile}
+          isLoading={availabilityLoading && offerLoading}
+          isDisabled={availabilityLoading || !!availabilityError || !!offerError}
+          minDate={minSelectableDate}
+          maxDate={lastCheckedDateObj ?? undefined}
+          defaultDate={defaultCalendarMonth}
+          selectedBar={selectedBar}
+          outdoorTent={outdoorTent}
+          onDateChange={handleDateChange}
+          onSelectBar={(bar) => form.setFieldValue('selectedBar', bar)}
+          onToggleOutdoorTent={(option) =>
+            form.setFieldValue('outdoorTent', outdoorTent?.value === option.value ? null : option)
+          }
+        />
 
         {dateStatus === 'available' && (
           <>
-            <FormDivider
-              label={
-                <div style={{ maxWidth: '100%', whiteSpace: 'wrap', textAlign: 'center' }}>
-                  {t(FORM_PAGE_TRANSLATIONS.barSelectionTitle)}
-                  <Text component="span" c="red" ml={4}>
-                    *
-                  </Text>
-                </div>
-              }
-            />
-
-            <CenteredGrid
-              items={barOptions}
-              getKey={(bar) => bar.value}
+            <LocationAndGuestsSection
               isMobile={isMobile}
-              renderItem={(bar) => (
-                <BarOptionBox
-                  option={bar}
-                  isSelected={selectedBar?.value === bar.value}
-                  onSelect={() => form.setFieldValue('selectedBar', bar)}
-                />
-              )}
+              postalCode={postalCode}
+              city={city}
+              numberOfGuests={numberOfGuests}
+              travelCost={travelCost}
+              travelLoading={travelLoading}
+              travelError={travelError}
+              travelLocationName={travelLocationName}
+              onPostalCodeChange={(value) => form.setFieldValue('postalCode', value)}
+              onCityChange={(value) => form.setFieldValue('city', value)}
+              onGuestsChange={(value) => form.setFieldValue('numberOfGuests', value)}
+              onCalculateTravelCost={handleFetchTravelCost}
             />
-
-            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.outdoorTentSectionTitle)} />
-
-            <CenteredGrid
-              items={[outdoorTentOption]}
-              getKey={(item) => item.value}
+            <PackageAndServicesSection
+              extraServices={extraServices}
+              selectedPackage={selectedPackage}
+              selectedServices={selectedServices}
               isMobile={isMobile}
-              renderItem={(item) => (
-                <BarOptionBox
-                  option={item}
-                  isSelected={outdoorTent?.value === item.value}
-                  onSelect={() =>
-                    form.setFieldValue(
-                      'outdoorTent',
-                      outdoorTent?.value === item.value ? null : item,
-                    )
-                  }
-                />
-              )}
+              onSelectPackage={(pkg) => form.setFieldValue('selectedPackage', pkg)}
+              onOpenPackage={openPackageModal}
+              onToggleService={toggleServiceSelection}
             />
-
-            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.locationLabel)} />
-
-            <Paper p="md" mx={isMobile ? 0 : 'xl'}>
-              <Group
-                align="flex-start"
-                gap="md"
-                mb="md"
-                style={{
-                  flexDirection: isMobile ? 'column' : 'row',
-                  width: '100%',
-                }}
-              >
-                <TextInput
-                  label={t(FORM_PAGE_TRANSLATIONS.postalCodeInputLabel)}
-                  placeholder={t(FORM_PAGE_TRANSLATIONS.postalCodePlaceholder)}
-                  withAsterisk
-                  maxLength={10}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}
-                  {...form.getInputProps('postalCode')}
-                />
-
-                <TextInput
-                  label={t(FORM_PAGE_TRANSLATIONS.cityInputLabel)}
-                  placeholder={t(FORM_PAGE_TRANSLATIONS.cityPlaceholder)}
-                  withAsterisk
-                  maxLength={110}
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck={false}
-                  style={{ flex: 1, width: isMobile ? '100%' : 'auto' }}
-                  {...form.getInputProps('city')}
-                />
-              </Group>
-
-              <Group>
-                <Button
-                  size="xs"
-                  loading={travelLoading}
-                  onClick={handleFetchTravelCost}
-                  disabled={travelLoading || !postalCode || !city}
-                >
-                  {t(FORM_PAGE_TRANSLATIONS.calculateTravelCostButtonText)}
-                </Button>
-
-                {travelCost !== null && !travelLoading && (
-                  <Stack gap={4}>
-                    <Text size="sm" fw={600}>
-                      {t(FORM_PAGE_TRANSLATIONS.travelCostLabel)}{' '}
-                      {travelCost === 0
-                        ? t(FORM_PAGE_TRANSLATIONS.freeTravelCostLabel)
-                        : `${travelCost} ${t(COMMON_TRANSLATIONS.pln)}`}
-                    </Text>
-                    {travelLocationName && (
-                      <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
-                        {t(FORM_PAGE_TRANSLATIONS.foundLocationLabel, {
-                          locationName: travelLocationName,
-                        })}
-                      </Text>
-                    )}
-                  </Stack>
-                )}
-              </Group>
-
-              {travelError && (
-                <Text size="xs" c="red" mt={4}>
-                  {travelError}
-                </Text>
-              )}
-
-              <NumberInput
-                mt="md"
-                label={t(FORM_PAGE_TRANSLATIONS.guestsLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.guestsPlaceholder)}
-                value={numberOfGuests}
-                onChange={(value) => {
-                  if (typeof value === 'number' || value === '') {
-                    form.setFieldValue('numberOfGuests', value);
-                  }
-                }}
-                min={0}
-                withAsterisk
-                style={{ maxWidth: 200 }}
-              />
-            </Paper>
-
-            <FormDivider
-              label={
-                <>
-                  {t(FORM_PAGE_TRANSLATIONS.menuSelectionTitle)}{' '}
-                  <Text component="span" c="red" ml={4}>
-                    *
-                  </Text>
-                </>
-              }
-            />
-
-            <CenteredGrid
-              items={menuPackages}
-              getKey={(pkg) => pkg.value}
-              isMobile={isMobile}
-              renderItem={(pkg) => (
-                <MenuPackageBox
-                  pkg={pkg}
-                  isSelected={selectedPackage?.value === pkg.value}
-                  onSelect={() => form.setFieldValue('selectedPackage', pkg)}
-                  onOpenModal={() => openPackageModal(pkg)}
-                />
-              )}
-            />
-
-            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalServicesTitle)} />
-
-            <CenteredGrid
-              items={extraServices}
-              getKey={(service) => service.id}
-              isMobile={isMobile}
-              renderItem={(service) => (
-                <ExtraServiceBox
-                  service={service}
-                  isSelected={selectedServices.some((s) => s.id === service.id)}
-                  onToggle={(count) => toggleServiceSelection(service.id, count)}
-                  hasCalculator={service.id === 'hoshizaki'}
-                  count={selectedServices.find((s) => s.id === service.id)?.count ?? 0}
-                />
-              )}
-            />
-
-            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)} />
-
-            <Textarea
-              label={t(FORM_PAGE_TRANSLATIONS.additionalInfoLabel)}
-              placeholder={t(FORM_PAGE_TRANSLATIONS.additionalInfoPlaceholder)}
-              autosize
-              minRows={6}
-              maxLength={2000}
-              {...form.getInputProps('notes')}
-            />
-
-            <FormDivider label={t(FORM_PAGE_TRANSLATIONS.contactTitle)} />
-
-            <TextInput
-              label={t(FORM_PAGE_TRANSLATIONS.nameLabel)}
-              placeholder={t(FORM_PAGE_TRANSLATIONS.namePlaceholder)}
-              required
-              maxLength={80}
-              {...form.getInputProps('fullName')}
-            />
-
-            <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.emailLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.emailPlaceholder)}
-                type="email"
-                required
-                maxLength={254}
-                {...form.getInputProps('email')}
-              />
-
-              <TextInput
-                label={t(FORM_PAGE_TRANSLATIONS.phoneLabel)}
-                placeholder={t(FORM_PAGE_TRANSLATIONS.phonePlaceholder)}
-                type="tel"
-                required
-                maxLength={30}
-                {...form.getInputProps('phone')}
-              />
-            </SimpleGrid>
-
-            <Turnstile
-              sitekey={env.turnstile.siteKey}
-              onVerify={(token) => form.setFieldValue('captchaToken', token)}
-            />
-
-            {/* Honeypot (anti-bot) */}
-            <TextInput
-              name="website"
-              autoComplete="off"
-              tabIndex={-1}
-              aria-hidden="true"
-              style={{
-                position: 'absolute',
-                left: '-9999px',
-                top: '0',
-                width: '1px',
-                height: '1px',
-                overflow: 'hidden',
-              }}
-              {...form.getInputProps('hpCompany')}
+            <ContactDetailsSection
+              siteKey={env.turnstile.siteKey}
+              notesProps={form.getInputProps('notes')}
+              fullNameProps={form.getInputProps('fullName')}
+              emailProps={form.getInputProps('email')}
+              phoneProps={form.getInputProps('phone')}
+              honeypotProps={form.getInputProps('hpCompany')}
+              onCaptchaVerify={(token) => form.setFieldValue('captchaToken', token)}
             />
           </>
         )}
-
         <Space h={isMobile ? 220 : 110} />
       </Stack>
 
