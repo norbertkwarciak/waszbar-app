@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageUrl } from '@/core/config/assets';
 
 const BackgroundImage = (): React.JSX.Element => {
   return (
@@ -9,7 +10,7 @@ const BackgroundImage = (): React.JSX.Element => {
         left: 0,
         width: '100vw',
         height: '100vh',
-        backgroundImage: `image-set( url('/background.avif') type('image/avif'), url('/background.webp') type('image/webp') )`,
+        backgroundImage: `image-set( url('${getImageUrl('background.avif')}') type('image/avif'), url('${getImageUrl('background.webp')}') type('image/webp') )`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundAttachment: 'fixed',

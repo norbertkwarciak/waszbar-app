@@ -4,10 +4,13 @@ import { Carousel } from '@mantine/carousel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { GALLERY_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
+import { getImageUrl } from '@/core/config/assets';
 import '@mantine/carousel/styles.css';
 
 const LAST_IMAGE = 20;
-const IMAGES: string[] = Array.from({ length: LAST_IMAGE }, (_, i) => `/Galeria_${i + 1}.png`);
+const IMAGES: string[] = Array.from({ length: LAST_IMAGE }, (_, i) =>
+  getImageUrl(`Galeria_${i + 1}.png`),
+);
 
 function GalleryPage(): React.JSX.Element {
   const [opened, { open, close }] = useDisclosure(false);
