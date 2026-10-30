@@ -1,4 +1,4 @@
-import { IMAGES } from './assets';
+import { getImageUrl, IMAGES } from './assets';
 import translationPL from '@/i18n/locales/pl/translation.json';
 import { MenuPackageType } from '@/types';
 
@@ -60,14 +60,14 @@ export const menuPackages = [
   {
     label: 'BASIC',
     value: MenuPackageType.BASIC,
-    thumbnail: '/PAKIET__BASIC.png',
+    thumbnail: getImageUrl('PAKIET__BASIC.png'),
     features: ['koktajle na wódce i ginie', 'drinki 0%', 'drinki na suchym lodzie'],
     description: 'formPage.menuPackagesDescriptions.basic',
   },
   {
     label: 'MEDIUM',
     value: MenuPackageType.MEDIUM,
-    thumbnail: '/PAKIET__MEDIUM.png',
+    thumbnail: getImageUrl('PAKIET__MEDIUM.png'),
     features: [
       'koktajle na wódce, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
@@ -78,7 +78,7 @@ export const menuPackages = [
   {
     label: 'MAX',
     value: MenuPackageType.MAX,
-    thumbnail: '/PAKIET__MAX.png',
+    thumbnail: getImageUrl('PAKIET__MAX.png'),
     features: [
       'koktajle na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili',
       'drinki 0%',
@@ -89,7 +89,7 @@ export const menuPackages = [
   {
     label: 'KLASYCZNY',
     value: MenuPackageType.KLASYCZNY,
-    thumbnail: '/PAKIET__KLASYCZNY.png',
+    thumbnail: getImageUrl('PAKIET__KLASYCZNY.png'),
     features: [
       'koktajle klasyczne (na wódce, whisky, Aperol & prosecco, ginie, rumie, Jagermeistrze, tequili)',
       'drinki 0%',
@@ -99,14 +99,14 @@ export const menuPackages = [
   {
     label: 'EXCELLENT',
     value: MenuPackageType.EXCELLENT,
-    thumbnail: '/PAKIET__EXCELLENT.png',
+    thumbnail: getImageUrl('PAKIET__EXCELLENT.png'),
     features: ['koktajle autorskie', 'wliczone pakiety (MAX, KLASYCZNY)', 'drinki 0%', 'GRANITA'],
     description: 'formPage.menuPackagesDescriptions.excellent',
   },
   {
     label: 'DEGUSTACYJNY',
     value: MenuPackageType.DEGUSTACYJNY,
-    thumbnail: '/PAKIET__DEGUSTACYJNY.png',
+    thumbnail: getImageUrl('PAKIET__DEGUSTACYJNY.png'),
     features: ['bar degustacyjny', 'wysoko gatunkowa whisky/burbon', 'koktajle klasyczne'],
     description: 'formPage.menuPackagesDescriptions.tasting',
   },

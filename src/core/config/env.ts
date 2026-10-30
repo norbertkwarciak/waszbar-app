@@ -1,4 +1,8 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '';
+const R2_PUBLIC_URL = (import.meta.env.VITE_R2_PUBLIC_URL || 'https://assets.waszbar.app').replace(
+  /\/+$/,
+  '',
+);
 
 type Env = {
   cookiesConsentKey: string;
@@ -32,8 +36,8 @@ export const env: Env = {
   ownerEmail: 'biuro@waszbar.pl',
   phoneNumber: '+48698836034',
   public: {
-    assets: '',
-    pdfs: '/pdfs',
+    assets: `${R2_PUBLIC_URL}/images`,
+    pdfs: `${R2_PUBLIC_URL}/pdf`,
   },
   turnstile: {
     siteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
