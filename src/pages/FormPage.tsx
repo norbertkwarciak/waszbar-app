@@ -439,7 +439,11 @@ const FormPage = (): React.JSX.Element => {
     }
 
     const resolvedRange = pickAvailableOrMaxRange(guests, availableRanges);
-    const fileName = buildPdfFileName(pkg.value, resolvedRange);
+
+    const selectedDate = dateString ? dayjs(dateString) : null;
+    const year = selectedDate?.isValid() ? selectedDate.year() : undefined;
+    const fileName = buildPdfFileName(pkg.value, resolvedRange, year);
+
     const url = getPdfUrl(fileName);
 
     setPackagePdfUrl(url ?? null);
