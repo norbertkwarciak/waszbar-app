@@ -102,7 +102,7 @@ const fetchOffer = async (): Promise<OfferResponse> => {
 
 export const useOffer = (): ReturnType<typeof useQuery<OfferResponse>> => {
   return useQuery<OfferResponse>({
-    queryKey: ['offer'],
+    queryKey: ['offer', 2],
     queryFn: fetchOffer,
     staleTime: 1000 * 60 * 1,
     refetchOnWindowFocus: false,

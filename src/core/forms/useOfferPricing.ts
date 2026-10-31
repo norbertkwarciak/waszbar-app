@@ -39,7 +39,7 @@ export const useOfferPricing = ({
 }: UseOfferPricingOptions): OfferPricingResult => {
   const extraServices = offer?.extraServices ?? [];
   const offerYear = getOfferYear(date);
-  const menuPackages = offer?.menuPackagesByYear[offerYear];
+  const menuPackages = offer?.menuPackagesByYear?.[offerYear];
 
   const rangesMap = useMemo(
     () => (menuPackages ? buildAvailableRanges(menuPackages) : null),
