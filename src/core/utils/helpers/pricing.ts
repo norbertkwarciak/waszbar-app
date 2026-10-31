@@ -1,5 +1,16 @@
 import type { ApiMenuPackage, ExtraService, SelectedService } from '@/types';
 
+export type OfferYear = 2026 | 2027 | 2028;
+
+export const getOfferYear = (date: string | null): OfferYear => {
+  const yearPrefix = date?.match(/^(\d{4})(?:-|$)/)?.[1];
+  const year = yearPrefix ? Number(yearPrefix) : 2026;
+
+  if (year >= 2028) return 2028;
+  if (year === 2027) return 2027;
+  return 2026;
+};
+
 export const getPackagePrice = (
   menuPackages: ApiMenuPackage[],
   selectedPackageValue: string,

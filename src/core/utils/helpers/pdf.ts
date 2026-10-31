@@ -11,8 +11,20 @@ const PACKAGE_FILE_TOKEN: Record<MenuPackageType, string> = {
 };
 
 // Build the canonical filename
-export const buildPdfFileName = (pkgValue: MenuPackageType, range: number): string => {
+export const buildPdfFileName = (
+  pkgValue: MenuPackageType,
+  range: number,
+  year?: number,
+): string => {
   const token = PACKAGE_FILE_TOKEN[pkgValue];
+  const usesYearlyFile =
+    year !== undefined && year >= 2027 && pkgValue !== MenuPackageType.DEGUSTACYJNY;
+
+  if (usesYearlyFile) {
+    const offerYear = year === 2027 ? 2027 : 2028;
+    return `${offerYear}_Waszbar.pl_oferta_${token}_do_${range}_gosci.pdf`;
+  }
+
   // Example: "Waszbar.pl_oferta_MEDIUM_do_150_gosci.pdf"
   return `Waszbar.pl_oferta_${token}_do_${range}_gosci.pdf`;
 };

@@ -3,7 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const REL_DIR = 'public/pdfs';
-const DIR = path.resolve(process.cwd(), REL_DIR);
+const TARGET_DIR = process.argv[2] ?? REL_DIR;
+const DIR = path.resolve(process.cwd(), TARGET_DIR);
 
 // Ghostscript preset: /screen | /ebook | /printer | /prepress
 const PDFSETTINGS = '/ebook';
@@ -83,13 +84,13 @@ function main(): void {
     .map((f: string): string => path.join(DIR, f));
 
   if (pdfs.length === 0) {
-    console.log(`ℹ️ Brak plików PDF w ${REL_DIR}`);
+    console.log(`ℹ️ Brak plików PDF w ${TARGET_DIR}`);
     return;
   }
 
   ensureGhostscript();
 
-  console.log(`📦 Kompresja PDF w ${REL_DIR} (PDFSETTINGS=${PDFSETTINGS})`);
+  console.log(`📦 Kompresja PDF w ${TARGET_DIR} (PDFSETTINGS=${PDFSETTINGS})`);
   console.log('----------------------------------------------------');
 
   let totalBefore = 0;

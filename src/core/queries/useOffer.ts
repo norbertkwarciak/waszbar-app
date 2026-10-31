@@ -4,14 +4,18 @@ import type { ExtraService } from '@/types';
 import type { ApiMenuPackage } from '@/types';
 
 export type OfferResponse = {
-  menuPackages: ApiMenuPackage[];
+  menuPackagesByYear: Record<OfferYear, ApiMenuPackage[]>;
   extraServices: ExtraService[];
 };
 
 type RawOffer = {
-  menuPackages: unknown;
+  menuPackagesByYear?: unknown;
+  menuPackages?: unknown;
   extraServices: unknown;
 };
+
+export type OfferYear = 2026 | 2027 | 2028;
+const OFFER_YEARS: OfferYear[] = [2026, 2027, 2028];
 
 // Type guard for price object inside MenuPackage
 const isPriceEntry = (entry: unknown): entry is { people: number; price: number } => {
@@ -68,19 +72,30 @@ const fetchOffer = async (): Promise<OfferResponse> => {
 
   const raw: unknown = await res.json();
 
-  if (
-    typeof raw !== 'object' ||
-    raw === null ||
-    !('menuPackages' in raw) ||
-    !('extraServices' in raw)
-  ) {
-    return { menuPackages: [], extraServices: [] };
+  if (typeof raw !== 'object' || raw === null || !('extraServices' in raw)) {
+    return {
+      menuPackagesByYear: { 2026: [], 2027: [], 2028: [] },
+      extraServices: [],
+    };
   }
 
-  const { menuPackages, extraServices } = raw as RawOffer;
+  const { menuPackagesByYear, menuPackages, extraServices } = raw as RawOffer;
+  const yearlyData =
+    typeof menuPackagesByYear === 'object' && menuPackagesByYear !== null
+      ? (menuPackagesByYear as Record<string, unknown>)
+      : null;
+  const legacyPackages = Array.isArray(menuPackages) ? menuPackages.filter(isMenuPackage) : [];
 
   return {
-    menuPackages: Array.isArray(menuPackages) ? menuPackages.filter(isMenuPackage) : [],
+    menuPackagesByYear: Object.fromEntries(
+      OFFER_YEARS.map((year) => {
+        const yearPackages = yearlyData?.[String(year)];
+        const packages = Array.isArray(yearPackages)
+          ? yearPackages.filter(isMenuPackage)
+          : legacyPackages;
+        return [year, packages];
+      }),
+    ) as Record<OfferYear, ApiMenuPackage[]>,
     extraServices: Array.isArray(extraServices) ? extraServices.filter(isExtraService) : [],
   };
 };
