@@ -12,6 +12,13 @@ export default defineConfig({
   server: {
     open: true,
     port: 5173,
+    strictPort: true,
+    proxy: {
+      '/pdf': {
+        target: 'http://localhost:8788',
+        changeOrigin: true,
+      },
+    },
   },
   plugins: [
     react(),

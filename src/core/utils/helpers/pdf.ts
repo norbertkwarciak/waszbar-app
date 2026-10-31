@@ -1,4 +1,3 @@
-import { env } from '@/core/config/env';
 import { MenuPackageType } from '@/types';
 
 const PACKAGE_FILE_TOKEN: Record<MenuPackageType, string> = {
@@ -30,9 +29,6 @@ export const buildPdfFileName = (
 };
 
 export const getPdfUrl = (fileName: string): string | null => {
-  const base = env.public.pdfs.replace(/\/+$/, '');
-  if (!base) return null;
-
   let normalized = fileName.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   normalized = normalized.replace(/\s+/g, '_');
   normalized = normalized.replace(/[^a-zA-Z0-9._-]/g, '');
@@ -41,5 +37,5 @@ export const getPdfUrl = (fileName: string): string | null => {
     normalized += '.pdf';
   }
 
-  return `${base}/${normalized}`;
+  return `/pdf/${encodeURIComponent(normalized)}`;
 };

@@ -1,16 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Button,
-  Divider,
-  Group,
-  Modal,
-  Text,
-  Box,
-  Alert,
-  Center,
-  Loader,
-  Stack,
-} from '@mantine/core';
+import React from 'react';
+import { Button, Divider, Group, Modal, Text, Box, Alert } from '@mantine/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { menuPackages } from '@/core/config/options';
@@ -37,42 +26,11 @@ export default function MenuPackageModal({
   exceedsMaxRange,
 }: Props): React.JSX.Element {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    if (!packagePdfUrl) return;
-    setIsLoading(true);
-    setIsError(false);
-
-    fetch(packagePdfUrl, { method: 'HEAD' })
-      .then((res) => {
-        if (!res.ok) throw new Error('Not OK');
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setIsLoading(false);
-        setIsError(true);
-      });
-  }, [packagePdfUrl]);
 
   if (!modalPackage) return <></>;
 
   const renderDocViewer = (): React.JSX.Element => {
-    if (isLoading) {
-      return (
-        <Center h="100%" style={{ minHeight: '60vh' }}>
-          <Stack align="center" gap="sm">
-            <Loader size="lg" />
-            <Text c="dimmed" size="sm">
-              {t(FORM_PAGE_TRANSLATIONS.loadingDocument)}
-            </Text>
-          </Stack>
-        </Center>
-      );
-    }
-
-    if (isError || !packagePdfUrl) {
+    if (!packagePdfUrl) {
       return (
         <Alert
           icon={<IconAlertCircle size="1rem" />}
@@ -155,7 +113,7 @@ export default function MenuPackageModal({
       ) : (
         <>
           <Box style={{ width: '100%' }}>{renderDocViewer()}</Box>
-          {packagePdfUrl && !isError && (
+          {packagePdfUrl && (
             <Group mt="sm" justify="flex-end">
               <Button component="a" href={packagePdfUrl} target="_blank" rel="noopener noreferrer">
                 {t(FORM_PAGE_TRANSLATIONS.openInNewTab)}

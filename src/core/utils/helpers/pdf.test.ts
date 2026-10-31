@@ -1,52 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { buildPdfFileName, getPdfUrl } from '.';
 import { MenuPackageType } from '@/types';
 
-vi.mock('@/core/config/env', () => ({
-  env: {
-    public: {
-      pdfs: '/pdfs/',
-    },
-  },
-}));
-
 describe('getPdfUrl', () => {
-  it('returns a valid encoded URL with + instead of %20', () => {
+  it('returns a same-origin URL for a normalized filename', () => {
     const fileName = 'Waszbar.pl oferta MEDIUM do 150 gości.pdf';
 
     const result = getPdfUrl(fileName);
 
-    expect(result).toEqual('/pdfs/Waszbar.pl_oferta_MEDIUM_do_150_gosci.pdf');
-  });
-
-  it('removes trailing slashes from base URL', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: {
-        public: {
-          pdfs: '/pdfs/',
-        },
-      },
-    }));
-    const { getPdfUrl: getPdfUrlWithTrailing } = await import('.');
-
-    const result = getPdfUrlWithTrailing('Waszbar.pl oferta CLASSIC do 100 gości.pdf');
-    expect(result).toEqual('/pdfs/Waszbar.pl_oferta_CLASSIC_do_100_gosci.pdf');
-  });
-
-  it('returns null if base URL is empty', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: {
-        public: {
-          pdfs: '',
-        },
-      },
-    }));
-    const { getPdfUrl: getPdfUrlEmpty } = await import('.');
-
-    const result = getPdfUrlEmpty('somefile.pdf');
-    expect(result).toBeNull();
+    expect(result).toEqual('/pdf/Waszbar.pl_oferta_MEDIUM_do_150_gosci.pdf');
   });
 });
 
