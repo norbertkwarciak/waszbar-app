@@ -3,8 +3,8 @@ import { Outlet } from 'react-router-dom';
 import { notifications } from '@mantine/notifications';
 import { IconWifiOff, IconWifi } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
-import AppLayout from './components/AppLayout';
-import CookieBanner from './components/CookieBanner';
+import AppLayout from './core/components/AppLayout';
+import CookieBanner from './core/components/CookieBanner';
 import { useOnlineStatus } from './core/utils/hooks/useOnlineStatus';
 
 const App = (): React.JSX.Element => {

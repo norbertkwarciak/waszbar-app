@@ -8,7 +8,7 @@ import {
 import Turnstile from 'react-turnstile';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
-import FormDivider from '@/components/FormDivider';
+import FormDivider from '@/pages/FormPage/components/FormDivider';
 
 interface ContactDetailsSectionProps {
   siteKey: string;

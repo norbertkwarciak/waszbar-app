@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { NOT_FOUND_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
-import BackgroundImage from '@/components/BackgroundImage';
+import BackgroundImage from '@/core/components/BackgroundImage';
 
 const NotFoundPage = (): React.JSX.Element => {
   const { t } = useTranslation();

@@ -1,5 +1,5 @@
-import type { InquiryPayload } from '@/core/mutations/useSubmitInquiry';
-import type { FormValues } from './useInquiryForm';
+import type { InquiryPayload } from '@/pages/FormPage/mutations/useSubmitInquiry';
+import type { FormValues } from '@/pages/FormPage/hooks/useInquiryForm';
 import type { SelectedExtraService } from '@/core/utils/helpers/pricing';
 
 type BuildInquiryPayloadOptions = {

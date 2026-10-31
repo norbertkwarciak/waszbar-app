@@ -4,9 +4,9 @@ import { IconCalendar } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { barOptions, outdoorTentOption, type BarOption } from '@/core/config/options';
-import BarOptionBox from '@/components/BarOptionBox';
-import CenteredGrid from '@/components/CenteredGrid';
-import FormDivider from '@/components/FormDivider';
+import BarOptionBox from '@/pages/FormPage/components/BarOptionBox';
+import CenteredGrid from '@/pages/FormPage/components/CenteredGrid';
+import FormDivider from '@/pages/FormPage/components/FormDivider';
 
 interface DateAndBarSectionProps {
   date: string | null;

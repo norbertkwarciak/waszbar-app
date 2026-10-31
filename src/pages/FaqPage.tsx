@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FAQ_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { faqs } from '@/core/config/options';
-import PageHeader from '@/components/PageHeader';
+import PageHeader from '@/core/components/PageHeader';
 
 const FaqPage = (): React.JSX.Element => {
   const { t } = useTranslation();

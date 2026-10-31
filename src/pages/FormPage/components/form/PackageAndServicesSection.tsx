@@ -1,7 +1,7 @@
-import CenteredGrid from '@/components/CenteredGrid';
-import ExtraServiceBox from '@/components/ExtraServiceBox';
-import FormDivider from '@/components/FormDivider';
-import MenuPackageBox from '@/components/MenuPackageBox';
+import CenteredGrid from '@/pages/FormPage/components/CenteredGrid';
+import ExtraServiceBox from '@/pages/FormPage/components/ExtraServiceBox';
+import FormDivider from '@/pages/FormPage/components/FormDivider';
+import MenuPackageBox from '@/pages/FormPage/components/MenuPackageBox';
 import { menuPackages } from '@/core/config/options';
 import type { ExtraService, MenuPackage, SelectedService } from '@/types';
 import { useTranslation } from 'react-i18next';

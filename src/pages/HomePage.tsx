@@ -4,8 +4,8 @@ import { useMediaQuery, useDisclosure } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { HOME_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
 import { IMAGES } from '@/core/config/assets';
-import BarCard from '@/components/BarCard';
-import InfoModal, { ModalContent } from '@/components/InfoModal';
+import BarCard from '@/core/components/BarCard';
+import InfoModal, { ModalContent } from '@/core/components/InfoModal';
 
 interface BarCardConfig {
   image: string;

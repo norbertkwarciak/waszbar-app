@@ -1,4 +1,5 @@
 import { getGoogleAccessToken } from './google-service-account';
+import { formatDate } from '../src/core/utils/helpers/date';
 
 interface Env {
   GOOGLE_INQUIRY_SHEET_ID: string;
@@ -69,14 +70,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     return new Response(JSON.stringify({ error: 'Captcha verification failed' }), { status: 400 });
   }
 
-  const dayjs = (await import('dayjs')).default;
-
   const token = await getGoogleAccessToken(context.env, [
     'https://www.googleapis.com/auth/spreadsheets',
   ]);
 
   const row = [
-    dayjs().format('YYYY-MM-DD HH:mm'),
+    formatDate(new Date(), 'apiDateTime'),
     date ?? '',
     fullName ?? '',
     email ?? '',
@@ -142,7 +141,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       phone: requestData.phone,
       numberOfGuests: requestData.numberOfGuests,
       venueLocation: requestData.venueLocation,
-      foundLocation: requestData.foundLocation,
+      foundLocation,
       selectedPackage: requestData.selectedPackage,
       selectedBar: requestData.selectedBar,
       selectedServices: requestData.selectedServicesObjects || [],

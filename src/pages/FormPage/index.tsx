@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useSubmitInquiry } from '@/core/mutations/useSubmitInquiry';
+import { useSubmitInquiry } from '@/pages/FormPage/mutations/useSubmitInquiry';
 import { Container, Space, Stack } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
@@ -9,27 +9,41 @@ import { menuPackages } from '@/core/config/options';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { FORM_PAGE_TRANSLATIONS } from '@/i18n/tKeys';
-import { useAvailability } from '@/core/queries/useAvailability';
-import { useOffer } from '@/core/queries/useOffer';
-import MenuPackageModal from '@/components/MenuPackageModal';
+import { useAvailability } from '@/pages/FormPage/queries/useAvailability';
+import { useOffer } from '@/pages/FormPage/queries/useOffer';
+import MenuPackageModal from '@/pages/FormPage/components/MenuPackageModal';
 import { env } from '@/core/config/env';
 import {
   buildPdfFileName,
+  formatDate,
   getOfferYear,
   getPdfUrl,
+  parseDate,
   pickAvailableOrMaxRange,
 } from '@/core/utils/helpers';
-import PageHeader from '@/components/PageHeader';
-import PriceSummaryBar from '@/components/PriceSummaryBar';
-import DateAndBarSection from '@/components/form/DateAndBarSection';
-import LocationAndGuestsSection from '@/components/form/LocationAndGuestsSection';
-import PackageAndServicesSection from '@/components/form/PackageAndServicesSection';
-import ContactDetailsSection from '@/components/form/ContactDetailsSection';
-import SubmitValidationMessage from '@/components/form/SubmitValidationMessage';
+import PageHeader from '@/core/components/PageHeader';
+import PriceSummaryBar from '@/pages/FormPage/components/PriceSummaryBar';
+import DateAndBarSection from '@/pages/FormPage/components/form/DateAndBarSection';
+import LocationAndGuestsSection from '@/pages/FormPage/components/form/LocationAndGuestsSection';
+import PackageAndServicesSection from '@/pages/FormPage/components/form/PackageAndServicesSection';
+import ContactDetailsSection from '@/pages/FormPage/components/form/ContactDetailsSection';
+import SubmitValidationMessage from '@/pages/FormPage/components/form/SubmitValidationMessage';
 import '@mantine/dates/styles.css';
-import { INQUIRY_FIELD_ORDER, useInquiryForm } from '@/core/forms/useInquiryForm';
-import { buildInquiryPayload } from '@/core/forms/buildInquiryPayload';
-import { useOfferPricing } from '@/core/forms/useOfferPricing';
+import { INQUIRY_FIELD_ORDER, useInquiryForm } from '@/pages/FormPage/hooks/useInquiryForm';
+import { buildInquiryPayload } from '@/pages/FormPage/utils/buildInquiryPayload';
+import { useOfferPricing } from '@/pages/FormPage/hooks/useOfferPricing';
+
+const getDateStatus = (
+  date: string | null,
+  normalizedDate: string | null,
+  takenDates: string[],
+): 'available' | 'unavailable' | null => {
+  if (!date) {
+    return null;
+  }
+
+  return takenDates.includes(normalizedDate ?? '') ? 'unavailable' : 'available';
+};
 
 const FormPage = (): React.JSX.Element => {
   const { t } = useTranslation();
@@ -65,7 +79,7 @@ const FormPage = (): React.JSX.Element => {
 
   const takenDates = data?.takenDates ?? [];
   const lastCheckedDate = data?.lastCheckedDate ?? null;
-  const lastCheckedDateObj = lastCheckedDate ? dayjs(lastCheckedDate, 'YYYY-M-D').toDate() : null;
+  const lastCheckedDateObj = lastCheckedDate ? parseDate(lastCheckedDate, 'apiDate') : null;
 
   const form = useInquiryForm(dateFromUrl || null);
 
@@ -107,12 +121,8 @@ const FormPage = (): React.JSX.Element => {
   const [modalPackage, setModalPackage] = useState<null | (typeof menuPackages)[0]>(null);
   const [packagePdfUrl, setPackagePdfUrl] = useState<string | null>(null);
 
-  const normalizedDate = dateString ? dayjs(dateString).format('YYYY-M-D') : null;
-  const dateStatus: 'available' | 'unavailable' | null = !dateString
-    ? null
-    : takenDates?.includes(normalizedDate ?? '')
-      ? 'unavailable'
-      : 'available';
+  const normalizedDate = dateString ? formatDate(dateString, 'apiDate') : null;
+  const dateStatus = getDateStatus(dateString, normalizedDate, takenDates);
 
   useEffect(() => {
     if (availabilityError || offerError) {

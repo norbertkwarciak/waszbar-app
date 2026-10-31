@@ -6,7 +6,7 @@ import {
   getPackagePrice,
 } from '@/core/utils/helpers';
 import type { BarOption } from '@/core/config/options';
-import type { OfferResponse } from '@/core/queries/useOffer';
+import type { OfferResponse } from '@/pages/FormPage/queries/useOffer';
 import type { SelectedExtraService } from '@/core/utils/helpers/pricing';
 import type { ExtraService, MenuPackage, MenuPackageType, SelectedService } from '@/types';
 
