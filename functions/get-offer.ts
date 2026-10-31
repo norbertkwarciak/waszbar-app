@@ -18,19 +18,26 @@ interface ExtraService {
   description: string;
 }
 
-type MenuRow = [string?, string?, string?];
-type ExtraRow = [string?, string?, string?, string?];
+type SheetValue = string | number;
+type MenuRow = [string?, SheetValue?, SheetValue?];
+type ExtraRow = [string?, string?, SheetValue?, string?];
+type OfferYear = '2026' | '2027' | '2028';
+
+const OFFER_YEARS: OfferYear[] = ['2026', '2027', '2028'];
 
 export const onRequestGet: PagesFunction<Env> = async (context) => {
   const token = await getGoogleAccessToken(context.env, [
     'https://www.googleapis.com/auth/spreadsheets.readonly',
   ]);
 
-  const fetchSheet = async (range: string): Promise<{ values?: string[][] }> => {
+  const fetchSheet = async (
+    spreadsheetId: string,
+    range: string,
+  ): Promise<{ values?: SheetValue[][] }> => {
     const res = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${context.env.GOOGLE_OFFER_SHEET_ID}/values/${encodeURIComponent(
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${encodeURIComponent(
         range,
-      )}`,
+      )}?valueRenderOption=UNFORMATTED_VALUE`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -42,38 +49,54 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       throw new Error(`Google Sheets API error: ${res.status}`);
     }
 
-    return (await res.json()) as { values?: string[][] };
+    return (await res.json()) as { values?: SheetValue[][] };
   };
 
-  const menuJson = await fetchSheet("'menuPackages'!A:C");
-  const menuRows = (menuJson.values ?? []) as MenuRow[];
-  const menuDataRows = menuRows.slice(1);
+  const fetchMenuPackages = async (
+    year: OfferYear,
+  ): Promise<{
+    year: OfferYear;
+    packages: { name: string; prices: MenuPrice[] }[];
+  }> => {
+    const menuJson = await fetchSheet(context.env.GOOGLE_OFFER_SHEET_ID, `'${year}'!A:C`);
+    const menuRows = (menuJson.values ?? []) as MenuRow[];
+    const groupedPackages: Record<string, MenuPrice[]> = {};
 
-  const groupedPackages: Record<string, MenuPrice[]> = {};
+    menuRows.slice(1).forEach((row) => {
+      const name = typeof row[0] === 'string' ? row[0].trim() : '';
+      const people = Number(row[1]);
+      const price = Number(row[2]);
+      if (
+        !name ||
+        row[1] === undefined ||
+        row[2] === undefined ||
+        !Number.isFinite(people) ||
+        !Number.isFinite(price)
+      ) {
+        return;
+      }
 
-  menuDataRows.forEach((row) => {
-    const name = row[0];
-    const people = row[1];
-    const price = row[2];
-    if (!name || !people || !price) return;
+      groupedPackages[name] ??= [];
+      groupedPackages[name].push({ people, price });
+    });
 
-    const key = name.trim();
-    const numPeople = Number(people);
-    const numPrice = Number(price);
+    const packages = Object.entries(groupedPackages).map(([name, prices]) => ({
+      name,
+      prices: prices.sort((a, b) => a.people - b.people),
+    }));
 
-    if (!groupedPackages[key]) {
-      groupedPackages[key] = [];
-    }
+    return { year, packages };
+  };
 
-    groupedPackages[key].push({ people: numPeople, price: numPrice });
-  });
+  const [yearlyPackages, extraJson] = await Promise.all([
+    Promise.all(OFFER_YEARS.map(fetchMenuPackages)),
+    fetchSheet(context.env.GOOGLE_OFFER_SHEET_ID, "'extraServices'!A:D"),
+  ]);
 
-  const menuPackages = Object.entries(groupedPackages).map(([name, prices]) => ({
-    name,
-    prices: prices.sort((a, b) => a.people - b.people),
-  }));
+  const menuPackagesByYear = Object.fromEntries(
+    yearlyPackages.map(({ year, packages }) => [year, packages]),
+  ) as Record<OfferYear, { name: string; prices: MenuPrice[] }[]>;
 
-  const extraJson = await fetchSheet("'extraServices'!A:D");
   const extraRows = (extraJson.values ?? []) as ExtraRow[];
   const extraDataRows = extraRows.slice(1);
 
@@ -83,12 +106,16 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
       const id = row[1];
       const price = row[2];
       const description = row[3];
-      if (!label || !id || !price) return null;
+      if (!label || !id || price === undefined || (typeof price !== 'number' && !price.trim())) {
+        return null;
+      }
+      const numericPrice = Number(price);
+      if (!Number.isFinite(numericPrice)) return null;
 
       return {
         id: id.trim(),
         label: label.trim(),
-        price: Number(price),
+        price: numericPrice,
         description: description?.trim() ?? '',
       };
     })
@@ -96,7 +123,7 @@ export const onRequestGet: PagesFunction<Env> = async (context) => {
 
   return new Response(
     JSON.stringify({
-      menuPackages,
+      menuPackagesByYear,
       extraServices,
     }),
     { status: 200 },

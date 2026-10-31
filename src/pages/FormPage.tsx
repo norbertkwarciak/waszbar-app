@@ -13,7 +13,12 @@ import { useAvailability } from '@/core/queries/useAvailability';
 import { useOffer } from '@/core/queries/useOffer';
 import MenuPackageModal from '@/components/MenuPackageModal';
 import { env } from '@/core/config/env';
-import { buildPdfFileName, getPdfUrl, pickAvailableOrMaxRange } from '@/core/utils/helpers';
+import {
+  buildPdfFileName,
+  getOfferYear,
+  getPdfUrl,
+  pickAvailableOrMaxRange,
+} from '@/core/utils/helpers';
 import PageHeader from '@/components/PageHeader';
 import PriceSummaryBar from '@/components/PriceSummaryBar';
 import DateAndBarSection from '@/components/form/DateAndBarSection';
@@ -85,6 +90,7 @@ const FormPage = (): React.JSX.Element => {
     outdoorTentPrice,
   } = useOfferPricing({
     offer: offerData,
+    date: dateString,
     selectedPackage,
     numberOfGuests,
     selectedServices,
@@ -338,8 +344,7 @@ const FormPage = (): React.JSX.Element => {
 
     const resolvedRange = pickAvailableOrMaxRange(guests, availableRanges);
 
-    const selectedDate = dateString ? dayjs(dateString) : null;
-    const year = selectedDate?.isValid() ? selectedDate.year() : undefined;
+    const year = getOfferYear(dateString);
     const fileName = buildPdfFileName(pkg.value, resolvedRange, year);
 
     const url = getPdfUrl(fileName);

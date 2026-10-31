@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import {
   buildAvailableRanges,
   buildSelectedExtraServices,
+  getOfferYear,
   getPackagePrice,
 } from '@/core/utils/helpers';
 import type { BarOption } from '@/core/config/options';
@@ -11,6 +12,7 @@ import type { ExtraService, MenuPackage, MenuPackageType, SelectedService } from
 
 type UseOfferPricingOptions = {
   offer: OfferResponse | undefined;
+  date: string | null;
   selectedPackage: MenuPackage | null;
   numberOfGuests: number | '';
   selectedServices: SelectedService[];
@@ -29,16 +31,19 @@ type OfferPricingResult = {
 
 export const useOfferPricing = ({
   offer,
+  date,
   selectedPackage,
   numberOfGuests,
   selectedServices,
   outdoorTent,
 }: UseOfferPricingOptions): OfferPricingResult => {
   const extraServices = offer?.extraServices ?? [];
+  const offerYear = getOfferYear(date);
+  const menuPackages = offer?.menuPackagesByYear[offerYear];
 
   const rangesMap = useMemo(
-    () => (offer ? buildAvailableRanges(offer.menuPackages) : null),
-    [offer],
+    () => (menuPackages ? buildAvailableRanges(menuPackages) : null),
+    [menuPackages],
   );
 
   const selectedExtraServiceObjects = useMemo(
@@ -49,9 +54,9 @@ export const useOfferPricing = ({
   const currentPackagePrice = useMemo(
     () =>
       selectedPackage
-        ? getPackagePrice(offer?.menuPackages ?? [], selectedPackage.value, Number(numberOfGuests))
+        ? getPackagePrice(menuPackages ?? [], selectedPackage.value, Number(numberOfGuests))
         : null,
-    [selectedPackage, offer?.menuPackages, numberOfGuests],
+    [selectedPackage, menuPackages, numberOfGuests],
   );
 
   const isIndividualOffer = useMemo(() => {

@@ -73,7 +73,7 @@ Create a `.env` file at the repo root. For Cloudflare Pages deployments, set the
 | `GOOGLE_CLIENT_EMAIL`      | Functions               | Google service account email                                                      |
 | `GOOGLE_PRIVATE_KEY`       | Functions               | Google service account private key (PEM, with `\n` escapes)                       |
 | `GOOGLE_SHEET_ID`          | `get-availability`      | Spreadsheet listing taken dates                                                   |
-| `GOOGLE_OFFER_SHEET_ID`    | `get-offer`             | Spreadsheet with menu packages + extra services                                   |
+| `GOOGLE_OFFER_SHEET_ID`    | `get-offer`             | Spreadsheet with yearly package prices and the `extraServices` tab                |
 | `GOOGLE_INQUIRY_SHEET_ID`  | `submit-inquiry`        | Spreadsheet that receives inquiry rows                                            |
 | `BREVO_API_KEY`            | `submit-inquiry`        | Brevo (SMTP API) key for sending confirmation + admin emails                      |
 | `TURNSTILE_SECRET_KEY`     | `submit-inquiry`        | Cloudflare Turnstile server-side verification                                     |
@@ -84,6 +84,8 @@ Create a `.env` file at the repo root. For Cloudflare Pages deployments, set the
 | `VITE_API_BASE_URL`        | Frontend                | Base URL for Pages Functions (e.g. `http://localhost:8788` in dev, empty in prod) |
 
 See [functions/SUPABASE_SETUP.md](functions/SUPABASE_SETUP.md) for the optional Supabase logging setup and [functions/supabase-schema.sql](functions/supabase-schema.sql) for the `travel_cost_logs` schema.
+
+The `PAKIETY_CENY` spreadsheet must be shared with the Google service account as a viewer. It must contain the `2026`, `2027`, `2028`, and `extraServices` tabs; `GOOGLE_OFFER_SHEET_ID` points to this spreadsheet.
 
 ## Deployment
 
